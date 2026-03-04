@@ -29,8 +29,7 @@
 }
 
 /* LINKS */
-.sidebar a,
-.sidebar p {
+.sidebar a {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -44,8 +43,7 @@
   display: none;
 }
 
-.sidebar a:hover,
-.sidebar p:hover {
+.sidebar a:hover {
   background-color: #34495e;
 }
 

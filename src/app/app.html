@@ -1,8 +1,8 @@
 <div class="layout">
 
-  <nav class="sidebar" [class.closed]="isClosed">
+  <nav class="sidebar">
 
-    <button class="toggle-btn" (click)="toggleSidebar()">
+    <button class="toggle-btn">
       ☰
     </button>
 
@@ -28,8 +28,12 @@
     </a>
       </nav>
 
-  <main class="content" [class.expanded]="isClosed">
     <router-outlet></router-outlet>
-  </main>
+
+</div>
+  <nav>
+
+  </nav>
+<div class="user-setting">
 
 </div>

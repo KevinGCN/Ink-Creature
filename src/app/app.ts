@@ -9,5 +9,11 @@ import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+  isClosed = false;
+
+  toggleSidebar(){
+    this.isClosed = !this.isClosed;
+  }
+  
   protected readonly title = signal('Ink-Creature');
 }

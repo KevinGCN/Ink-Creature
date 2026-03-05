@@ -1,9 +1,39 @@
-<a routerLink="/loggin">Iniciar Sesion/Registrarse</a>
-<a routerLink="/lobby">Inicio</a>
-<a routerLink="/gallery">Galeria</a>
-<a routerLink="/information">Información</a>
-<a routerLink="/employees">Empleados</a>
-<a routerLink="/profile">Perfil</a>
-<a routerLink="/schedule">Citas</a>
+<div class="layout">
 
-<router-outlet></router-outlet>
+  <nav class="sidebar">
+
+    <button class="toggle-btn">
+      ☰
+    </button>
+
+    <a routerLink="/lobby" >
+      <span class="icon">🏠</span>
+      <span class="text">Inicio</span>
+    </a>
+    <a routerLink="/gallery" >
+      <span class="icon">🖼️</span>
+      <span class="text">Galeria</span>
+    </a>
+    <a routerLink="/schedule" >
+      <span class="icon">📅</span>
+      <span class="text">Citas</span>
+    </a>
+    <a routerLink="/employees" >
+      <span class="icon">💼</span>
+      <span class="text">Empleados</span>
+    </a>
+    <a routerLink="/information" >
+      <span class="icon">⁉️</span>
+      <span class="text">Información</span>
+    </a>
+      </nav>
+
+    <router-outlet></router-outlet>
+
+</div>
+  <nav>
+
+  </nav>
+<div class="user-setting">
+
+</div>

@@ -1,39 +1,46 @@
 <div class="layout">
 
+  <!-- SIDEBAR -->
   <nav class="sidebar">
-
     <button class="toggle-btn">
       ☰
     </button>
-
-    <a routerLink="/lobby" >
+    <a routerLink="/lobby">
       <span class="icon">🏠</span>
       <span class="text">Inicio</span>
     </a>
-    <a routerLink="/gallery" >
+    <a routerLink="/gallery">
       <span class="icon">🖼️</span>
       <span class="text">Galeria</span>
     </a>
-    <a routerLink="/schedule" >
+    <a routerLink="/schedule">
       <span class="icon">📅</span>
       <span class="text">Citas</span>
     </a>
-    <a routerLink="/employees" >
+    <a routerLink="/employees">
       <span class="icon">💼</span>
       <span class="text">Empleados</span>
     </a>
-    <a routerLink="/information" >
+    <a routerLink="/information">
       <span class="icon">⁉️</span>
       <span class="text">Información</span>
     </a>
-      </nav>
-
-    <router-outlet></router-outlet>
-
-</div>
-  <nav>
-
   </nav>
-<div class="user-setting">
 
+  <!-- BARRA SUPERIOR USUARIO -->
+  <nav class="userbar">
+    <a routerLink="/loggin">
+      <span>👤</span>
+      <span>Sesion</span>
+    </a>
+    <a routerLink="/profile">
+      <span>⚙️</span>
+      <span>Ajustes</span>
+    </a>
+  </nav>
+
+  <!-- CONTENIDO DINAMICO -->
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
 </div>

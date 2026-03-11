@@ -1,0 +1,15 @@
+.info-content {
+    padding: 0px 1%;
+}
+
+
+.contacto {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0% 5%;
+}
+
+.contacto img {
+    width: 100px;
+    height: 100px;
+}

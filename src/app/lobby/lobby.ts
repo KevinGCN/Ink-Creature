@@ -5,6 +5,7 @@ import { RouterLink } from "@angular/router";
   selector: 'app-lobby',
   imports: [RouterLink],
   standalone: true,
+  imports: [Loggin],
   templateUrl: './lobby.html',
   styleUrls: ['./lobby.css']
 })

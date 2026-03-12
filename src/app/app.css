@@ -14,7 +14,6 @@
   grid-column: 1;  
   grid-template-columns: 1fr;
   background-color: #2c3e50;
-  padding-top: 1px;
 }
 
 /* BOTON */
@@ -51,8 +50,8 @@
   align-items: center;
   height: 30px;
   background-color: #6aaef3;
-  padding: 20px;
 }
+
 .userbar a {
   display: flex;
   align-items: center;

@@ -1,1 +1,32 @@
-<p>loggin works!</p>
+
+<div class="overlay" *ngIf="visible" (click)="cerrar()"></div>
+
+<div class="login-container" *ngIf="visible">
+
+  <div class="header">
+    <span>Ink-Creature</span>
+    <button class="close-btn" (click)="cerrar()">✕</button>
+  </div>
+
+  <div class="content">
+
+    <h2>Iniciar sesión</h2>
+    <p>Accede a diseños exclusivos ¡y mucho más!</p>
+
+    <label>Email</label>
+    <input type="email" placeholder="Correo electrónico">
+
+    <label>Contraseña</label>
+    <input type="password" placeholder="Contraseña">
+
+    <button class="login-btn">Iniciar sesión</button>
+
+    <a class="forgot">¿Olvidaste tu contraseña?</a>
+
+    <div class="divider"><span>o</span></div>
+
+
+    <div id="googleButton"></div>
+
+  </div>
+</div>

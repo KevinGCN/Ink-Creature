@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, ViewChild } from '@angular/core';
+import { Loggin } from '../loggin/loggin';
 
 @Component({
   selector: 'app-lobby',
-  imports: [RouterLink],
   standalone: true,
   imports: [Loggin],
   templateUrl: './lobby.html',
   styleUrls: ['./lobby.css']
 })
-
 export class Lobby {
+  @ViewChild('login') login!: Loggin;
 
+  abrirLogin() {
+    this.login.abrir();
+  }
 }

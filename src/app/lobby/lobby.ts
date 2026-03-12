@@ -11,7 +11,16 @@ import { Loggin } from '../loggin/loggin';
 export class Lobby {
   @ViewChild('login') login!: Loggin;
 
+<<<<<<< HEAD
   abrirLogin() {
     this.login.abrir();
   }
+=======
+  @ViewChild('login') login!: Loggin;
+
+  abrirLogin() {
+    this.login.abrir();
+  }
+
+>>>>>>> parent of 0495e67 (Merge branch 'dev-emerson' of https://github.com/KevinGCN/Angular into dev-emerson)
 }

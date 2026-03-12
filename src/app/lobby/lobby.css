@@ -20,3 +20,8 @@
   color: white;
   align-items: flex-end;
 }
+
+.review-card{
+  border: 1px solid black;
+  gap: 10px;
+}

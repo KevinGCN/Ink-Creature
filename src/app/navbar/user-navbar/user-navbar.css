@@ -1,0 +1,21 @@
+/* USERBAR */
+.userbar {
+  background-color: #6aaef3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px;
+}
+
+.userbar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  padding: 5px 2%;
+  white-space: nowrap;
+}
+.userbar a:hover {
+  background-color: #82c0ff;
+}

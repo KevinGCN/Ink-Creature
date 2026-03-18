@@ -1,20 +1,24 @@
 .layout {
   display: grid;
-  /* sidebar | contenido */
-  grid-template-columns: 200px 1fr;
   /* userbar | contenido */
-  grid-template-rows: 70px 1fr;
+  grid-template-rows: 70px 1fr;   
+  /* mainbar | contenido */
+  grid-template-columns: 200px 1fr;
   height: 100vh;
 }
 
+.main-navbar {
+  grid-column: 1;
+  grid-row: 1 / span 2; 
+}
+
 .user-navbar {
-  display: grid;
-  grid-column: 2;
+  grid-column:1 /span 2;
   grid-row: 1;
 }
 
 .content {
-  display: grid;
+  grid-column: 1 /span 2;
   grid-row: 2;
-  grid-column: 2;
+  padding: 0 5%;
 }

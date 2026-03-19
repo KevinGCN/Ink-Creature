@@ -1,128 +1,71 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="es">
+<div class="gallery">
+  <h1 class="title">Galería</h1>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeria Ink-Creature</title>
-</head>
-
-<body>
-    <div class="gallery-card">
-        <header class="site-header">
-            <h1 class="gallery-title">Galeria</h1>
-        </header>
-        <div class=glid>
-
-            <div class="glid-item">
-                <div class="upload-symbi"></div>
-            </div>
-        </div>
+  <!-- Grid tipo mosaico -->
+  <div class="grid">
+    <!-- Bendy -->
+    <div class="grid-item" (click)="openImage('image/bendy.jpg')">
+      <img src="image/bendy.jpg" alt="Tatuaje Bendy" (error)="handleImageError($event)">
     </div>
-</body>
 
-</html>
-=======
-<div class="container mt-4">
-  <h1 class="text-center mb-4">Galería</h1>
+    <!-- Goku -->
+    <div class="grid-item" (click)="openImage('image/goku.webp')">
+      <img src="image/goku.webp" alt="Goku Angel" (error)="handleImageError($event)">
+    </div>
 
-  <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let img of images">
-      
-      <div class="card h-100">
-        <img src="image/bendy.jpg" class="card-img-top" alt="Bendy">
+    <!-- sorodita -->
+    <div class="grid-item" (click)="openImage('image/sorodita.png')">
+      <img src="image/sorodita.png" alt="Tatuaje sorodita" (error)="handleImageError($event)">
+    </div>
 
-        <div class="card-body">
-          <h5 class="card-title">Tatuaje Bendy</h5>
-          <p class="card-text">Diseño inspirado en Bendy.</p>
+    <!-- arquemis -->
+    <div class="grid-item" (click)="openImage('image/arquemis.png')">
+      <img src="image/arquemis.png" alt="arquemis" (error)="handleImageError($event)">
+    </div>
 
-        </div>
+    <!-- ladymaria -->
+    <div class="grid-item" (click)="openImage('image/ladymaria.png')">
+      <img src="image/ladymaria.png" alt="Tatuaje ladymaria" (error)="handleImageError($event)">
+    </div>
 
-      </div>
+    <!-- mercy -->
+    <div class="grid-item" (click)="openImage('image/mercy.png')">
+      <img src="image/mercy.png" alt="mercy" (error)="handleImageError($event)">
+    </div>
 
+    <!-- rem -->
+    <div class="grid-item" (click)="openImage('image/rem.png')">
+      <img src="image/rem.png" alt="Tatuaje rem" (error)="handleImageError($event)">
+    </div>
+
+    <!-- Goku 4 -->
+    <div class="grid-item" (click)="openImage('image/goku.webp')">
+      <img src="image/goku.webp" alt="Goku Angel" (error)="handleImageError($event)">
+    </div>
+
+    <!-- Bendy 5 -->
+    <div class="grid-item" (click)="openImage('image/bendy.jpg')">
+      <img src="image/bendy.jpg" alt="Tatuaje Bendy" (error)="handleImageError($event)">
+    </div>
+
+    <!-- Goku 5 -->
+    <div class="grid-item" (click)="openImage('image/goku.webp')">
+      <img src="image/goku.webp" alt="Goku Angel" (error)="handleImageError($event)">
+    </div>
+
+    <!-- Bendy 6 -->
+    <div class="grid-item" (click)="openImage('image/bendy.jpg')">
+      <img src="image/bendy.jpg" alt="Tatuaje Bendy" (error)="handleImageError($event)">
+    </div>
+
+    <!-- Goku 6 -->
+    <div class="grid-item" (click)="openImage('image/goku.webp')">
+      <img src="image/goku.webp" alt="Goku Angel" (error)="handleImageError($event)">
     </div>
   </div>
 
-
+  <!-- Visor de imagen -->
   <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
-    <img [src]="selectedImage">
+    <img [src]="selectedImage" alt="Imagen ampliada">
   </div>
 </div>
-
-
-<div class="container mt-4">
-
-  <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let img of images">
-      
-      <div class="card h-100">
-        <img [src]="img" class="card-img-top" alt="imagen">
-
-        <div class="card-body">
-          <h5 class="card-title">Imagen</h5>
-          <p class="card-text">Descripción corta</p>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
- 
-  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
-    <img [src]="selectedImage">
-  </div>
-</div>
-
-<div class="container mt-4">
-
-  <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let img of images">
-      
-      <div class="card h-100">
-        <img [src]="img" class="card-img-top" alt="imagen">
-
-        <div class="card-body">
-          <h5 class="card-title">Imagen</h5>
-          <p class="card-text">Descripción corta</p>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
-    <img [src]="selectedImage">
-  </div>
-</div>
-
-<div class="container mt-4">
-  
-  <div class="row">
-    <div class="col-md-3 mb-4" *ngFor="let img of images">
-      
-      <div class="card h-100">
-        <img [src]="img" class="card-img-top" alt="imagen">
-
-        <div class="card-body">
-          <h5 class="card-title">Imagen</h5>
-          <p class="card-text">Descripción corta</p>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
-    <img [src]="selectedImage">
-  </div>
-</div>
->>>>>>> master

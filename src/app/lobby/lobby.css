@@ -1,0 +1,19 @@
+/* CONTENIDO */
+.main-content {
+  padding: 5px 20px;
+  gap: 20px;
+}
+.banner {
+  padding-top: 1%;
+  background-image: url(/image/banner.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 200px;
+  border-radius: 10px;
+}
+
+.banner h1 {
+  color: white;
+  align-items: flex-end;
+}

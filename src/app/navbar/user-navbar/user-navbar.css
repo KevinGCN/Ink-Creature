@@ -1,6 +1,10 @@
 /* USERBAR */
 .userbar {
   background-color: #6aaef3;
+  border-radius: 15px;
+}
+
+.userbar .usuario {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -18,4 +22,5 @@
 }
 .userbar a:hover {
   background-color: #82c0ff;
+  border-radius: 15px;
 }

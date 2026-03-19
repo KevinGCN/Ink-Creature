@@ -1,38 +1,24 @@
-<<<<<<< HEAD
-=======
 .layout {
   display: grid;
-  /* sidebar | contenido */
-  grid-template-columns: 200px 1fr;
   /* userbar | contenido */
-  grid-template-rows: 70px 1fr;
+  grid-template-rows: 70px 1fr;   
+  /* mainbar | contenido */
+  grid-template-columns: 200px 1fr;
   height: 100vh;
 }
 
+.main-navbar {
+  grid-column: 1;
+  grid-row: 1 / span 2; 
+}
+
 .user-navbar {
-  display: grid;
-  grid-column: 2;
+  grid-column:1 /span 2;
   grid-row: 1;
 }
 
-<<<<<<< HEAD
-.userbar a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  text-decoration: none;
-  padding: 5px 2%;
-  white-space: nowrap;
-}
-.userbar a:hover {
-  background-color: #82c0ff;
-}
->>>>>>> origin/dev-kevin
-=======
 .content {
-  display: grid;
-  grid-row: 2;
   grid-column: 2;
+  grid-row: 2;
+  padding-right: 200px;
 }
->>>>>>> 48ac4cd16a939f8fa9edb55678b5126c444acc7d

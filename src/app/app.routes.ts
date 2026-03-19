@@ -8,8 +8,8 @@ import { Information } from './information/information';
 import { Profile } from './profile/profile';
 
 export const routes: Routes = [
-  { path: '', component: Loggin }, // ruta por defecto
-  { path: 'lobby', component: Lobby },
+  { path: '', component: Lobby }, // ruta por defecto
+  { path: 'loggin', component: Loggin },
   { path: 'gallery', component: Gallery },
   { path: 'employees', component: Employees },
   { path: 'schedule', component: Schedule },

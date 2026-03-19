@@ -1,9 +1,12 @@
-<a routerLink="/loggin">Iniciar Sesion/Registrarse</a>
-<a routerLink="/lobby">Inicio</a>
-<a routerLink="/gallery">Galeria</a>
-<a routerLink="/information">Información</a>
-<a routerLink="/employees">Empleados</a>
-<a routerLink="/profile">Perfil</a>
-<a routerLink="/schedule">Citas</a>
-
-<router-outlet></router-outlet>
+<div class="layout">
+  <section class="user-navbar">
+    <app-user-navbar></app-user-navbar>
+  </section>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+  <section class="main-navbar">
+    <app-main-navbar></app-main-navbar>
+  </section>
+</div>
+>>>>>>> origin/dev-kevin

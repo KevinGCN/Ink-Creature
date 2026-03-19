@@ -1,0 +1,101 @@
+<div class="container mt-4">
+  <h1 class="text-center mb-4">Galería</h1>
+
+  <div class="row">
+    <div class="col-md-3 mb-4" *ngFor="let img of images">
+      
+      <div class="card h-100">
+        <img src="image/bendy.jpg" class="card-img-top" alt="Bendy">
+
+        <div class="card-body">
+          <h5 class="card-title">Tatuaje Bendy</h5>
+          <p class="card-text">Diseño inspirado en Bendy.</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
+    <img [src]="selectedImage">
+  </div>
+</div>
+
+
+<div class="container mt-4">
+
+  <div class="row">
+    <div class="col-md-3 mb-4" *ngFor="let img of images">
+      
+      <div class="card h-100">
+        <img [src]="img" class="card-img-top" alt="imagen">
+
+        <div class="card-body">
+          <h5 class="card-title">Imagen</h5>
+          <p class="card-text">Descripción corta</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+ 
+  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
+    <img [src]="selectedImage">
+  </div>
+</div>
+
+<div class="container mt-4">
+
+  <div class="row">
+    <div class="col-md-3 mb-4" *ngFor="let img of images">
+      
+      <div class="card h-100">
+        <img [src]="img" class="card-img-top" alt="imagen">
+
+        <div class="card-body">
+          <h5 class="card-title">Imagen</h5>
+          <p class="card-text">Descripción corta</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
+    <img [src]="selectedImage">
+  </div>
+</div>
+
+<div class="container mt-4">
+  
+  <div class="row">
+    <div class="col-md-3 mb-4" *ngFor="let img of images">
+      
+      <div class="card h-100">
+        <img [src]="img" class="card-img-top" alt="imagen">
+
+        <div class="card-body">
+          <h5 class="card-title">Imagen</h5>
+          <p class="card-text">Descripción corta</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
+    <img [src]="selectedImage">
+  </div>
+</div>

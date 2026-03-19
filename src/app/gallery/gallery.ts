@@ -1,17 +1,4 @@
 import { Component } from '@angular/core';
-<<<<<<< HEAD
-
-@Component({
-  selector: 'app-gallery',
-  imports: [],
-  standalone: true,
-  templateUrl: './gallery.html',
-  styleUrl: './gallery.css',
-})
-export class Gallery {
-
-}
-=======
 import { CommonModule } from '@angular/common';
 imports: [CommonModule]
 
@@ -46,4 +33,3 @@ images = [
   }
 
 }
->>>>>>> master

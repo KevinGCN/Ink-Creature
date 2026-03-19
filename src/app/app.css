@@ -1,0 +1,24 @@
+.layout {
+  display: grid;
+  /* userbar | contenido */
+  grid-template-rows: 70px 1fr;   
+  /* mainbar | contenido */
+  grid-template-columns: 200px 1fr;
+  height: 100vh;
+}
+
+.main-navbar {
+  grid-column: 1;
+  grid-row: 1 / span 2; 
+}
+
+.user-navbar {
+  grid-column:1 /span 2;
+  grid-row: 1;
+}
+
+.content {
+  grid-column: 2;
+  grid-row: 2;
+  padding-right: 200px;
+}

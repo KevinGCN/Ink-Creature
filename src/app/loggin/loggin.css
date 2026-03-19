@@ -1,0 +1,96 @@
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+
+.login-container {
+  position: fixed;
+  top: 50%;          
+  right: 20px;        
+  transform: translateY(-50%);  
+  width: 350px;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 1001;
+  font-family: Arial, sans-serif;
+  text-align: left;   
+}
+
+.login-container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+
+.login-container .header .close-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.login-btn:hover {
+  background: #45a049;
+}
+
+
+.forgot {
+  display: block;
+  font-size: 13px;
+  color: #007BFF;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+.forgot:hover { text-decoration: underline; }
+
+
+.divider {
+  margin: 15px 0;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+.divider span {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+
+#googleButton { display: flex; justify-content: center; margin-top: 10px; }

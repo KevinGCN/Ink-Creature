@@ -24,7 +24,7 @@
   gap: 10px;
   color: white;
   text-decoration: none;
-  padding: 5px 25%;
+  padding: 25%;
   white-space: nowrap;
 }
 
@@ -47,4 +47,8 @@
 
 .sidebar.collapsed .toggle-btn {
   font-size: 35px;
+}
+
+.sidebar.collapsed a:hover {
+  background-color: white;
 }

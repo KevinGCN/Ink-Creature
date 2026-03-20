@@ -3,8 +3,8 @@
   /* userbar | contenido */
   grid-template-rows: 70px 1fr;   
   /* mainbar | contenido */
-  grid-template-columns: 200px 1fr;
-  height: 100vh;
+  grid-template-columns:0px 1fr;
+  height: 100vh;  
 }
 
 .main-navbar {
@@ -20,5 +20,4 @@
 .content {
   grid-column: 2;
   grid-row: 2;
-  padding-right: 200px;
 }

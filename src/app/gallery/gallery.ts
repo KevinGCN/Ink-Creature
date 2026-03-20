@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-imports: [CommonModule]
 
 @Component({
   selector: 'app-gallery',
@@ -10,18 +9,6 @@ imports: [CommonModule]
   styleUrls: ['./gallery.css']
 })
 export class Gallery {
-
-  
-images = [
-  'image/bendy.jpg',
-  'image/goku.webp',
-  'image/banner.jpg',
-  'image/instagram.png',
-  'image/ubicacion.png',
-  'image/whatsapp.webp'
-];
-
-  // visor
   selectedImage: string | null = null;
 
   openImage(img: string) {
@@ -32,4 +19,8 @@ images = [
     this.selectedImage = null;
   }
 
+  handleImageError(event: any) {
+    console.error('Error cargando imagen:', event);
+    event.target.src = 'image/placeholder.jpg'; // Opcional: imagen por defecto
+  }
 }

@@ -1,34 +1,54 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
+import { Component, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 declare const google: any;
 
 @Component({
   selector: 'app-loggin',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule],
   templateUrl: './loggin.html',
-  styleUrls: ['./loggin.css']
+  styleUrls: ['./loggin.css'], 
 })
 export class Loggin implements AfterViewInit {
 
-  visible = false;
+  modoRegistro = false;
 
-  abrir() { this.visible = true; }
-  cerrar() { this.visible = false; }
+  @Output() cerrar = new EventEmitter<void>();
 
-  ngAfterViewInit(): void {
-    
+  cerrarModal() {
+    this.cerrar.emit();
+  }
+
+ ngAfterViewInit(): void {
+  if (typeof google !== 'undefined') {
+
     google.accounts.id.initialize({
-      client_id: "903319886114-ntklvvdveb7mqjttokdjl8gq7r9l6q6a.apps.googleusercontent.com",
+      client_id: "TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com",
       callback: (response: any) => {
         console.log("Usuario autenticado:", response);
       }
     });
 
+    // Login
     google.accounts.id.renderButton(
-      document.getElementById("googleButton"),
+      document.getElementById("googleLogin"),
+      { theme: "outline", size: "large", width: 250 }
+    );
+
+    // Registro
+    google.accounts.id.renderButton(
+      document.getElementById("googleRegister"),
       { theme: "outline", size: "large", width: 250 }
     );
   }
+  
+}
+irALogin() {
+  this.modoRegistro = false;
+}
+
+irARegistro() {
+  this.modoRegistro = true;
+}
 }

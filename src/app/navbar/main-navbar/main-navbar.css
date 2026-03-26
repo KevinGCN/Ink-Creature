@@ -51,6 +51,11 @@
   font-size: 35px;
 }
 
+.sidebar.collapsed a {
+  pointer-events: none;   /* desactiva clics */
+}
+
 .sidebar.collapsed a:hover {
-  background-color: white;
+  background-color: transparent;
+  text-decoration: none;
 }

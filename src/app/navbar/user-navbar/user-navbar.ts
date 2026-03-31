@@ -6,12 +6,13 @@ import { Loggin } from '../../loggin/loggin';
 @Component({
   selector: 'app-user-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, Loggin],
+  imports: [RouterLink, CommonModule, Loggin],
   templateUrl: './user-navbar.html',
-  styleUrl: './user-navbar.css',
+  styleUrls: ['./user-navbar.css']
 })
 export class UserNavbar {
-  mostrarLogin = false;
+
+  mostrarLogin = false; 
 
   abrirLogin() {
     this.mostrarLogin = true;

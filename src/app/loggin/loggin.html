@@ -9,37 +9,58 @@
 
   <div class="content">
 
-    <!-- LOGIN -->
+    
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
 
-      <div id="googleLogin"></div>
-     
-   
-      <input type="email" [(ngModel)]="correo" placeholder="Correo">
-      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
-      <button (click)="iniciarSesion()">Iniciar seccion</button>
+    
+      <div id="googleButton"></div>
 
-      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
+  
 
-      <button (click)="irARegistro()">Registrarse</button>
+      <label>Correo</label>
+      <input type="email" placeholder="Correo electrónico">
+
+      <label>Contraseña</label>
+      <input type="password" placeholder="Contraseña">
+
+      <button class="login-btn">Iniciar sesión</button>
+
+      <a class="forgot">¿Olvidaste tu contraseña?</a>
+
+      <div class="divider"><span>o</span></div>
+
+      <button class="register-btn" (click)="irARegistro()">
+        Registrarse
+      </button>
     </div>
-
-    <!-- REGISTRO -->
-    <div *ngIf="modoRegistro">
-      <h2>Crear cuenta</h2>
-
-      <div id="googleRegister"></div>
 
       <input type="text" [(ngModel)]="nombre" placeholder="Nombre">
       <input type="email" [(ngModel)]="correo" placeholder="Correo">
       <input type="password" [(ngModel)]="password" placeholder="Contraseña">
 
-      <button (click)="registrarse()">Registrarse</button>
+    <div *ngIf="modoRegistro">
+      <h2>Crear cuenta</h2>
 
-      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
+      
+      <div id="googleButton"></div>
 
-      <button (click)="irALogin()">Volver</button>
+      <div class="divider"><span>o</span></div>
+
+      <label>Nombre</label>
+      <input type="text">
+
+      <label>Correo</label>
+      <input type="email">
+
+      <label>Contraseña</label>
+      <input type="password">
+
+      <button class="register-btn">Registrarse</button>
+
+      <div class="divider"><span>o</span></div>
+
+      <button (click)="irALogin()">Volver </button>
     </div>
 
   </div>

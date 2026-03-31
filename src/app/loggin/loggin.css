@@ -1,4 +1,4 @@
-
+/* 🔹 Fondo oscuro */
 .overlay {
   position: fixed;
   top: 0;
@@ -6,36 +6,50 @@
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.5);
-  z-index: 1000;
+  z-index: 1999;
 }
 
 
 .login-container {
   position: fixed;
-  top: 50%;          
-  right: 20px;        
-  transform: translateY(-50%);  
-  width: 350px;
-  background: white;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 2000;
+  background: #fff;
+  width: 360px;
+  max-width: 90%;
   padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-  z-index: 1001;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.3);
   font-family: Arial, sans-serif;
-  text-align: left;   
+
+  animation: slideIn 0.3s ease forwards;
 }
 
-.login-container .header {
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50%) translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+  }
+}
+
+
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
   font-weight: bold;
-  font-size: 16px;
 }
 
 
-.login-container .header .close-btn {
+.close-btn {
   background: transparent;
   border: none;
   font-size: 18px;
@@ -43,12 +57,17 @@
 }
 
 
-.login-container input {
+.content h2 {
+  margin-bottom: 10px;
+}
+
+
+input {
   width: 100%;
   padding: 10px;
-  margin: 5px 0 15px;
+  margin: 6px 0 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 
@@ -58,12 +77,27 @@
   background: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 10px;
 }
+
 .login-btn:hover {
   background: #45a049;
+}
+
+
+.register-btn {
+  width: 100%;
+  padding: 10px;
+  background: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background: #006fe6;
 }
 
 
@@ -71,17 +105,22 @@
   display: block;
   font-size: 13px;
   color: #007BFF;
+  margin-top: 10px;
   margin-bottom: 15px;
   cursor: pointer;
 }
-.forgot:hover { text-decoration: underline; }
+
+.forgot:hover {
+  text-decoration: underline;
+}
 
 
 .divider {
-  margin: 15px 0;
+  margin: 20px 0;
   border-bottom: 1px solid #ddd;
   position: relative;
 }
+
 .divider span {
   position: absolute;
   top: -10px;
@@ -89,8 +128,13 @@
   transform: translateX(-50%);
   background: white;
   padding: 0 10px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 
-#googleButton { display: flex; justify-content: center; margin-top: 10px; }
+#googleLogin,
+#googleRegister {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}

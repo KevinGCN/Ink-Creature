@@ -82,40 +82,56 @@ export class Loggin implements AfterViewInit {
     console.log('Registro correcto');
   }
 
+ngAfterViewInit(): void {
+  if (typeof window !== 'undefined' && typeof google !== 'undefined') {
 
-  ngAfterViewInit(): void {
-    this.renderGoogle();
+    google.accounts.id.initialize({
+      client_id: "TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com",
+      callback: (response: any) => {
+        console.log("Usuario autenticado:", response);
+      }
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById("googleLogin"),
+      { theme: "outline", size: "large", width: 250 }
+    );
+
+    google.accounts.id.renderButton(
+      document.getElementById("googleRegister"),
+      { theme: "outline", size: "large", width: 250 }
+    );
   }
+}
+renderGoogle() {
+  if (typeof window !== 'undefined' && typeof google !== 'undefined') {
 
-  renderGoogle() {
-    if (typeof google !== 'undefined') {
+    google.accounts.id.initialize({
+      client_id: "TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com",
+      callback: (response: any) => {
+        console.log("Usuario autenticado:", response);
+      }
+    });
 
-      google.accounts.id.initialize({
-        client_id: "TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com",
-        callback: (response: any) => {
-          console.log("Usuario autenticado:", response);
-        }
+    const loginBtn = document.getElementById("googleLogin");
+    if (loginBtn) {
+      loginBtn.innerHTML = '';
+      google.accounts.id.renderButton(loginBtn, {
+        theme: "outline",
+        size: "large",
+        width: 250
       });
+    }
 
-      const loginBtn = document.getElementById("googleLogin");
-      if (loginBtn) {
-        loginBtn.innerHTML = '';
-        google.accounts.id.renderButton(loginBtn, {
-          theme: "outline",
-          size: "large",
-          width: 250
-        });
-      }
-
-      const registerBtn = document.getElementById("googleRegister");
-      if (registerBtn) {
-        registerBtn.innerHTML = '';
-        google.accounts.id.renderButton(registerBtn, {
-          theme: "outline",
-          size: "large",
-          width: 250
-        });
-      }
+    const registerBtn = document.getElementById("googleRegister");
+    if (registerBtn) {
+      registerBtn.innerHTML = '';
+      google.accounts.id.renderButton(registerBtn, {
+        theme: "outline",
+        size: "large",
+        width: 250
+      });
     }
   }
+}
 }

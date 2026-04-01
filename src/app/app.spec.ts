@@ -1,11 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { expect, describe, it, beforeEach } from 'vitest';
 import { App } from './app';
+import { ActivatedRoute } from '@angular/router';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: new Map() }
+          }
+        }
+      ]
     }).compileComponents();
   });
 
@@ -18,7 +27,9 @@ describe('App', () => {
   it('should render title', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, Ink-Creature');
+    expect(compiled.querySelector('h1')?.textContent)
+      .toContain('Hello, Ink-Creature');
   });
 });

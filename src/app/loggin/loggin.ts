@@ -17,8 +17,8 @@ export class Loggin {
 
   @Output() cerrar = new EventEmitter<void>();
 
-  nombre: string = '';
-  correo: string = '';
+  name: string = '';
+  email: string = '';
   password: string = '';
   mensajeError: string = '';
 
@@ -43,13 +43,13 @@ export class Loggin {
   iniciarSesion() {
     this.mensajeError = '';
 
-    if (!this.correo || !this.password) {
+    if (!this.email || !this.password) {
       this.mensajeError = 'Todos los campos son obligatorios';
       return;
     }
 
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailValido.test(this.correo)) {
+    if (!emailValido.test(this.email)) {
       this.mensajeError = 'Correo inválido';
       return;
     }
@@ -66,7 +66,7 @@ export class Loggin {
   registrarse() {
     this.mensajeError = '';
 
-    if (!this.nombre || !this.correo || !this.password) {
+    if (!this.name || !this.email || !this.password) {
       this.mensajeError = 'Todos los campos son obligatorios';
       return;
     }

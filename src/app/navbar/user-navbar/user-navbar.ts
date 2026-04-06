@@ -14,12 +14,20 @@ import { Loggin } from '../../loggin/loggin';
 export class UserNavbar {
 
   mostrarLogin = false; 
-
   abrirLogin() {
     this.mostrarLogin = true;
   }
-
   cerrarLogin() {
     this.mostrarLogin = false;
+  }
+
+  logueado = false;
+  login() {
+    const accesoValido = true;
+    if (accesoValido){
+      this.logueado = true;
+    }else {
+      alert('Credenciales Invalidas');
+    }
   }
 }

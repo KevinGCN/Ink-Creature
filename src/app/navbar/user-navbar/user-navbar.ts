@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Loggin } from '../../loggin/loggin';
+import { UsuarioService } from '../../services/usuarios';
 
 
 @Component({
@@ -12,6 +13,8 @@ import { Loggin } from '../../loggin/loggin';
   styleUrls: ['./user-navbar.css']
 })
 export class UserNavbar {
+
+  usuarioService!: UsuarioService;
 
   mostrarLogin = false; 
   abrirLogin() {

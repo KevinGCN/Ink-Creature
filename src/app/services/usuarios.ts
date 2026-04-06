@@ -9,6 +9,7 @@ import { Usuario } from '../models/usuario';
 export class UsuarioService {
   private url = 'assets/usuarios.json';
   constructor(private http: HttpClient){}
+  
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.url);
   }

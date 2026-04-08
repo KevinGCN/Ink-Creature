@@ -22,10 +22,10 @@ describe('Loggin', () => {
 
     fixture = TestBed.createComponent(Loggin);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

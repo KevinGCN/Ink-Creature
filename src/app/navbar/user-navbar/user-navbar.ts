@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Loggin } from '../../loggin/loggin';
+import { UsuarioService } from '../../services/usuarios';
 
 
 @Component({
@@ -13,13 +14,23 @@ import { Loggin } from '../../loggin/loggin';
 })
 export class UserNavbar {
 
-  mostrarLogin = false; 
+  usuarioService!: UsuarioService;
 
+  mostrarLogin = false; 
   abrirLogin() {
     this.mostrarLogin = true;
   }
-
   cerrarLogin() {
     this.mostrarLogin = false;
+  }
+
+  logueado = false;
+  login() {
+    const accesoValido = true;
+    if (accesoValido){
+      this.logueado = true;
+    }else {
+      alert('Credenciales Invalidas');
+    }
   }
 }

@@ -27,7 +27,6 @@
   animation: slideIn 0.3s ease forwards;
 }
 
-
 @keyframes slideIn {
   from {
     transform: translateY(-50%) translateX(100%);
@@ -39,7 +38,6 @@
   }
 }
 
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -47,7 +45,6 @@
   margin-bottom: 15px;
   font-weight: bold;
 }
-
 
 .close-btn {
   background: transparent;
@@ -70,7 +67,16 @@ input {
   border-radius: 6px;
 }
 
+/* 🔹 Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 
+/* 🔹 Botón login */
 .login-btn {
   width: 100%;
   padding: 10px;
@@ -85,6 +91,16 @@ input {
   background: #45a049;
 }
 
+/* 🔹 Botón registrar */
+.register-btn {
+  width: 100%;
+  padding: 10px;
+  background: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 .register-btn {
   width: 100%;
@@ -100,7 +116,6 @@ input {
   background: #006fe6;
 }
 
-
 .forgot {
   display: block;
   font-size: 13px;
@@ -114,7 +129,11 @@ input {
   text-decoration: underline;
 }
 
+.forgot:hover {
+  text-decoration: underline;
+}
 
+/* 🔹 Separador */
 .divider {
   margin: 20px 0;
   border-bottom: 1px solid #ddd;
@@ -130,7 +149,6 @@ input {
   padding: 0 10px;
   font-size: 13px;
 }
-
 
 #googleLogin,
 #googleRegister {

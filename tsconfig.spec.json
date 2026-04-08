@@ -3,10 +3,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "outDir": "./out-tsc/spec",
-    "rootDir": "./src",
-    "types": ["jasmine", "node"]
+    "rootDir": "./src/app",
+    "types": [
+      "vitest/globals"
+    ]
   },
   "files": [
     "src/test.ts"

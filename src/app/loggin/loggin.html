@@ -9,55 +9,37 @@
 
   <div class="content">
 
-    
+    <!-- LOGIN -->
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
 
-    
-      <div id="googleButton"></div>
+      <div id="googleLogin"></div>
 
-  
+      <input type="email" [(ngModel)]="correo" placeholder="Correo">
+      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
 
-      <label>Correo</label>
-      <input type="email" placeholder="Correo electrónico">
+      <button (click)="iniciarSesion()">Iniciar sesión</button>
 
-      <label>Contraseña</label>
-      <input type="password" placeholder="Contraseña">
+      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
 
-      <button class="login-btn">Iniciar sesión</button>
-
-      <a class="forgot">¿Olvidaste tu contraseña?</a>
-
-      <div class="divider"><span>o</span></div>
-
-      <button class="register-btn" (click)="irARegistro()">
-        Registrarse
-      </button>
+      <button (click)="irARegistro()">Registrarse</button>
     </div>
 
-
+    <!-- REGISTRO -->
     <div *ngIf="modoRegistro">
       <h2>Crear cuenta</h2>
 
-      
-      <div id="googleButton"></div>
+      <div id="googleRegister"></div>
 
-      <div class="divider"><span>o</span></div>
+      <input type="text" [(ngModel)]="nombre" placeholder="Nombre">
+      <input type="email" [(ngModel)]="correo" placeholder="Correo">
+      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
 
-      <label>Nombre</label>
-      <input type="text">
+      <button (click)="registrarse()">Registrarse</button>
 
-      <label>Correo</label>
-      <input type="email">
+      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
 
-      <label>Contraseña</label>
-      <input type="password">
-
-      <button class="register-btn">Registrarse</button>
-
-      <div class="divider"><span>o</span></div>
-
-      <button (click)="irALogin()">Volver </button>
+      <button (click)="irALogin()">Volver</button>
     </div>
 
   </div>

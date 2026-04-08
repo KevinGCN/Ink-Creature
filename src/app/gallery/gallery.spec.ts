@@ -3,17 +3,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Gallery } from './gallery';
 import { CommonModule } from '@angular/common';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('Gallery', () => {
-  let component: Gallery;
+  let component: any;
   let fixture: ComponentFixture<Gallery>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Gallery, CommonModule]
-    })
-    .compileComponents();
-    
+    }).compileComponents();
+
     fixture = TestBed.createComponent(Gallery);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -25,7 +25,7 @@ describe('Gallery', () => {
 
   it('should have an array of images', () => {
     expect(component.images).toBeDefined();
-    expect(Array.isArray(component.images)).toBeTruthy();
+    expect(Array.isArray(component.images)).toBe(true);
     expect(component.images.length).toBe(6);
   });
 
@@ -42,7 +42,6 @@ describe('Gallery', () => {
   it('should close image when closeImage is called', () => {
     component.openImage('assets/images/bendy.jpg');
     expect(component.selectedImage).not.toBeNull();
-    
     component.closeImage();
     expect(component.selectedImage).toBeNull();
   });
@@ -51,39 +50,33 @@ describe('Gallery', () => {
     const mockEvent = {
       target: {
         src: 'wrong-path.jpg',
-        classList: {
-          add: jasmine.createSpy('add')
-        }
+        classList: { add: vi.fn() }  
       }
     } as any;
-    
+
     component.handleImageError(mockEvent);
     expect(mockEvent.target.src).toContain('placeholder.jpg');
   });
 
-  // PRUEBA CORREGIDA - buscar .grid-item en lugar de .card
   it('should have grid items in the template', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const gridItems = compiled.querySelectorAll('.grid-item');
     expect(gridItems.length).toBeGreaterThan(0);
   });
 
-  // PRUEBA CORREGIDA - hacer click en grid-item
   it('should call openImage when grid item is clicked', () => {
-    const openImageSpy = spyOn(component, 'openImage');
-    
+    const openImageSpy = vi.spyOn(component, 'openImage');  
+
     const compiled = fixture.nativeElement as HTMLElement;
     const firstGridItem = compiled.querySelector('.grid-item');
-    
-    expect(firstGridItem).toBeTruthy(); // Verificar que existe
-    
+    expect(firstGridItem).toBeTruthy();
+
     if (firstGridItem) {
       (firstGridItem as HTMLElement).click();
       expect(openImageSpy).toHaveBeenCalled();
     }
   });
 
-  // Pruebas del visor
   it('should not show image viewer when no image is selected', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const viewer = compiled.querySelector('.image-viewer');
@@ -93,11 +86,11 @@ describe('Gallery', () => {
   it('should show image viewer when an image is selected', () => {
     component.selectedImage = 'assets/images/bendy.jpg';
     fixture.detectChanges();
-    
+
     const compiled = fixture.nativeElement as HTMLElement;
     const viewer = compiled.querySelector('.image-viewer');
     expect(viewer).toBeTruthy();
-    
+
     const img = compiled.querySelector('.image-viewer img');
     expect(img?.getAttribute('src')).toBe('assets/images/bendy.jpg');
   });
@@ -105,12 +98,12 @@ describe('Gallery', () => {
   it('should call closeImage when viewer is clicked', () => {
     component.selectedImage = 'assets/images/bendy.jpg';
     fixture.detectChanges();
-    
-    const closeImageSpy = spyOn(component, 'closeImage');
-    
+
+    const closeImageSpy = vi.spyOn(component, 'closeImage');  // ✅ vi.spyOn
+
     const compiled = fixture.nativeElement as HTMLElement;
     const viewer = compiled.querySelector('.image-viewer');
-    
+
     if (viewer) {
       (viewer as HTMLElement).click();
       expect(closeImageSpy).toHaveBeenCalled();

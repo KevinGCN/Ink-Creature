@@ -1,20 +1,22 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Loggin } from '../../loggin/loggin';
-import { AuthService } from '../../services/auth';
-import { RouterLink } from '@angular/router';
+import { UsuarioService } from '../../services/usuarios';
+
 
 @Component({
   selector: 'app-user-navbar',
   standalone: true,
-  imports: [CommonModule, Loggin, RouterLink],
+  imports: [RouterLink, CommonModule, Loggin],
   templateUrl: './user-navbar.html',
   styleUrls: ['./user-navbar.css']
 })
 export class UserNavbar {
-  mostrarLogin = false;
 
-  constructor(public auth: AuthService) {}
+  usuarioService!: UsuarioService;
+
+  mostrarLogin = false; 
   abrirLogin() {
     this.mostrarLogin = true;
   }

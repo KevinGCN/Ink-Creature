@@ -23,10 +23,10 @@ describe('Gallery', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have an array of images', () => {
-    expect(component.images).toBeDefined();
-    expect(Array.isArray(component.images)).toBe(true);
-    expect(component.images.length).toBe(6);
+  it('should have an array of image', () => {
+    expect(component.image).toBeDefined();
+    expect(Array.isArray(component.image)).toBe(true);
+    expect(component.image.length).toBe(6);
   });
 
   it('should initialize with selectedImage as null', () => {
@@ -34,13 +34,13 @@ describe('Gallery', () => {
   });
 
   it('should open image when openImage is called', () => {
-    const testImage = 'assets/images/bendy.jpg';
+    const testImage = 'assets/image/bendy.jpg';
     component.openImage(testImage);
     expect(component.selectedImage).toBe(testImage);
   });
 
   it('should close image when closeImage is called', () => {
-    component.openImage('assets/images/bendy.jpg');
+    component.openImage('assets/image/bendy.jpg');
     expect(component.selectedImage).not.toBeNull();
     component.closeImage();
     expect(component.selectedImage).toBeNull();
@@ -84,7 +84,7 @@ describe('Gallery', () => {
   });
 
   it('should show image viewer when an image is selected', () => {
-    component.selectedImage = 'assets/images/bendy.jpg';
+    component.selectedImage = 'assets/image/bendy.jpg';
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -92,11 +92,11 @@ describe('Gallery', () => {
     expect(viewer).toBeTruthy();
 
     const img = compiled.querySelector('.image-viewer img');
-    expect(img?.getAttribute('src')).toBe('assets/images/bendy.jpg');
+    expect(img?.getAttribute('src')).toBe('assets/image/bendy.jpg');
   });
 
   it('should call closeImage when viewer is clicked', () => {
-    component.selectedImage = 'assets/images/bendy.jpg';
+    component.selectedImage = 'assets/image/bendy.jpg';
     fixture.detectChanges();
 
     const closeImageSpy = vi.spyOn(component, 'closeImage');  // ✅ vi.spyOn

@@ -14,11 +14,13 @@
       <h2>Iniciar sesión</h2>
 
       <div id="googleLogin"></div>
-      <label>Correo</label>
-      <input type="email" [(ngModel)]="correo" placeholder="Correo electrónico">
-
-      <label>Contraseña</label>
+     
+   
+      <input type="email" [(ngModel)]="correo" placeholder="Correo">
       <input type="password" [(ngModel)]="password" placeholder="Contraseña">
+      <button (click)="iniciarSesion()">Iniciar seccion</button>
+
+      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
 
       <button (click)="irARegistro()">Registrarse</button>
     </div>

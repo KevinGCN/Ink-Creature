@@ -15,12 +15,20 @@ export class UserNavbar {
   mostrarLogin = false;
 
   constructor(public auth: AuthService) {}
-
   abrirLogin() {
     this.mostrarLogin = true;
   }
-
   cerrarLogin() {
     this.mostrarLogin = false;
+  }
+
+  logueado = false;
+  login() {
+    const accesoValido = true;
+    if (accesoValido){
+      this.logueado = true;
+    }else {
+      alert('Credenciales Invalidas');
+    }
   }
 }

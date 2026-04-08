@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./out-tsc/spec",
+    "rootDir": "./src",
     "types": ["jasmine", "node"]
   },
   "files": [

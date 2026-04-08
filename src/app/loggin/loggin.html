@@ -18,9 +18,17 @@
       <input type="email" [(ngModel)]="correo" placeholder="Correo">
       <input type="password" [(ngModel)]="password" placeholder="Contraseña">
 
+<<<<<<< HEAD
       <button (click)="iniciarSesion()">Iniciar sesión</button>
 
       <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
+=======
+      <label>Correo</label>
+      <input type="email" [(ngModel)]="email" placeholder="Correo electrónico">
+
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
+>>>>>>> origin/dev-kevin
 
       <button (click)="irARegistro()">Registrarse</button>
     </div>

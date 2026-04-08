@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Loggin } from './loggin';
+import { vi } from 'vitest';
 
 describe('Loggin', () => {
   let component: Loggin;
@@ -10,8 +11,8 @@ describe('Loggin', () => {
     (window as any).google = {
       accounts: {
         id: {
-          initialize: jasmine.createSpy('initialize'),
-          renderButton: jasmine.createSpy('renderButton')
+          initialize: vi.fn(),
+          renderButton: vi.fn()
         }
       }
     };

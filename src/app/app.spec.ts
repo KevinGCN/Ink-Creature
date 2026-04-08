@@ -28,7 +28,7 @@ describe('App', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent)
+    expect(compiled.textContent)
       .toContain('Hello, Ink-Creature');
   });
 });

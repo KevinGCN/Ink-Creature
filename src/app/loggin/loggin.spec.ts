@@ -11,8 +11,8 @@ describe('Loggin', () => {
     (window as any).google = {
       accounts: {
         id: {
-          initialize: vi.fn(),
-          renderButton: vi.fn()
+          initialize: jasmine.createSpy('initialize'),
+          renderButton: jasmine.createSpy('renderButton')
         }
       }
     };

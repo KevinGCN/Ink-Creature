@@ -1,0 +1,112 @@
+.cv-page {
+  padding: 40px 30px;
+  background: #1a1a2e;
+  min-height: 100vh;
+  color: white;
+}
+
+.btn-volver {
+  display: inline-block;
+  color: #aaa;
+  text-decoration: none;
+  margin-bottom: 28px;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.btn-volver:hover { color: #e63946; }
+
+.perfil {
+  display: flex;
+  gap: 40px;
+  max-width: 860px;
+  margin: 0 auto;
+  background: #16213e;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #2c3e50;
+}
+
+.perfil-foto {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.perfil-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-info {
+  padding: 32px 32px 32px 0;
+  flex: 1;
+}
+
+.badge {
+  background: #e63946;
+  color: white;
+  font-size: 11px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.perfil-info h1 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.cargo {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.estrellas {
+  color: #f4c542;
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+.datos {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.etiqueta {
+  font-size: 11px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.valor {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.descripcion {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.sin-desc {
+  color: #555;
+  font-style: italic;
+}
+
+@media (max-width: 680px) {
+  .perfil { flex-direction: column; }
+  .perfil-foto { width: 100%; height: 240px; }
+  .perfil-info { padding: 20px; }
+}

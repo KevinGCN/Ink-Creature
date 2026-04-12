@@ -1,1 +1,38 @@
-<p>employee-cv works!</p>
+<main class="cv-page" *ngIf="empleado; else cargando">
+
+  <a routerLink="/employees" class="btn-volver">← Volver al catálogo</a>
+
+  <div class="perfil">
+
+    <div class="perfil-foto">
+      <img [src]="empleado.foto" [alt]="empleado.nombre">
+    </div>
+
+    <div class="perfil-info">
+      <span class="badge">{{ empleado.especialidad }}</span>
+      <h1>{{ empleado.nombre }}</h1>
+      <p class="cargo">{{ empleado.cargo }}</p>
+      <div class="estrellas">{{ obtenerEstrellas(empleado.estrellas) }}</div>
+
+      <div class="datos">
+        <div class="dato">
+          <span class="etiqueta">Experiencia</span>
+          <span class="valor">{{ empleado.experiencia }} años</span>
+        </div>
+        <div class="dato">
+          <span class="etiqueta">Especialidad</span>
+          <span class="valor">{{ empleado.especialidad }}</span>
+        </div>
+      </div>
+
+      <p class="descripcion" *ngIf="empleado.descripcion">{{ empleado.descripcion }}</p>
+      <p class="descripcion sin-desc" *ngIf="!empleado.descripcion">Descripción próximamente...</p>
+
+    </div>
+  </div>
+
+</main>
+
+<ng-template #cargando>
+  <p style="color:white; text-align:center; padding:60px;">Cargando perfil...</p>
+</ng-template>

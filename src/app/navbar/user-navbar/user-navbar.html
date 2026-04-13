@@ -1,13 +1,44 @@
 <nav class="userbar">
   <div class="usuario">
-  <button (click)="abrirLogin()">Sesión</button>
-  
-    <a routerLink="/profile" *ngIf="logueado">⚙️ Ajustes</a>
+
+    <!-- NO LOGUEADO -->
+    <button *ngIf="!auth.estaLogueado()" (click)="abrirLogin()">
+      Sesión
+    </button>
+
+    <!-- LOGUEADO -->
+    <div *ngIf="auth.estaLogueado()" class="menu-ajustes">
+
+      <!-- BOTÓN AJUSTES -->
+      <button (click)="toggleAjustes()">
+        ⚙️ Ajustes
+      </button>
+
+      <!-- DROPDOWN -->
+      <div class="dropdown" *ngIf="mostrarAjustes">
+
+        <button (click)="abrirPerfil()">
+           Perfil
+        </button>
+
+        <button (click)="auth.logout()">
+           Cerrar sesión
+        </button>
+
+      </div>
+    </div>
+
   </div>
 </nav>
 
-
+<!-- LOGIN -->
 <app-loggin 
   *ngIf="mostrarLogin" 
   (cerrar)="cerrarLogin()">
 </app-loggin>
+
+<!-- PERFIL -->
+<app-profile
+  *ngIf="mostrarPerfil"
+  (cerrar)="cerrarPerfil()">
+</app-profile>

@@ -1,0 +1,32 @@
+<main class="employees-page">
+
+  <div class="encabezado">
+    <h1>Nuestros Tatuadores</h1>
+    <p>Conoce al equipo de artistas de Ink Creature</p>
+  </div>
+
+  <div class="catalogo">
+    <div class="tarjeta" *ngFor="let empleado of empleados">
+
+      <div class="tarjeta-foto">
+        <img [src]="empleado.foto" [alt]="empleado.nombre">
+        <span class="badge">{{ empleado.especialidad }}</span>
+      </div>
+
+      <div class="tarjeta-info">
+        <h2>{{ empleado.nombre }}</h2>
+        <p class="cargo">{{ empleado.cargo }}</p>
+        <p class="experiencia">{{ empleado.experiencia }} años de experiencia</p>
+        <div class="estrellas">{{ obtenerEstrellas(empleado.estrellas) }}</div>
+      </div>
+
+      <div class="tarjeta-footer">
+        <a [routerLink]="['/employeeCV', empleado.id]" class="btn-perfil">
+          Ver perfil
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</main>

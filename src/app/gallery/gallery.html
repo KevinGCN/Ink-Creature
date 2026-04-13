@@ -1,0 +1,23 @@
+<div class="gallery">
+  <h1 class="title">Galería</h1>
+
+  <div class="grid">
+    <div class="grid-item"
+         *ngFor="let imagen of imagenes"
+         (click)="openImage(imagen.src)">
+
+      <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
+
+      <!-- Botón que aparece al lado de la imagen al hacer hover -->
+      <button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
+        Conoce al tatuador
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Visor — igual que antes -->
+  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
+    <img [src]="selectedImage" alt="Imagen ampliada">
+  </div>
+</div>

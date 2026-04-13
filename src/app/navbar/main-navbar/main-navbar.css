@@ -1,0 +1,61 @@
+/* MAINBAR */
+.sidebar {
+  border-radius: 15px;
+  width: 200px;
+  height: 100%;
+  background-color: #2c3e50;
+  transition: width 0.3s ease;
+  position: relative;
+  z-index: 1000;
+}
+
+/* BOTON */
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 15px;
+  padding: 10px 25%;
+  cursor: pointer;
+}
+
+/* LINKS */
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  padding: 25%;
+  white-space: nowrap;
+}
+
+.sidebar a:hover {
+  background-color: #34495e;
+}
+
+/*=======ESTADO COLAPSADO========*/
+.sidebar.collapsed{
+  width: 70px;
+  height: 70px;
+  transition: width 0.3s ease;
+}
+
+/* OCULTAR TEXTO */
+.sidebar.collapsed .text,
+.sidebar.collapsed .icon {
+  display: none;
+}
+
+.sidebar.collapsed .toggle-btn {
+  font-size: 35px;
+}
+
+.sidebar.collapsed a {
+  pointer-events: none;   /* desactiva clics */
+}
+
+.sidebar.collapsed a:hover {
+  background-color: transparent;
+  text-decoration: none;
+}

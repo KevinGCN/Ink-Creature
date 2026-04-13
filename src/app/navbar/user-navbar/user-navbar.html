@@ -1,0 +1,13 @@
+<nav class="userbar">
+  <div class="usuario">
+  <button (click)="abrirLogin()">Sesión</button>
+  
+    <a routerLink="/profile" *ngIf="logueado">⚙️ Ajustes</a>
+  </div>
+</nav>
+
+
+<app-loggin 
+  *ngIf="mostrarLogin" 
+  (cerrar)="cerrarLogin()">
+</app-loggin>

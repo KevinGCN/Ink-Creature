@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { CitaService } from '../services/citas';
+import { Cita } from '../models/cita';
 
 @Component({
   selector: 'app-profile',
@@ -13,12 +15,13 @@ import { AuthService } from '../services/auth';
 export class Profile {
 
   usuario: any = {};
-  citas: any[] = [];
+  citas: Cita[] = [];
   foto: string = '';
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private citaService: CitaService
   ) {
     this.usuario = this.auth.obtenerUsuario();
     this.cargarCitas();
@@ -26,10 +29,7 @@ export class Profile {
   }
 
   cargarCitas() {
-    const data = localStorage.getItem('citas');
-    if (data) {
-      this.citas = JSON.parse(data);
-    }
+    this.citas = this.citaService.getCitas();
   }
 
   irACitas() {
@@ -40,7 +40,6 @@ export class Profile {
     this.foto = localStorage.getItem('fotoPerfil') || '';
   }
 
-  
   cambiarFoto(event: any) {
     const file = event.target.files[0];
     const reader = new FileReader();

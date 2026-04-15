@@ -1,22 +1,25 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Loggin } from '../../loggin/loggin';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { Loggin } from '../../loggin/loggin';
 
-import { Profile } from '../../profile/profile';
 @Component({
   selector: 'app-user-navbar',
   standalone: true,
-  imports: [ CommonModule, Loggin, Profile],
+  imports: [CommonModule, Loggin],
   templateUrl: './user-navbar.html',
   styleUrls: ['./user-navbar.css']
 })
 export class UserNavbar {
+
   mostrarLogin = false;
-  mostrarPerfil = false;
   mostrarAjustes = false;
 
-  constructor(public auth: AuthService) {}
+  constructor(
+    public auth: AuthService,
+    private router: Router
+  ) {}
 
   abrirLogin() {
     this.mostrarLogin = true;
@@ -26,25 +29,18 @@ export class UserNavbar {
     this.mostrarLogin = false;
   }
 
-  abrirPerfil() {
-    this.mostrarPerfil = true;
-    this.mostrarAjustes = false;
-  }
-
-  cerrarPerfil() {
-    this.mostrarPerfil = false;
-  }
-
   toggleAjustes() {
     this.mostrarAjustes = !this.mostrarAjustes;
   }
 
+  irPerfil() {
+    this.mostrarAjustes = false; // cerrar dropdown
+    this.router.navigate(['/profile']); // ir a página
+  }
+
   logout() {
     this.auth.logout();
-
-   
     this.mostrarAjustes = false;
-    this.mostrarPerfil = false;
-    this.mostrarLogin = false;
+    this.router.navigate(['/']);
   }
 }

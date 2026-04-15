@@ -2,9 +2,13 @@
     padding: 0px 1%;
 }
 
-.banner h1 {
+.imgback {
     background-image: url(/image/Home.png);
-    padding: 85px 0px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 200px;
 }
 
 .contacto {

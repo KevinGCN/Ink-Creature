@@ -1,1 +1,48 @@
-<p>profile works!</p>
+<div class="perfil-container">
+
+  <div class="perfil-card">
+
+    <h2>Perfil</h2>
+
+
+    <div class="foto-container">
+      <img 
+        *ngIf="foto" 
+        [src]="foto" 
+        class="foto"
+      >
+
+      <p *ngIf="!foto">Sin foto</p>
+
+      <input type="file" (change)="cambiarFoto($event)">
+    </div>
+
+    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+
+  </div>
+
+ 
+  <div class="recordatorio">
+
+    <h3>📅 Próximas citas</h3>
+
+    <div *ngIf="citas.length === 0">
+      <p>No tienes citas registradas</p>
+    </div>
+
+    <div *ngFor="let cita of citas">
+
+      <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
+      <p><strong>Hora:</strong> {{ cita.hora }}</p>
+
+      <hr>
+    </div>
+
+    <button (click)="irACitas()">
+      Ver calendario
+    </button>
+
+  </div>
+
+</div>

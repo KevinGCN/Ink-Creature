@@ -7,7 +7,7 @@ import { Profile } from '../../profile/profile';
 @Component({
   selector: 'app-user-navbar',
   standalone: true,
-  imports: [RouterLink, CommonModule, Loggin, Profile],
+  imports: [ CommonModule, Loggin, Profile],
   templateUrl: './user-navbar.html',
   styleUrls: ['./user-navbar.css']
 })

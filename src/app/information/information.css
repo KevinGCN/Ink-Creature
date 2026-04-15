@@ -1,0 +1,19 @@
+.info-content {
+    padding: 0px 1%;
+}
+
+.banner h1 {
+    background-image: url(/image/Home.png);
+    padding: 85px 0px;
+}
+
+.contacto {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 0% 5%;
+}
+
+.contacto img {
+    width: 100px;
+    height: 100px;
+}

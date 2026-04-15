@@ -2,6 +2,10 @@
     padding: 0px 1%;
 }
 
+.banner h1 {
+    background-image: url(/image/Home.png);
+    padding: 85px 0px;
+}
 
 .contacto {
     display: grid;

@@ -2,6 +2,14 @@
     padding: 0px 1%;
 }
 
+.imgback {
+    background-image: url(/image/Home.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 200px;
+}
 
 .contacto {
     display: grid;

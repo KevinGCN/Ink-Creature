@@ -1,29 +1,30 @@
 .layout {
   display: grid;
-  /* userbar | contenido */
-  grid-template-rows: 70px 1fr;   
-  /* mainbar | contenido */
-  grid-template-columns:0px 1fr;
-  height: 100vh;  
+  grid-template-columns: 70px 1fr;   /* lateral | contenido */
+  grid-template-rows: 70px 1fr;      /* superior | contenido */
+  height: 100vh;
+  overflow: hidden;
 }
 
-.main-navbar {
-  position: sticky;
-  grid-column: 1;
-  grid-row: 1 / span 2; 
-  z-index: 20;
-}
-
+/* Barra superior */
 .user-navbar {
-  position: sticky;
-  grid-column:1 /span 2;
+  grid-column: 1 / span 2;
   grid-row: 1;
-  z-index: 15;
+  z-index: 1000;
 }
 
+/* Barra lateral */
+.main-navbar {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 1000;
+  height: 100vh;
+}
+
+/* Contenido desplazable */
 .content {
   grid-column: 2;
   grid-row: 2;
-  z-index: 1;
-  overflow-y: auto; 
+  overflow-y: auto;
+  padding: 10px;
 }

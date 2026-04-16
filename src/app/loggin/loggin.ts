@@ -1,16 +1,15 @@
-import { Component, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
-
-declare const google: any;
 
 @Component({
   selector: 'app-loggin',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './loggin.html',
-  styleUrls: ['./loggin.css'], 
+  styleUrls: ['./loggin.css'],
+  providers: [AuthService],
 })
 export class Loggin {
 
@@ -18,10 +17,12 @@ export class Loggin {
 
   @Output() cerrar = new EventEmitter<void>();
 
-  name: string = '';
-  email: string = '';
-  password: string = '';
-  mensajeError: string = '';
+  nombre = '';
+  correo = '';
+  password = '';
+  mensajeError = '';
+
+  constructor(@Inject(AuthService) private auth: AuthService) {}
 
   cerrarModal() {
     this.cerrar.emit();
@@ -29,12 +30,10 @@ export class Loggin {
 
   irARegistro() {
     this.modoRegistro = true;
-    setTimeout(() => this.renderGoogle(), 100);
   }
 
   irALogin() {
     this.modoRegistro = false;
-    setTimeout(() => this.renderGoogle(), 100);
   }
 
   iniciarSesion() {
@@ -47,19 +46,6 @@ export class Loggin {
     } else {
       this.mensajeError = 'Correo o contraseña incorrectos';
     }
-
-    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailValido.test(this.email)) {
-      this.mensajeError = 'Correo inválido';
-      return;
-    }
-
-    if (this.password.length < 8) {
-      this.mensajeError = 'La contraseña debe tener mínimo 8 caracteres';
-      return;
-    }
-
-    console.log('Login correcto');
   }
 
   registrarse() {
@@ -75,39 +61,13 @@ export class Loggin {
       return;
     }
 
-    console.log('Registro correcto');
-  }
-
-
-renderGoogle() {
-  if (typeof window !== 'undefined' && typeof google !== 'undefined') {
-
-    google.accounts.id.initialize({
-      client_id: "TU_CLIENT_ID_DE_GOOGLE.apps.googleusercontent.com",
-      callback: (response: any) => {
-        console.log("Usuario autenticado:", response);
-      }
+    this.auth.registrar({
+      nombre: this.nombre,
+      correo: this.correo,
+      password: this.password
     });
 
-    const loginBtn = document.getElementById("googleLogin");
-    if (loginBtn) {
-      loginBtn.innerHTML = '';
-      google.accounts.id.renderButton(loginBtn, {
-        theme: "outline",
-        size: "large",
-        width: 250
-      });
-    }
-
-    const registerBtn = document.getElementById("googleRegister");
-    if (registerBtn) {
-      registerBtn.innerHTML = '';
-      google.accounts.id.renderButton(registerBtn, {
-        theme: "outline",
-        size: "large",
-        width: 250
-      });
-    }
+    alert('Registrado correctamente');
+    this.cerrarModal();
   }
 }
- }

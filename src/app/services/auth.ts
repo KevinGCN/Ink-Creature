@@ -17,7 +17,7 @@ export class AuthService {
 
     const usuario = JSON.parse(data);
 
-    if (usuario.correo === correo && usuario.password === password) {
+    if (usuario.email === correo && usuario.password === password) {
       localStorage.setItem('logueado', 'true');
       return true;
     }

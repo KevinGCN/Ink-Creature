@@ -36,4 +36,9 @@ export class AuthService {
   obtenerUsuario() {
     return JSON.parse(localStorage.getItem('usuario') || '{}');
   }
+
+  
+  actualizarUsuario(usuario: any) {
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+  }
 }

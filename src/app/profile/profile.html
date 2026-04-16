@@ -1,47 +1,49 @@
-<div class="perfil-container">
+<div class="profile-container">
 
-  <div class="perfil-card">
+  
+  <div class="profile-header">
+    <h2>Mi Perfil</h2>
+  </div>
 
-    <h2>Perfil</h2>
+  <!-- INFO USUARIO -->
+  <div class="profile-info">
 
-
-    <div class="foto-container">
-      <img 
-        *ngIf="foto" 
-        [src]="foto" 
-        class="foto"
-      >
-
-      <p *ngIf="!foto">Sin foto</p>
+    <div class="foto">
+      <img *ngIf="foto" [src]="foto">
+      <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
       <input type="file" (change)="cambiarFoto($event)">
     </div>
 
-    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
-    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+    <div class="datos">
+      <p><strong>Nombre:</strong> {{ usuario?.name }}</p>
+      <p><strong>Email:</strong> {{ usuario?.email }}</p>
+    </div>
 
   </div>
 
  
-  <div class="recordatorio">
+  <div class="acciones">
+    <button (click)="irAgenda()">Modificar cita</button>
+  </div>
 
-    <h3>📅 Próximas citas</h3>
+  <!-- CITAS -->
+  <div class="citas">
+    <h3>Mis Citas</h3>
 
-    <div *ngIf="citas.length === 0">
-      <p>No tienes citas registradas</p>
+    <div *ngIf="citas.length === 0" class="empty">
+      No tienes citas registradas
     </div>
 
-    <div *ngFor="let cita of citas">
-
+    <div class="cita-card" *ngFor="let cita of citas">
       <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
       <p><strong>Hora:</strong> {{ cita.hora }}</p>
+      <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
 
-      <hr>
+      <button class="eliminar" (click)="eliminar(cita.id)">
+        Eliminar
+      </button>
     </div>
-
-    <button (click)="irACitas()">
-      Ver calendario
-    </button>
 
   </div>
 

@@ -12,7 +12,6 @@ import { Loggin } from '../../loggin/loggin';
   styleUrls: ['./user-navbar.css']
 })
 export class UserNavbar {
-
   mostrarLogin = false;
   mostrarAjustes = false;
 

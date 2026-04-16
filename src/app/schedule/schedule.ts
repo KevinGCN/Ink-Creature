@@ -5,10 +5,11 @@ import { AuthService } from '../services/auth';
 import { Empleado } from '../models/empleado';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-schedule',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   standalone: true,
   templateUrl: './schedule.html',
   styleUrl: './schedule.css',

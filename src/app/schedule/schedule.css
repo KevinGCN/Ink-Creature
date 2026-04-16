@@ -162,7 +162,7 @@ h1 {
   margin-top: 20px;
 }
 
-.delete,
+.cancelar,
 .reserve {
   border: none;
   padding: 12px 22px;
@@ -172,7 +172,7 @@ h1 {
   transition: 0.3s;
 }
 
-.delete {
+.cancelar {
   background: #60a5fa;
 }
 
@@ -180,7 +180,7 @@ h1 {
   background: #2563eb;
 }
 
-.delete:hover,
+.cancelar:hover,
 .reserve:hover {
   transform: translateY(-2px);
 }

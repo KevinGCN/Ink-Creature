@@ -7,14 +7,22 @@
 
 .btn-volver {
   display: inline-block;
-  color: #aaa;
+  background: linear-gradient(to right, #2563eb, #60a5fa);
+  color: white;
   text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 25px;
   margin-bottom: 28px;
   font-size: 14px;
-  transition: color 0.2s;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  transition: 0.3s;
 }
 
-.btn-volver:hover { color: #e63946; }
+.btn-volver:hover {
+  background: linear-gradient(to right, #1d4ed8, #3b82f6);
+  transform: translateY(-2px);
+}
 
 .perfil {
   display: flex;

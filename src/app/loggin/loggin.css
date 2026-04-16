@@ -1,32 +1,37 @@
-/* 🔹 Fondo oscuro */
+/*  FONDO OSCURO (overlay) */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px); 
   z-index: 1999;
 }
 
-
+/*  CONTENEDOR PRINCIPAL */
 .login-container {
   position: fixed;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
   z-index: 2000;
-  background: #fff;
+
+  background: #ffffff;
   width: 360px;
   max-width: 90%;
   padding: 25px;
   border-radius: 12px 0 0 12px;
-  box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+
+  box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+
   font-family: Arial, sans-serif;
 
   animation: slideIn 0.3s ease forwards;
 }
 
+/*  ANIMACIÓN */
 @keyframes slideIn {
   from {
     transform: translateY(-50%) translateX(100%);
@@ -38,118 +43,95 @@
   }
 }
 
+/*  HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-weight: bold;
+  font-size: 16px;
 }
 
+/* BOTÓN CERRAR */
 .close-btn {
+  width: auto;
+  height: auto;
+  padding: 5px 8px;
+  font-size: 16px;
   background: transparent;
   border: none;
-  font-size: 18px;
   cursor: pointer;
+  color: #333;
+  line-height: 1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+.close-btn:hover {
+  transform: scale(1.2);
 }
 
-
+/*  TITULOS */
 .content h2 {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-
+/*  INPUTS */
 input {
   width: 100%;
   padding: 10px;
-  margin: 6px 0 15px;
+  margin: 8px 0 15px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
-/* 🔹 Inputs */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+input:focus {
+  border-color: #6aaef3;
+  box-shadow: 0 0 5px rgba(106,174,243,0.5);
+  outline: none;
 }
 
-/* 🔹 Botón login */
-.login-btn {
+/*  BOTONES GENERALES */
+button {
   width: 100%;
   padding: 10px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+/*  BOTÓN LOGIN */
+button:nth-of-type(1) {
   background: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
-.login-btn:hover {
-  background: #45a049;
+button:nth-of-type(1):hover {
+  background: #43a047;
 }
 
-/* 🔹 Botón registrar */
-.register-btn {
-  width: 100%;
-  padding: 10px;
+/*  BOTÓN REGISTRO */
+button:nth-of-type(2) {
   background: #007BFF;
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
-.register-btn {
-  width: 100%;
-  padding: 10px;
-  background: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.register-btn:hover {
+button:nth-of-type(2):hover {
   background: #006fe6;
 }
 
-.forgot {
-  display: block;
-  font-size: 13px;
-  color: #007BFF;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
+/*  ERROR */
+p {
+  text-align: center;
+  font-size: 14px;
 }
 
-.forgot:hover {
-  text-decoration: underline;
-}
-
-.forgot:hover {
-  text-decoration: underline;
-}
-
-/* 🔹 Separador */
-.divider {
-  margin: 20px 0;
-  border-bottom: 1px solid #ddd;
-  position: relative;
-}
-
-.divider span {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 0 10px;
-  font-size: 13px;
-}
-
+/*  GOOGLE */
 #googleLogin,
 #googleRegister {
   display: flex;

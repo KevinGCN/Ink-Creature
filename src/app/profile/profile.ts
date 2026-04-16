@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
@@ -12,7 +12,7 @@ import { Cita } from '../models/cita';
   templateUrl: './profile.html',
   styleUrls: ['./profile.css']
 })
-export class Profile {
+export class Profile implements OnInit {
 
   usuario: any = {};
   citas: Cita[] = [];
@@ -22,7 +22,9 @@ export class Profile {
     private auth: AuthService,
     private router: Router,
     private citaService: CitaService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.usuario = this.auth.obtenerUsuario();
     this.cargarCitas();
     this.cargarFoto();
@@ -32,8 +34,9 @@ export class Profile {
     this.citas = this.citaService.getCitas();
   }
 
-  irACitas() {
-    this.router.navigate(['/citas']);
+  eliminar(id: number) {
+    this.citaService.eliminarCita(id);
+    this.cargarCitas();
   }
 
   cargarFoto() {
@@ -52,5 +55,9 @@ export class Profile {
     if (file) {
       reader.readAsDataURL(file);
     }
+  }
+
+  irAgenda() {
+    this.router.navigate(['/schedule']);
   }
 }

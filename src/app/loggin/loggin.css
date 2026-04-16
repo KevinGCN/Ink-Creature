@@ -107,12 +107,12 @@ button {
 
 /*  BOTÓN LOGIN */
 button:nth-of-type(1) {
-  background: #4CAF50;
+  background: #475e8a;
   color: white;
 }
 
 button:nth-of-type(1):hover {
-  background: #43a047;
+  background: #6743a0;
 }
 
 /*  BOTÓN REGISTRO */

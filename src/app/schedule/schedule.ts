@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CitaService } from '../services/citas';
 import { EmpleadoService } from '../services/empleados';
+import { AuthService } from '../services/auth';
 import { Empleado } from '../models/empleado';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +23,8 @@ export class Schedule implements OnInit {
 
   constructor(
     private citaService: CitaService,
-    private empleadoService: EmpleadoService
+    private empleadoService: EmpleadoService,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +50,14 @@ export class Schedule implements OnInit {
   }
 
   reservar() {
+
+    /* Verifica sesión iniciada */
+    if (!this.auth.estaLogueado()) {
+      alert('Debes iniciar sesión antes de reservar');
+      return;
+    }
+
+    /* Verifica datos */
     if (
       !this.fechaSeleccionada ||
       !this.horaSeleccionada ||
@@ -57,6 +67,7 @@ export class Schedule implements OnInit {
       return;
     }
 
+    /* Verifica horario ocupado */
     const existe = this.citaService.getCitas().find(c =>
       c.fecha === this.fechaSeleccionada &&
       c.hora === this.horaSeleccionada &&
@@ -68,6 +79,7 @@ export class Schedule implements OnInit {
       return;
     }
 
+    /* Crear cita */
     const nuevaCita = {
       id: Date.now(),
       fecha: this.fechaSeleccionada,
@@ -76,6 +88,8 @@ export class Schedule implements OnInit {
     };
 
     this.citaService.crearCita(nuevaCita);
+
+    alert('Cita reservada con éxito');
     console.log('Cita creada', nuevaCita);
   }
 

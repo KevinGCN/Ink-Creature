@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../services/auth';
 
 declare const google: any;
 
@@ -22,30 +23,29 @@ export class Loggin {
   password: string = '';
   mensajeError: string = '';
 
-  
   cerrarModal() {
     this.cerrar.emit();
   }
 
- 
   irARegistro() {
     this.modoRegistro = true;
     setTimeout(() => this.renderGoogle(), 100);
   }
-
 
   irALogin() {
     this.modoRegistro = false;
     setTimeout(() => this.renderGoogle(), 100);
   }
 
-  
   iniciarSesion() {
     this.mensajeError = '';
+    const ok = this.auth.login(this.correo, this.password);
 
-    if (!this.email || !this.password) {
-      this.mensajeError = 'Todos los campos son obligatorios';
-      return;
+    if (ok) {
+      alert('Login exitoso');
+      this.cerrarModal();
+    } else {
+      this.mensajeError = 'Correo o contraseña incorrectos';
     }
 
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,20 +62,16 @@ export class Loggin {
     console.log('Login correcto');
   }
 
-  
   registrarse() {
     this.mensajeError = '';
 
-    if (!this.name || !this.email || !this.password) {
+    if (!this.nombre || !this.correo || !this.password) {
       this.mensajeError = 'Todos los campos son obligatorios';
       return;
     }
 
-    const passwordValida = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
-    if (!passwordValida.test(this.password)) {
-      this.mensajeError =
-        'Debe tener 8 caracteres, mayúscula, número y símbolo';
+    if (this.password.length < 8) {
+      this.mensajeError = 'La contraseña debe tener al menos 8 caracteres';
       return;
     }
 
@@ -114,3 +110,4 @@ renderGoogle() {
     }
   }
 }
+ }

@@ -1,11 +1,12 @@
-/* 🔹 Fondo oscuro */
+/*  FONDO OSCURO (overlay) */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(3px); 
   z-index: 1999;
 }
 
@@ -16,17 +17,21 @@
   right: 0;
   transform: translateY(-50%);
   z-index: 2000;
-  background: #fff;
+
+  background: #ffffff;
   width: 360px;
   max-width: 90%;
   padding: 25px;
   border-radius: 12px 0 0 12px;
-  box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+
+  box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+
   font-family: Arial, sans-serif;
 
   animation: slideIn 0.3s ease forwards;
 }
 
+/*  ANIMACIÓN */
 @keyframes slideIn {
   from {
     transform: translateY(-50%) translateX(100%);
@@ -38,15 +43,22 @@
   }
 }
 
+/*  HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   font-weight: bold;
+  font-size: 16px;
 }
 
+/* BOTÓN CERRAR */
 .close-btn {
+  width: auto;
+  height: auto;
+  padding: 5px 8px;
+  font-size: 16px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -59,56 +71,8 @@
   transform: scale(1.2);
 }
 
-
+/*  TITULOS */
 .content h2 {
-  margin-bottom: 10px;
-}
-
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-
-.login-btn {
-  width: 100%;
-  padding: 10px;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.login-btn:hover {
-  background: #45a049;
-}
-
-
-.register-btn {
-  width: 100%;
-  padding: 10px;
-  background: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.register-btn:hover {
-  background: #006fe6;
-}
-
-
-.forgot {
-  display: block;
-  font-size: 13px;
-  color: #007BFF;
-  margin-top: 10px;
   margin-bottom: 15px;
   text-align: center;
 }
@@ -141,28 +105,33 @@ button {
   transition: all 0.2s;
 }
 
-.forgot:hover {
-  text-decoration: underline;
+/*  BOTÓN LOGIN */
+button:nth-of-type(1) {
+  background: #475e8a;
+  color: white;
 }
 
-
-.divider {
-  margin: 20px 0;
-  border-bottom: 1px solid #ddd;
-  position: relative;
+button:nth-of-type(1):hover {
+  background: #6743a0;
 }
 
-.divider span {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 0 10px;
-  font-size: 13px;
+/*  BOTÓN REGISTRO */
+button:nth-of-type(2) {
+  background: #007BFF;
+  color: white;
 }
 
+button:nth-of-type(2):hover {
+  background: #006fe6;
+}
 
+/*  ERROR */
+p {
+  text-align: center;
+  font-size: 14px;
+}
+
+/*  GOOGLE */
 #googleLogin,
 #googleRegister {
   display: flex;

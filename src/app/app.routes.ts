@@ -6,14 +6,16 @@ import { Employees } from './employees/employees';
 import { Schedule } from './schedule/schedule';
 import { Information } from './information/information';
 import { Profile } from './profile/profile';
+import { EmployeeCV } from './employee-cv/employee-cv';
 
 export const routes: Routes = [
-  { path: '', component: Lobby }, // ruta por defecto
+  { path: '', component: Lobby },
   { path: 'loggin', component: Loggin },
   { path: 'gallery', component: Gallery },
   { path: 'employees', component: Employees },
   { path: 'schedule', component: Schedule },
   { path: 'information', component: Information },
   { path: 'profile', component: Profile },
-  { path: '**', redirectTo: '' } // ruta comodín (si no existe)
+  { path: 'employeeCV/:id', component: EmployeeCV },
+  { path: '**', redirectTo: '' }
 ];

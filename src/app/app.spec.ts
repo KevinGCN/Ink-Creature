@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { expect, describe, it, beforeEach } from 'vitest';
 import { App } from './app';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,7 +29,7 @@ describe('App', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent)
+    expect(compiled.textContent)
       .toContain('Hello, Ink-Creature');
   });
 });

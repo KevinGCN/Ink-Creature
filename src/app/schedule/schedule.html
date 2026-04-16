@@ -1,157 +1,128 @@
 <div class="container">
 
-    <h1>Agenda tu Cita</h1>
+  <h1>Agenda tu Cita</h1>
+  <div class="content">
 
-    <!--  INPUT DE FECHA (SOLUCIÓN PRINCIPAL) -->
-    <input type="date" [(ngModel)]="fechaSeleccionada" style="z-index:9999; position:relative;">
+    <!-- Calendario (visual por ahora) -->
+    <div class="calendar">
+      <div class="calendar-header">
+        <select>
+          <option>Enero</option>
+          <option>Febrero</option>
+          <option>Marzo</option>
+          <option>Abril</option>
+          <option>Mayo</option>
+          <option>Junio</option>
+          <option>Julio</option>
+          <option>Agosto</option>
+          <option>Septiembre</option>
+          <option>Octubre</option>
+          <option>Noviembre</option>
+          <option>Diciembre</option>
+        </select>
+        <select>
+          <option>2026</option>
+          <option>2027</option>
+        </select>
+      </div>
 
-    <div class="content">
+      <div class="days">
+        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
+        <span>Th</span><span>Fr</span><span>Sa</span>
+      </div>
 
-        <!-- Calendario (visual por ahora) -->
-        <div class="calendar">
-            <div class="calendar-header">
-                <button>&lt;</button>
-                <select>
-                    <option>Sep</option>
-                </select>
-                <select>
-                    <option>2025</option>
-                </select>
-                <button>&gt;</button>
-            </div>
-
-            <div class="days">
-                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
-                <span>Th</span><span>Fr</span><span>Sa</span>
-            </div>
-
-            <div class="dates">
-                <span (click)="seleccionarFecha(1)" [class.active]="fechaSeleccionada === 1">1</span>
-                <span (click)="seleccionarFecha(2)" [class.active]="fechaSeleccionada === 2">2</span>
-                <span (click)="seleccionarFecha(3)" [class.active]="fechaSeleccionada === 3">3</span>
-                <span (click)="seleccionarFecha(4)" [class.active]="fechaSeleccionada === 4">4</span>
-                <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 5">5</span>
-                <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 6">6</span>
-                <span (click)="seleccionarFecha(7)" [class.active]="fechaSeleccionada === 7">7</span>
-                <span (click)="seleccionarFecha(8)" [class.active]="fechaSeleccionada === 8">8</span>
-                <span (click)="seleccionarFecha(9)" [class.active]="fechaSeleccionada === 9">9</span>
-                <span (click)="seleccionarFecha(10)" [class.active]="fechaSeleccionada === 10">10</span>
-                <span (click)="seleccionarFecha(11)" [class.active]="fechaSeleccionada === 11">11</span>
-                <span (click)="seleccionarFecha(12)" [class.active]="fechaSeleccionada === 12">12</span>
-                <span (click)="seleccionarFecha(13)" [class.active]="fechaSeleccionada === 13">13</span>
-                <span (click)="seleccionarFecha(14)" [class.active]="fechaSeleccionada === 14">14</span>
-                <span (click)="seleccionarFecha(15)" [class.active]="fechaSeleccionada === 15">15</span>
-                <span (click)="seleccionarFecha(16)" [class.active]="fechaSeleccionada === 16">16</span>
-                <span (click)="seleccionarFecha(17)" [class.active]="fechaSeleccionada === 17">17</span>
-                <span (click)="seleccionarFecha(18)" [class.active]="fechaSeleccionada === 18">18</span>
-                <span (click)="seleccionarFecha(19)" [class.active]="fechaSeleccionada === 19">19</span>
-                <span (click)="seleccionarFecha(20)" [class.active]="fechaSeleccionada === 20">20</span>
-                <span (click)="seleccionarFecha(21)" [class.active]="fechaSeleccionada === 21">21</span>
-                <span (click)="seleccionarFecha(22)" [class.active]="fechaSeleccionada === 22">22</span>
-                <span (click)="seleccionarFecha(23)" [class.active]="fechaSeleccionada === 23">23</span>
-                <span (click)="seleccionarFecha(24)" [class.active]="fechaSeleccionada === 24">24</span>
-                <span (click)="seleccionarFecha(25)" [class.active]="fechaSeleccionada === 25">25</span>
-                <span (click)="seleccionarFecha(26)" [class.active]="fechaSeleccionada === 26">26</span>
-                <span (click)="seleccionarFecha(27)" [class.active]="fechaSeleccionada === 27">27</span>
-                <span (click)="seleccionarFecha(28)" [class.active]="fechaSeleccionada === 28">28</span>
-                <span (click)="seleccionarFecha(29)" [class.active]="fechaSeleccionada === 29">29</span>
-                <span (click)="seleccionarFecha(30)" [class.active]="fechaSeleccionada === 30">30</span>
-            </div>
-        </div>
-
-        <!-- Horarios -->
-        <div class="hours">
-            <button 
-              (click)="seleccionarHora('8:00 AM')" 
-              [class.selected]="horaSeleccionada === '8:00 AM'">
-              8:00 AM
-            </button>
-
-            <button (click)="seleccionarHora('8:30 AM')" 
-              [class.selected]="horaSeleccionada === '8:30 AM'">
-              8:30 AM
-            </button>
-
-            <button (click)="seleccionarHora('9:00 AM')" 
-              [class.selected]="horaSeleccionada === '9:00 AM'">
-              9:00 AM
-            </button>
-
-            <button (click)="seleccionarHora('9:30 AM')" 
-              [class.selected]="horaSeleccionada === '9:30 AM'">
-              9:30 AM
-            </button>
-
-            <button (click)="seleccionarHora('10:00 AM')" 
-              [class.selected]="horaSeleccionada === '10:00 AM'">
-              10:00 AM
-            </button>
-
-            <button (click)="seleccionarHora('2:00 PM')" 
-              [class.selected]="horaSeleccionada === '2:00 PM'">
-              2:00 PM
-            </button>
-
-            <button (click)="seleccionarHora('2:30 PM')" 
-              [class.selected]="horaSeleccionada === '2:30 PM'">
-              2:30 PM
-            </button>
-
-            <button (click)="seleccionarHora('3:00 PM')" 
-              [class.selected]="horaSeleccionada === '3:00 PM'">
-              3:00 PM
-            </button>
-        </div>
-
-        <!-- Tatuadores -->
-        <div class="artists">
-            <div 
-              (click)="seleccionarTatuador('Tatuador 1')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 1'">
-              Tatuador 1
-            </div>
-
-            <div (click)="seleccionarTatuador('Tatuador 2')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 2'">
-              Tatuador 2
-            </div>
-
-            <div (click)="seleccionarTatuador('Tatuador 3')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 3'">
-              Tatuador 3
-            </div>
-
-            <div (click)="seleccionarTatuador('Tatuador 4')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 4'">
-              Tatuador 4
-            </div>
-
-            <div (click)="seleccionarTatuador('Tatuador 5')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 5'">
-              Tatuador 5
-            </div>
-
-            <div (click)="seleccionarTatuador('Tatuador 6')" 
-              [class.selected]="tatuadorSeleccionado === 'Tatuador 6'">
-              Tatuador 6
-            </div>
-        </div>
-
+      <div class="dates">
+        <span (click)="seleccionarFecha(1)" [class.active]="fechaSeleccionada === 1">1</span>
+        <span (click)="seleccionarFecha(2)" [class.active]="fechaSeleccionada === 2">2</span>
+        <span (click)="seleccionarFecha(3)" [class.active]="fechaSeleccionada === 3">3</span>
+        <span (click)="seleccionarFecha(4)" [class.active]="fechaSeleccionada === 4">4</span>
+        <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 5">5</span>
+        <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 6">6</span>
+        <span (click)="seleccionarFecha(7)" [class.active]="fechaSeleccionada === 7">7</span>
+        <span (click)="seleccionarFecha(8)" [class.active]="fechaSeleccionada === 8">8</span>
+        <span (click)="seleccionarFecha(9)" [class.active]="fechaSeleccionada === 9">9</span>
+        <span (click)="seleccionarFecha(10)" [class.active]="fechaSeleccionada === 10">10</span>
+        <span (click)="seleccionarFecha(11)" [class.active]="fechaSeleccionada === 11">11</span>
+        <span (click)="seleccionarFecha(12)" [class.active]="fechaSeleccionada === 12">12</span>
+        <span (click)="seleccionarFecha(13)" [class.active]="fechaSeleccionada === 13">13</span>
+        <span (click)="seleccionarFecha(14)" [class.active]="fechaSeleccionada === 14">14</span>
+        <span (click)="seleccionarFecha(15)" [class.active]="fechaSeleccionada === 15">15</span>
+        <span (click)="seleccionarFecha(16)" [class.active]="fechaSeleccionada === 16">16</span>
+        <span (click)="seleccionarFecha(17)" [class.active]="fechaSeleccionada === 17">17</span>
+        <span (click)="seleccionarFecha(18)" [class.active]="fechaSeleccionada === 18">18</span>
+        <span (click)="seleccionarFecha(19)" [class.active]="fechaSeleccionada === 19">19</span>
+        <span (click)="seleccionarFecha(20)" [class.active]="fechaSeleccionada === 20">20</span>
+        <span (click)="seleccionarFecha(21)" [class.active]="fechaSeleccionada === 21">21</span>
+        <span (click)="seleccionarFecha(22)" [class.active]="fechaSeleccionada === 22">22</span>
+        <span (click)="seleccionarFecha(23)" [class.active]="fechaSeleccionada === 23">23</span>
+        <span (click)="seleccionarFecha(24)" [class.active]="fechaSeleccionada === 24">24</span>
+        <span (click)="seleccionarFecha(25)" [class.active]="fechaSeleccionada === 25">25</span>
+        <span (click)="seleccionarFecha(26)" [class.active]="fechaSeleccionada === 26">26</span>
+        <span (click)="seleccionarFecha(27)" [class.active]="fechaSeleccionada === 27">27</span>
+        <span (click)="seleccionarFecha(28)" [class.active]="fechaSeleccionada === 28">28</span>
+        <span (click)="seleccionarFecha(29)" [class.active]="fechaSeleccionada === 29">29</span>
+        <span (click)="seleccionarFecha(30)" [class.active]="fechaSeleccionada === 30">30</span>
+      </div>
     </div>
 
-    <!-- Botones -->
-    <div class="actions">
-        <button class="delete">Eliminar</button>
-        <button class="reserve" (click)="reservar()">Reservar</button>
+    <!-- Horarios -->
+    <div class="hours">
+      <button (click)="seleccionarHora('8:00 AM')" [class.selected]="horaSeleccionada === '8:00 AM'">
+        8:00 AM
+      </button>
+
+      <button (click)="seleccionarHora('8:30 AM')" [class.selected]="horaSeleccionada === '8:30 AM'">
+        8:30 AM
+      </button>
+
+      <button (click)="seleccionarHora('9:00 AM')" [class.selected]="horaSeleccionada === '9:00 AM'">
+        9:00 AM
+      </button>
+
+      <button (click)="seleccionarHora('9:30 AM')" [class.selected]="horaSeleccionada === '9:30 AM'">
+        9:30 AM
+      </button>
+
+      <button (click)="seleccionarHora('10:00 AM')" [class.selected]="horaSeleccionada === '10:00 AM'">
+        10:00 AM
+      </button>
+
+      <button (click)="seleccionarHora('2:00 PM')" [class.selected]="horaSeleccionada === '2:00 PM'">
+        2:00 PM
+      </button>
+
+      <button (click)="seleccionarHora('2:30 PM')" [class.selected]="horaSeleccionada === '2:30 PM'">
+        2:30 PM
+      </button>
+
+      <button (click)="seleccionarHora('3:00 PM')" [class.selected]="horaSeleccionada === '3:00 PM'">
+        3:00 PM
+      </button>
     </div>
 
-    <hr>
-
-    <!-- Lista de citas -->
-    <div *ngFor="let cita of citas">
-        <p>
-            {{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}
-        </p>
+    <!-- Tatuadores -->
+    <div class="artists">
+      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado.name)"
+        [class.selected]="tatuadorSeleccionado === empleado.name">
+        {{ empleado.name }}
+      </div>
     </div>
+
+  </div>
+
+  <!-- Botones -->
+  <div class="actions">
+    <button class="delete">Eliminar</button>
+    <button class="reserve" (click)="reservar()">Reservar</button>
+  </div>
+
+  <hr>
+
+  <!-- Lista de citas -->
+  <div *ngFor="let cita of citas">
+    <p>
+      {{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}
+    </p>
+  </div>
 
 </div>

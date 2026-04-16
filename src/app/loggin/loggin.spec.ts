@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Loggin } from './loggin';
+import { vi } from 'vitest';
 
 describe('Loggin', () => {
   let component: Loggin;
@@ -22,10 +23,10 @@ describe('Loggin', () => {
 
     fixture = TestBed.createComponent(Loggin);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

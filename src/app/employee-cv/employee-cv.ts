@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 
 interface Empleado {
   id: number;
@@ -8,19 +8,23 @@ interface Empleado {
   cargo: string;
   especialidad: string;
   experiencia: number;
+  descripcion: string;
   foto: string;
   estrellas: number;
 }
 
 @Component({
-  selector: 'app-employees',
+  selector: 'app-employee-cv',
   imports: [CommonModule, RouterLink],
   standalone: true,
-  templateUrl: './employees.html',
-  styleUrl: './employees.css',
+  templateUrl: './employee-cv.html',
+  styleUrl: './employee-cv.css',
 })
-export class Employees {
+export class EmployeeCV implements OnInit {
 
+  empleado: Empleado | null = null;
+
+  // Datos de los tatuadores — llena el campo descripcion
   empleados: Empleado[] = [
     {
       id: 1,
@@ -28,7 +32,8 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Estilo Anime',
       experiencia: 5,
-      foto: 'image/goku.webp',
+      descripcion: 'Goku le gana',
+      foto: 'image/tatuadora.png',
       estrellas: 5
     },
     {
@@ -37,7 +42,8 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Realismo y Fantasía Oscura',
       experiencia: 4,
-      foto: 'image/ladymaria.png',
+      descripcion: 'Me gusta el estilo de los souls, si tienes algo en mente escribeme,',
+      foto: 'image/tatuador.png',
       estrellas: 5
     },
     {
@@ -46,7 +52,8 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Arte Fantástico y de videojuegos',
       experiencia: 4,
-      foto: 'image/mercy.png',
+      descripcion: 'Soy bueno dandole caracteristicas unicas a los personajes',
+      foto: 'image/tatuador.png',
       estrellas: 4
     },
     {
@@ -55,7 +62,8 @@ export class Employees {
       cargo: 'Tatuadora',
       especialidad: 'Minimalismo',
       experiencia: 3,
-      foto: 'image/rem.png',
+      descripcion: 'KasuGOD > Basuro',
+      foto: 'image/tatuadora.png',
       estrellas: 5
     },
     {
@@ -64,19 +72,28 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Chivi',
       experiencia: 6,
-      foto: 'image/bendy.jpg',
+      descripcion: 'Soy experto en hacer arte lindo y adorable',
+      foto: 'image/tatuador.png',
       estrellas: 4
     },
     {
       id: 6,
       nombre: 'Leonardo Taza',
-      cargo: 'Tatuadora',
+      cargo: 'Tatuador',
       especialidad: 'Warhammer 40k',
       experiencia: 3,
-      foto: 'image/sorodita.png',
+      descripcion: 'Quieres el tatuaje de una monja de batalla con lanzallamas?',
+      foto: 'image/tatuador.png',
       estrellas: 5
     }
   ];
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.empleado = this.empleados.find(e => e.id === id) || null;
+  }
 
   obtenerEstrellas(cantidad: number): string {
     return '★'.repeat(cantidad) + '☆'.repeat(5 - cantidad);

@@ -28,7 +28,7 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Estilo Anime',
       experiencia: 5,
-      foto: 'image/goku.webp',
+      foto: 'image/DBZ.jpg',
       estrellas: 5
     },
     {
@@ -64,13 +64,13 @@ export class Employees {
       cargo: 'Tatuador',
       especialidad: 'Chivi',
       experiencia: 6,
-      foto: 'image/bendy.jpg',
+      foto: 'image/kuromi.jpg',
       estrellas: 4
     },
     {
       id: 6,
       nombre: 'Leonardo Taza',
-      cargo: 'Tatuadora',
+      cargo: 'Tatuador',
       especialidad: 'Warhammer 40k',
       experiencia: 3,
       foto: 'image/sorodita.png',

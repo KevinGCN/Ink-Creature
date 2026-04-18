@@ -1,7 +1,7 @@
 /* MAINBAR */
 .sidebar {
   border-radius: 15px;
-  width: 200px;
+  width: 170px;
   height: 100%;
   background-color: #23303d;
   transition: width 0.3s ease;
@@ -15,8 +15,13 @@
   border: none;
   color: white;
   font-size: 15px;
-  padding: 10px 25%;
+  padding: 10px 46%;
   cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: #2d4a68;
+  border-radius: 5px;
 }
 
 /* LINKS */
@@ -26,7 +31,7 @@
   gap: 10px;
   color: white;
   text-decoration: none;
-  padding: 25%;
+  padding: 50px 15%;
   white-space: nowrap;
 }
 
@@ -48,7 +53,7 @@
 }
 
 .sidebar.collapsed .toggle-btn {
-  font-size: 35px;
+  font-size: 38px;
 }
 
 .sidebar.collapsed a {

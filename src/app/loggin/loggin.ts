@@ -22,7 +22,7 @@ export class Loggin {
   password = '';
   mensajeError = '';
 
-  constructor(@Inject(AuthService) private auth: AuthService) {}
+  constructor(@Inject(AuthService) private auth: AuthService) { }
 
   cerrarModal() {
     this.cerrar.emit();
@@ -36,10 +36,9 @@ export class Loggin {
     this.modoRegistro = false;
   }
 
-  iniciarSesion() {
+  async iniciarSesion() {
     this.mensajeError = '';
-    const ok = this.auth.login(this.correo, this.password);
-
+    const ok = await this.auth.login(this.correo, this.password);
     if (ok) {
       alert('Login exitoso');
       this.cerrarModal();

@@ -1,6 +1,6 @@
 <div class="profile-container">
 
-  
+
   <div class="profile-header">
     <h2>Mi Perfil</h2>
   </div>
@@ -15,14 +15,14 @@
       <input type="file" (change)="cambiarFoto($event)">
     </div>
 
-    <div class="datos">
-      <p><b>Nombre:</b> {{ usuario?.nombre }}</p>
-      <p><b>Email:</b> {{ usuario?.correo }}</p>
+    <div class="datos" *ngIf="usuario">
+      <p><b>Nombre:</b> {{ usuario?.nombre || usuario?.name }}</p>
+      <p><b>Email:</b> {{ usuario?.correo || usuario?.email }}</p>
     </div>
 
   </div>
 
- 
+
   <div class="acciones">
     <button (click)="irAgenda()">Modificar cita</button>
   </div>

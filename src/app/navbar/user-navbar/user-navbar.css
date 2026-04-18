@@ -1,5 +1,5 @@
 .userbar {
-  background-color: #6aaef3;
+  background-color: #23303d;
   border-radius: 15px 15px 0 15px;
   position: relative;
 }
@@ -23,7 +23,7 @@
 }
 
 .userbar button:hover {
-  background-color: #82c0ff;
+  background-color: #2d4a68;
 }
 .menu-ajustes {
   position: relative; 

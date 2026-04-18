@@ -117,12 +117,9 @@
   </div>
 
   <hr>
-
-  <!-- Lista de citas -->
-  <div *ngFor="let cita of citas">
-    <p>
-      {{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}
-    </p>
+  <div>
+    <div *ngFor="let cita of citas">
+      <p>{{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}</p>
+    </div>
   </div>
-
 </div>

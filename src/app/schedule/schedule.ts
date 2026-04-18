@@ -51,14 +51,10 @@ export class Schedule implements OnInit {
   }
 
   reservar() {
-
-    /* Verifica sesión iniciada */
     if (!this.auth.estaLogueado()) {
       alert('Debes iniciar sesión antes de reservar');
       return;
     }
-
-    /* Verifica datos */
     if (
       !this.fechaSeleccionada ||
       !this.horaSeleccionada ||
@@ -68,7 +64,7 @@ export class Schedule implements OnInit {
       return;
     }
 
-    /* Verifica horario ocupado */
+    const usuario = this.auth.obtenerUsuario();
     const existe = this.citaService.getCitas().find(c =>
       c.fecha === this.fechaSeleccionada &&
       c.hora === this.horaSeleccionada &&
@@ -80,21 +76,21 @@ export class Schedule implements OnInit {
       return;
     }
 
-    /* Crear cita */
     const nuevaCita = {
       id: Date.now(),
       fecha: this.fechaSeleccionada,
       hora: this.horaSeleccionada,
-      tatuador: this.tatuadorSeleccionado
+      tatuador: this.tatuadorSeleccionado,
+      correo: usuario.correo
     };
 
     this.citaService.crearCita(nuevaCita);
-
     alert('Cita reservada con éxito');
     console.log('Cita creada', nuevaCita);
   }
 
   get citas() {
-    return this.citaService.getCitas();
+    const correo = this.auth.obtenerUsuario().correo;
+    return this.citaService.getCitas().filter(c => c.correo === correo);
   }
 }

@@ -73,7 +73,7 @@ export class EmployeeCV implements OnInit {
       especialidad: 'Chivi',
       experiencia: 6,
       descripcion: 'Soy experto en hacer arte lindo y adorable',
-      foto: 'image/Sebastián Morales.png',
+      foto: 'image/Sebastián Morales.jpg',
       estrellas: 4
     },
     {

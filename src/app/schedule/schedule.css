@@ -1,23 +1,18 @@
-/* Fondo general */
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
-  margin: 0;
-  padding: 20px;
-  color: #16324f;
-  min-height: 100vh;
-}
-
-/* Contenedor */
+/* Contenedor principal */
 .container {
   max-width: 1100px;
   margin: auto;
-  background: rgba(255, 255, 255, 0.92);
   padding: 25px;
   border-radius: 18px;
-  border: 1px solid #d6e4ff;
-  box-shadow: 0 8px 20px rgba(44, 123, 229, 0.15);
+  min-height: calc(100vh - 40px);
+
+  background: linear-gradient(135deg, #0b1120, #111827, #1e293b);
+  color: #f8fafc;
+
+  border: 1px solid #334155;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
   backdrop-filter: blur(4px);
+  font-family: Arial, sans-serif;
 }
 
 /* Título */
@@ -41,12 +36,17 @@ h1 {
 }
 
 /* Calendario */
-.calendar {
-  background: #eff6ff;
+.calendar,
+.artists {
+  background: #1e293b;
   padding: 18px;
   border-radius: 15px;
+  border: 1px solid #334155;
+}
+
+/* Calendario */
+.calendar {
   min-width: 320px;
-  border: 1px solid #bfdbfe;
   flex: 1;
 }
 
@@ -60,11 +60,12 @@ h1 {
 .calendar-header select {
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid #93c5fd;
-  background: white;
-  color: #16324f;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #f8fafc;
 }
 
+/* Días */
 .days,
 .dates {
   display: grid;
@@ -75,19 +76,18 @@ h1 {
 
 .days span {
   font-weight: bold;
-  color: #2563eb;
+  color: #60a5fa;
 }
 
 .dates span {
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
-  background: #dbeafe;
-  transition: 0.3s;
+  background: #334155;
 }
 
 .dates span:hover {
-  background: #93c5fd;
+  background: #475569;
 }
 
 .dates .active {
@@ -104,54 +104,42 @@ h1 {
 
 .hours button {
   padding: 10px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #334155;
   border-radius: 10px;
-  background: white;
-  color: #16324f;
+  background: #1e293b;
+  color: white;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .hours button:hover:not(.selected) {
-  background: #dbeafe;
+  background: #334155;
 }
 
 .hours button.selected {
-  background: #3b82f6 !important;
-  color: white !important;
+  background: #2563eb !important;
   font-weight: bold;
 }
 
 /* Tatuadores */
 .artists {
   flex: 1;
-  background: #eff6ff;
-  padding: 18px;
-  border-radius: 15px;
-  border: 1px solid #bfdbfe;
   min-width: 220px;
 }
 
 .artist {
   padding: 12px;
-  border-bottom: 1px solid #bfdbfe;
+  border-bottom: 1px solid #334155;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.artist:last-child {
-  border-bottom: none;
 }
 
 .artist:hover {
-  background: #dbeafe;
+  background: #334155;
 }
 
 .artist.selected {
   background: #2563eb;
   color: white;
   border-radius: 8px;
-  font-weight: bold;
 }
 
 /* Botones */
@@ -169,32 +157,26 @@ h1 {
   border-radius: 22px;
   color: white;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .cancelar {
-  background: #60a5fa;
+  background: #475569;
 }
 
 .reserve {
   background: #2563eb;
 }
 
-.cancelar:hover,
-.reserve:hover {
-  transform: translateY(-2px);
-}
-
-/* Lista de citas */
+/* Citas */
 hr {
   margin: 25px 0;
   border: none;
-  border-top: 1px solid #bfdbfe;
+  border-top: 1px solid #334155;
 }
 
 p {
-  background: #eff6ff;
+  background: #1e293b;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid #334155;
 }

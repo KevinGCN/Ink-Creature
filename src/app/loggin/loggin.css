@@ -1,16 +1,13 @@
-/*  FONDO OSCURO (overlay) */
+/* FONDO OSCURO */
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(3px); 
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
   z-index: 1999;
 }
 
-/*  CONTENEDOR PRINCIPAL */
+/* CONTENEDOR */
 .login-container {
   position: fixed;
   top: 50%;
@@ -18,123 +15,166 @@
   transform: translateY(-50%);
   z-index: 2000;
 
-  background: #ffffff;
-  width: 360px;
-  max-width: 90%;
-  padding: 25px;
-  border-radius: 12px 0 0 12px;
+  width: 380px;
+  max-width: 92%;
+  padding: 26px;
 
-  box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+  background: rgba(255, 255, 255, 0.96);
+  border-left: 1px solid #dbeafe;
+  border-radius: 18px 0 0 18px;
 
+  box-shadow: -12px 0 30px rgba(59, 130, 246, 0.15);
   font-family: Arial, sans-serif;
 
-  animation: slideIn 0.3s ease forwards;
+  animation: slideIn 0.35s ease forwards;
 }
 
-/*  ANIMACIÓN */
+/* ANIMACIÓN */
 @keyframes slideIn {
   from {
     transform: translateY(-50%) translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(-50%) translateX(0);
     opacity: 1;
   }
 }
 
-/*  HEADER */
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  font-weight: bold;
-  font-size: 16px;
+  margin-bottom: 22px;
 }
 
-/* BOTÓN CERRAR */
+.header span {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2563eb;
+  letter-spacing: 0.5px;
+}
+
+/* CERRAR */
 .close-btn {
   width: auto;
-  height: auto;
-  padding: 5px 8px;
-  font-size: 16px;
-  background: transparent;
+  padding: 6px 10px;
   border: none;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #2563eb;
   cursor: pointer;
-  color: #333;
-  line-height: 1;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  font-size: 16px;
+  transition: 0.3s;
 }
+
 .close-btn:hover {
-  transform: scale(1.2);
+  background: #dbeafe;
+  transform: scale(1.08);
 }
 
-/*  TITULOS */
+/* TITULOS */
 .content h2 {
-  margin-bottom: 15px;
   text-align: center;
+  margin-bottom: 18px;
+  color: #16324f;
+  font-size: 26px;
 }
 
-/*  INPUTS */
+/* INPUTS */
 input {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  transition: border 0.2s, box-shadow 0.2s;
+  padding: 12px 14px;
+  margin: 8px 0 14px;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+  background: #f8fbff;
+  color: #16324f;
+  box-sizing: border-box;
+  transition: 0.3s;
 }
 
 input:focus {
-  border-color: #6aaef3;
-  box-shadow: 0 0 5px rgba(106,174,243,0.5);
   outline: none;
+  border-color: #60a5fa;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
 }
 
-/*  BOTONES GENERALES */
+/* BOTONES GENERALES */
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 8px;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.2s;
+  font-size: 15px;
+  transition: 0.3s;
 }
 
-/*  BOTÓN LOGIN */
+/* BOTÓN PRINCIPAL */
 button:nth-of-type(1) {
-  background: #475e8a;
+  background: linear-gradient(to right, #3b82f6, #60a5fa);
   color: white;
+  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.18);
 }
 
 button:nth-of-type(1):hover {
-  background: #6743a0;
+  transform: translateY(-2px);
 }
 
-/*  BOTÓN REGISTRO */
+/* BOTÓN SECUNDARIO */
 button:nth-of-type(2) {
-  background: #007BFF;
-  color: white;
+  background: #eef6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
 }
 
 button:nth-of-type(2):hover {
-  background: #006fe6;
+  background: #dbeafe;
 }
 
-/*  ERROR */
+/* MENSAJE ERROR */
 p {
   text-align: center;
   font-size: 14px;
+  margin: 8px 0;
 }
 
-/*  GOOGLE */
+/* GOOGLE */
 #googleLogin,
 #googleRegister {
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #f8fbff;
+  border: 1px solid #dbeafe;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .login-container {
+    right: 50%;
+    top: 50%;
+    transform: translate(50%, -50%);
+    border-radius: 18px;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translate(120%, -50%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translate(50%, -50%);
+      opacity: 1;
+    }
+  }
 }

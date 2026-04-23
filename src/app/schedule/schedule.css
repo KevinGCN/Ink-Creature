@@ -6,11 +6,11 @@
   border-radius: 18px;
   min-height: calc(100vh - 40px);
 
-  background: linear-gradient(135deg, #0b1120, #111827, #1e293b);
-  color: #f8fafc;
+  background: linear-gradient(135deg, #F4F1F7, #E9E3F0, #D7D1DB);
+  color: #2F2F2F;
 
-  border: 1px solid #334155;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+  border: 1px solid #E0DCE6;
+  box-shadow: 0 8px 20px rgba(94, 89, 107, 0.18);
   backdrop-filter: blur(4px);
   font-family: Arial, sans-serif;
 }
@@ -18,7 +18,7 @@
 /* Título */
 h1 {
   text-align: center;
-  background: linear-gradient(to right, #2563eb, #60a5fa);
+  background: linear-gradient(to right, #5E596B, #C9BEDD);
   color: white;
   padding: 15px;
   border-radius: 12px;
@@ -38,10 +38,10 @@ h1 {
 /* Calendario */
 .calendar,
 .artists {
-  background: #1e293b;
+  background: #FFFFFF;
   padding: 18px;
   border-radius: 15px;
-  border: 1px solid #334155;
+  border: 1px solid #E0DCE6;
 }
 
 /* Calendario */
@@ -60,9 +60,9 @@ h1 {
 .calendar-header select {
   padding: 8px;
   border-radius: 8px;
-  border: 1px solid #475569;
-  background: #0f172a;
-  color: #f8fafc;
+  border: 1px solid #E0DCE6;
+  background: #F4F1F7;
+  color: #2F2F2F;
 }
 
 /* Días */
@@ -76,22 +76,22 @@ h1 {
 
 .days span {
   font-weight: bold;
-  color: #60a5fa;
+  color: #5E596B;
 }
 
 .dates span {
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
-  background: #334155;
+  background: #F4F1F7;
 }
 
 .dates span:hover {
-  background: #475569;
+  background: #E9E3F0;
 }
 
 .dates .active {
-  background: #2563eb;
+  background: #5E596B;
   color: white;
 }
 
@@ -104,20 +104,21 @@ h1 {
 
 .hours button {
   padding: 10px;
-  border: 1px solid #334155;
+  border: 1px solid #E0DCE6;
   border-radius: 10px;
-  background: #1e293b;
-  color: white;
+  background: #FFFFFF;
+  color: #2F2F2F;
   cursor: pointer;
 }
 
 .hours button:hover:not(.selected) {
-  background: #334155;
+  background: #F4F1F7;
 }
 
 .hours button.selected {
-  background: #2563eb !important;
+  background: #5E596B !important;
   font-weight: bold;
+  color: white;
 }
 
 /* Tatuadores */
@@ -128,16 +129,16 @@ h1 {
 
 .artist {
   padding: 12px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid #E0DCE6;
   cursor: pointer;
 }
 
 .artist:hover {
-  background: #334155;
+  background: #F4F1F7;
 }
 
 .artist.selected {
-  background: #2563eb;
+  background: #5E596B;
   color: white;
   border-radius: 8px;
 }
@@ -160,23 +161,23 @@ h1 {
 }
 
 .cancelar {
-  background: #475569;
+  background: #8E8899;
 }
 
 .reserve {
-  background: #2563eb;
+  background: #5E596B;
 }
 
 /* Citas */
 hr {
   margin: 25px 0;
   border: none;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #E0DCE6;
 }
 
 p {
-  background: #1e293b;
+  background: #FFFFFF;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #334155;
+  border: 1px solid #E0DCE6;
 }

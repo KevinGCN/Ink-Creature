@@ -3,7 +3,7 @@
   border-radius: 15px;
   width: 170px;
   height: 100%;
-  background-color: #23303d;
+  background-color: #E9E3F0;
   transition: width 0.3s ease;
   position: relative;
   z-index: 1000;
@@ -13,14 +13,14 @@
 .toggle-btn {
   background: none;
   border: none;
-  color: white;
+  color: #4B4453;
   font-size: 15px;
   padding: 10px 46%;
   cursor: pointer;
 }
 
 .toggle-btn:hover {
-  background-color: #2d4a68;
+  background-color: #D7D1DB;
   border-radius: 5px;
 }
 
@@ -29,14 +29,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: white;
+  color: #2F2F2F;
   text-decoration: none;
   padding: 50px 15%;
   white-space: nowrap;
 }
 
 .sidebar a:hover {
-  background-color: #34495e;
+  background-color: #D7D1DB;
 }
 
 /*=======ESTADO COLAPSADO========*/

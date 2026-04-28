@@ -1,4 +1,38 @@
-.review-card{
-  border: 1px solid black;
+.review-card {
+  background: linear-gradient(135deg, #FFFFFF, #F4F1F7);
+  border: 1px solid #E0DCE6;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  color: #2F2F2F;
+
+  display: flex;
+  flex-direction: column;
   gap: 10px;
+
+  box-shadow: 0 6px 15px rgba(94, 89, 107, 0.10);
+  transition: 0.3s;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(94, 89, 107, 0.18);
+}
+
+.review-card h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #4B4453; 
+}
+
+.review-card p {
+  margin: 0;
+  line-height: 1.5;
+  color: #6B6578; 
+}
+
+.review-card .stars {
+  color: #5E596B; 
+  font-size: 18px;
+  letter-spacing: 2px;
 }

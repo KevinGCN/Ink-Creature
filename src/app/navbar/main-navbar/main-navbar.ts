@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
-
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-main-navbar',
@@ -12,8 +11,12 @@ import { RouterLink } from '@angular/router';
 export class MainNavbar {
   gridTemplateColumnsLayout = 'grid-template-columns:0px 1fr;';
   collapsed = true;
+  
+  constructor(public auth: AuthService) {}
+
   toggleNavbar(){
     this.collapsed = !this.collapsed;
-     this.gridTemplateColumnsLayout = 'grid-template-columns:0px 1fr;'; // Cambia el color al ejecutar
+    this.gridTemplateColumnsLayout = 'grid-template-columns:0px 1fr;';
   }
+}
 }

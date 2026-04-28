@@ -1,50 +1,49 @@
 <div class="profile-container">
 
-  
-  <div class="profile-header">
-    <h2>Mi Perfil</h2>
-  </div>
+   <div class="profile-header">
+     <h2>Mi Perfil</h2>
+   </div>
 
-  <!-- INFO USUARIO -->
-  <div class="profile-info">
+   <!-- INFO USUARIO -->
+   <div class="profile-info">
 
-    <div class="foto">
-      <img *ngIf="foto" [src]="foto">
-      <div *ngIf="!foto" class="placeholder">Sin foto</div>
+     <div class="foto">
+       <img *ngIf="foto" [src]="foto">
+       <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
-      <input type="file" (change)="cambiarFoto($event)">
-    </div>
+       <input type="file" (change)="cambiarFoto($event)">
+     </div>
 
-    <div class="datos">
-       <p><strong>Nombre:</strong> {{ usuario?.nombre }}</p>
-      <p><strong>Email:</strong> {{ usuario?.email }}</p>
-    </div>
+     <div class="datos">
+       <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }}</p>
+       <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
+     </div>
 
-  </div>
+   </div>
 
- 
-  <div class="acciones">
-    <button (click)="irAgenda()">Modificar cita</button>
-  </div>
 
-  <!-- CITAS -->
-  <div class="citas">
-    <h3>Mis Citas</h3>
+   <div class="acciones">
+     <button (click)="irAgenda()">Modificar cita</button>
+   </div>
 
-    <div *ngIf="citas.length === 0" class="empty">
-      No tienes citas registradas
-    </div>
+   <!-- CITAS -->
+   <div class="citas">
+     <h3>Mis Citas</h3>
 
-    <div class="cita-card" *ngFor="let cita of citas">
-      <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-      <p><strong>Hora:</strong> {{ cita.hora }}</p>
-      <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
+     <div *ngIf="citas.length === 0" class="empty">
+       No tienes citas registradas
+     </div>
 
-      <button class="eliminar" (click)="eliminar(cita.id)">
-        Eliminar
-      </button>
-    </div>
+     <div class="cita-card" *ngFor="let cita of citas">
+       <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
+       <p><strong>Hora:</strong> {{ cita.hora }}</p>
+       <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
 
-  </div>
+       <button class="eliminar" (click)="eliminar(cita.id)">
+         Eliminar
+       </button>
+     </div>
 
-</div>
+   </div>
+
+ </div>

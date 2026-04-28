@@ -1,5 +1,5 @@
 .userbar {
-  background-color: #6aaef3;
+  background-color: #E9E3F0;
   border-radius: 15px 15px 0 15px;
   position: relative;
 }
@@ -15,15 +15,16 @@
 .userbar button {
   background: none;
   border: none;
-  color: white;
+  color: #4B4453;
   cursor: pointer;
+  font-size: 15px;
   padding: 8px 12px;
   border-radius: 10px;
   transition: background 0.2s;
 }
 
 .userbar button:hover {
-  background-color: #82c0ff;
+  background-color: #D7D1DB;
 }
 .menu-ajustes {
   position: relative; 
@@ -33,7 +34,7 @@
   top: 45px; /* debajo del botón */
   right: 0;
 
-  background: #1e1e1e;
+  background: #ffffff;
   border-radius: 10px;
   padding: 10px;
 
@@ -66,5 +67,5 @@
 }
 
 .dropdown button:hover {
-  background: #333;
+  background: #F4F1F7;
 }

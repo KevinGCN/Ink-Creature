@@ -8,8 +8,7 @@ import { AuthService } from '../services/auth';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './loggin.html',
-  styleUrls: ['./loggin.css'],
-  providers: [AuthService],
+  styleUrls: ['./loggin.css']
 })
 export class Loggin {
 

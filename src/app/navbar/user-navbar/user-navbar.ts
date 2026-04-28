@@ -13,8 +13,6 @@ import { Loggin } from '../../loggin/loggin';
 })
 export class UserNavbar {
   mostrarLogin = false;
-
-  mostrarLogin = false;
   mostrarAjustes = false;
 
   constructor(

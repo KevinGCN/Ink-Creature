@@ -1,8 +1,11 @@
-// gallery.spec.ts - Versión corregida
+// gallery.spec.ts 
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Gallery } from './gallery';
 import { CommonModule } from '@angular/common';
+import { describe, it, expect, beforeEach } from 'vitest';
+
+declare const spyOn: any;
 
 describe('Gallery', () => {
   let component: Gallery;
@@ -24,9 +27,9 @@ describe('Gallery', () => {
   });
 
   it('should have an array of images', () => {
-    expect(component.images).toBeDefined();
-    expect(Array.isArray(component.images)).toBeTruthy();
-    expect(component.images.length).toBe(6);
+    expect(component.imagenes).toBeDefined();
+    expect(Array.isArray(component.imagenes)).toBeTruthy();
+    expect(component.imagenes.length).toBe(6);
   });
 
   it('should initialize with selectedImage as null', () => {
@@ -34,13 +37,13 @@ describe('Gallery', () => {
   });
 
   it('should open image when openImage is called', () => {
-    const testImage = 'assets/images/bendy.jpg';
+    const testImage = 'assets/image/bendy.jpg';
     component.openImage(testImage);
     expect(component.selectedImage).toBe(testImage);
   });
 
   it('should close image when closeImage is called', () => {
-    component.openImage('assets/images/bendy.jpg');
+    component.openImage('assets/image/bendy.jpg');
     expect(component.selectedImage).not.toBeNull();
     
     component.closeImage();
@@ -61,14 +64,14 @@ describe('Gallery', () => {
     expect(mockEvent.target.src).toContain('placeholder.jpg');
   });
 
-  // PRUEBA CORREGIDA - buscar .grid-item en lugar de .card
+  // buscar .grid-item en lugar de .card
   it('should have grid items in the template', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const gridItems = compiled.querySelectorAll('.grid-item');
     expect(gridItems.length).toBeGreaterThan(0);
   });
 
-  // PRUEBA CORREGIDA - hacer click en grid-item
+  //  hacer click en grid-item
   it('should call openImage when grid item is clicked', () => {
     const openImageSpy = spyOn(component, 'openImage');
     
@@ -91,7 +94,7 @@ describe('Gallery', () => {
   });
 
   it('should show image viewer when an image is selected', () => {
-    component.selectedImage = 'assets/images/bendy.jpg';
+    component.selectedImage = 'assets/image/bendy.jpg';
     fixture.detectChanges();
     
     const compiled = fixture.nativeElement as HTMLElement;
@@ -99,11 +102,11 @@ describe('Gallery', () => {
     expect(viewer).toBeTruthy();
     
     const img = compiled.querySelector('.image-viewer img');
-    expect(img?.getAttribute('src')).toBe('assets/images/bendy.jpg');
+    expect(img?.getAttribute('src')).toBe('assets/image/bendy.jpg');
   });
 
   it('should call closeImage when viewer is clicked', () => {
-    component.selectedImage = 'assets/images/bendy.jpg';
+    component.selectedImage = 'assets/image/bendy.jpg';
     fixture.detectChanges();
     
     const closeImageSpy = spyOn(component, 'closeImage');

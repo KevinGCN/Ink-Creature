@@ -18,3 +18,7 @@
   color: white;
   align-items: flex-end;
 }
+
+.comments {
+  overflow-y: auto;
+}

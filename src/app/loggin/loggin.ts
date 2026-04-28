@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
@@ -20,8 +20,9 @@ export class Loggin {
   correo = '';
   password = '';
   mensajeError = '';
+  cargandoGoogle = false;
 
-  constructor(@Inject(AuthService) private auth: AuthService) {}
+  constructor(private auth: AuthService) {}
 
   cerrarModal() {
     this.cerrar.emit();
@@ -35,9 +36,9 @@ export class Loggin {
     this.modoRegistro = false;
   }
 
-  iniciarSesion() {
+  async iniciarSesion() {
     this.mensajeError = '';
-    const ok = this.auth.login(this.correo, this.password);
+    const ok = await this.auth.login(this.correo, this.password);
 
     if (ok) {
       alert('Login exitoso');
@@ -46,6 +47,20 @@ export class Loggin {
       this.mensajeError = 'Correo o contraseña incorrectos';
     }
   }
+
+   async recuperarContrasena() {
+     if (!this.correo) {
+       alert('Por favor ingresa tu correo electrónico');
+       return;
+     }
+
+     const ok = await this.auth.enviarRecuperacionContrasena(this.correo);
+     if (ok) {
+       alert('Se ha enviado un correo de recuperación a ' + this.correo);
+     } else {
+       alert('Error al enviar el correo de recuperación');
+     }
+   }
 
   registrarse() {
     this.mensajeError = '';
@@ -64,9 +79,30 @@ export class Loggin {
       nombre: this.nombre,
       correo: this.correo,
       password: this.password
+    }).then(() => {
+      alert('Registrado correctamente');
+      this.cerrarModal();
+    }).catch((error: any) => {
+      this.mensajeError = 'Error al registrar: ' + error.message;
     });
+  }
 
-    alert('Registrado correctamente');
-    this.cerrarModal();
+  async loginConGoogle() {
+    this.mensajeError = '';
+    this.cargandoGoogle = true;
+
+    try {
+      const ok = await this.auth.loginConGoogle();
+      if (ok) {
+        alert('Login con Google exitoso');
+        this.cerrarModal();
+      } else {
+        this.mensajeError = 'Error al iniciar con Google';
+      }
+    } catch (error: any) {
+      this.mensajeError = 'Error: ' + error.message;
+    } finally {
+      this.cargandoGoogle = false;
+    }
   }
 }

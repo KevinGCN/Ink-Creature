@@ -1,5 +1,11 @@
 [
-    {"id":1,"name":"Kevin", "last_name":"Cobo", "email":"kgcn@gmail.com","phone":"1234567890", "charge": "CEO"},
-    {"id":1,"name":"Emerson", "last_name":"Mosquera", "email":"edmosquera@gmail.com","phone":"1234567891", "charge": "CEO"},
-    {"id":1,"name":"Andres", "last_name":"Patiño", "email":"jpatino@gmail.com","phone":"1234567892", "charge": "CEO"}
+  {
+    "id":1, "name":"Kevin", "last_name":"Cobo", "email":"kgcn@gmail.com", "password":"12345678", "phone":"1234567890", "charge":"CEO"
+  },
+  {
+    "id":2, "name":"Emerson", "last_name":"Mosquera", "email":"edmosquera@gmail.com", "password":"12345678", "phone":"1234567891", "charge":"CEO"
+  },
+  {
+    "id":3, "name":"Andres", "last_name":"Patiño", "email":"jpatino@gmail.com", "password":"12345678", "phone":"1234567892", "charge":"CEO"
+  }
 ]

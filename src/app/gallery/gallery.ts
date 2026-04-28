@@ -15,12 +15,12 @@ export class Gallery {
 
   // Cada imagen tiene su empleadoId — un mismo tatuaje no aparece en otro artista
   imagenes = [
-    { src: 'image/goku.webp',     alt: 'Goku Angel',       empleadoId: 1 },
+    { src: 'image/DBZ.jpg',     alt: 'Goku Y Vegeta',       empleadoId: 1 },
     { src: 'image/arquemis.png',  alt: 'Arquemis',         empleadoId: 1 },
     { src: 'image/ladymaria.png', alt: 'Lady Maria',       empleadoId: 2 },
     { src: 'image/mercy.png',     alt: 'Mercy',            empleadoId: 3 },
     { src: 'image/rem.png',       alt: 'Rem',              empleadoId: 4 },
-    { src: 'image/bendy.jpg',     alt: 'Bendy',            empleadoId: 5 },
+    { src: 'image/kuromi.jpg',     alt: 'Kuromi',            empleadoId: 5 },
     { src: 'image/sorodita.png',  alt: 'Sorodita',         empleadoId: 6 }
   ];
 

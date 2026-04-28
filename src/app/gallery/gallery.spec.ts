@@ -55,7 +55,7 @@ describe('Gallery', () => {
       target: {
         src: 'wrong-path.jpg',
         classList: {
-          add: jasmine.createSpy('add')
+          add: spyOn(component, 'add')
         }
       }
     } as any;
@@ -102,11 +102,11 @@ describe('Gallery', () => {
     expect(viewer).toBeTruthy();
     
     const img = compiled.querySelector('.image-viewer img');
-    expect(img?.getAttribute('src')).toBe('assets/image/bendy.jpg');
+    expect(img?.getAttribute('src')).toBe('assets/image/DBZ.jpg');
   });
 
   it('should call closeImage when viewer is clicked', () => {
-    component.selectedImage = 'assets/image/bendy.jpg';
+    component.selectedImage = 'assets/image/DBZ.jpg';
     fixture.detectChanges();
     
     const closeImageSpy = spyOn(component, 'closeImage');

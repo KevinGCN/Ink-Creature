@@ -46,8 +46,6 @@ export class AuthService {
     return createUserWithEmailAndPassword(this.auth, usuario.correo, usuario.password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        
-        // Actualizar perfil con el nombre
         await updateProfile(user, {
           displayName: usuario.nombre
         });
@@ -81,7 +79,6 @@ export class AuthService {
           email: user.email || '',
           photoURL: user.photoURL || ''
         };
-        
         localStorage.setItem('usuario', JSON.stringify(userData));
         return true;
       })

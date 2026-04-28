@@ -45,6 +45,8 @@ export class Profile implements OnInit {
 
   cambiarFoto(event: any) {
     const file = event.target.files[0];
+    if (!file) return;
+    
     const reader = new FileReader();
 
     reader.onload = () => {

@@ -11,13 +11,13 @@
         <span class="icon">🖼️</span>
         <span class="text">Galeria</span>
     </a>
-    <a routerLink="/schedule">
-        <span class="icon">📅</span>
-        <span class="text">Citas</span>
-    </a>
+     <a *ngIf="auth.estaLogueado()" routerLink="/schedule">
+         <span class="icon">📅</span>
+         <span class="text">Citas</span>
+     </a>
     <a routerLink="/employees">
         <span class="icon">💼</span>
-        <span class="text">Empleados</span>
+        <span class="text">Tatuadores</span>
     </a>
     <a routerLink="/information">
         <span class="icon">⁉️</span>

@@ -13,6 +13,13 @@
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
 
+      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : 'Continuar con Google' }}
+      </button>
+
+      <div class="divider"><span>o</span></div>
+
       <label>Correo</label>
       <input type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico">
 
@@ -24,12 +31,6 @@
       <button class="forgot" (click)="recuperarContrasena()">¿Olvidaste tu contraseña?</button>
 
       <div class="divider"><span>o</span></div>
-      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20"
-          height="20">
-        {{ cargandoGoogle ? 'Iniciando...' : 'Continuar con Google' }}
-      </button>
-
 
       <button class="register-btn" (click)="irARegistro()">
         Registrarse
@@ -44,6 +45,11 @@
 
       <h2>Crear cuenta</h2>
 
+      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : 'Registrarse con Google' }}
+      </button>
+
       <div class="divider"><span>o</span></div>
 
       <label>Nombre</label>
@@ -54,14 +60,6 @@
 
       <label>Contraseña</label>
       <input type="password" [(ngModel)]="password" name="password">
-      <div class="divider"><span>o</span></div>
-
-      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20"
-          height="20">
-        {{ cargandoGoogle ? 'Iniciando...' : 'Registrarse con Google' }}
-      </button>
-
 
       <button class="register-btn" (click)="registrarse()">Registrarse</button>
     </div>

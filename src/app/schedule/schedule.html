@@ -27,17 +27,20 @@
       </div>
 
       <div class="days">
-        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span>
-        <span>Th</span><span>Fr</span><span>Sa</span>
+        <span>D</span><span>L</span><span>M</span><span>Mi</span>
+        <span>J</span><span>V</span><span>S</span>
       </div>
 
       <div class="dates">
+        <span>29</span>
+        <span>30</span>
+        <span>31</span>
         <span (click)="seleccionarFecha(1)" [class.active]="fechaSeleccionada === 1">1</span>
         <span (click)="seleccionarFecha(2)" [class.active]="fechaSeleccionada === 2">2</span>
         <span (click)="seleccionarFecha(3)" [class.active]="fechaSeleccionada === 3">3</span>
         <span (click)="seleccionarFecha(4)" [class.active]="fechaSeleccionada === 4">4</span>
         <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 5">5</span>
-        <span (click)="seleccionarFecha(5)" [class.active]="fechaSeleccionada === 6">6</span>
+        <span (click)="seleccionarFecha(6)" [class.active]="fechaSeleccionada === 6">6</span>
         <span (click)="seleccionarFecha(7)" [class.active]="fechaSeleccionada === 7">7</span>
         <span (click)="seleccionarFecha(8)" [class.active]="fechaSeleccionada === 8">8</span>
         <span (click)="seleccionarFecha(9)" [class.active]="fechaSeleccionada === 9">9</span>
@@ -112,17 +115,14 @@
 
   <!-- Botones -->
   <div class="actions">
-    <button class="delete">Eliminar</button>
+    <button class="cancelar" routerLink="">Cancelar</button>
     <button class="reserve" (click)="reservar()">Reservar</button>
   </div>
 
   <hr>
-
-  <!-- Lista de citas -->
-  <div *ngFor="let cita of citas">
-    <p>
-      {{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}
-    </p>
+  <div>
+    <div *ngFor="let cita of citas">
+      <p>{{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}</p>
+    </div>
   </div>
-
 </div>

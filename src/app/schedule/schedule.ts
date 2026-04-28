@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CitaService } from '../services/citas';
 import { EmpleadoService } from '../services/empleados';
+import { AuthService } from '../services/auth';
 import { Empleado } from '../models/empleado';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-schedule',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   standalone: true,
   templateUrl: './schedule.html',
   styleUrl: './schedule.css',
@@ -19,19 +21,31 @@ export class Schedule implements OnInit {
   tatuadorSeleccionado: string = '';
 
   empleados: Empleado[] = [];
+  private correoUsuario: string = ''; // solo apoyo interno
 
   constructor(
     private citaService: CitaService,
-    private empleadoService: EmpleadoService
-  ) {}
+    private empleadoService: EmpleadoService,
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.cargarEmpleados();
+
+    const usuario = this.auth.obtenerUsuario();
+    this.correoUsuario = usuario?.correo || '';
   }
 
   cargarEmpleados(): void {
-    this.empleadoService.getEmpleados().subscribe(data => {
-      this.empleados = data;
+    this.empleadoService.getEmpleados().subscribe({
+      next: data => {
+        this.empleados = data;
+        this.cdr.detectChanges(); // fuerza refresco
+      },
+      error: err => {
+        console.error(err);
+      }
     });
   }
 
@@ -48,11 +62,12 @@ export class Schedule implements OnInit {
   }
 
   reservar() {
-    if (
-      !this.fechaSeleccionada ||
-      !this.horaSeleccionada ||
-      !this.tatuadorSeleccionado
-    ) {
+    if (!this.auth.estaLogueado()) {
+      alert('Debes iniciar sesión antes de reservar');
+      return;
+    }
+
+    if (!this.fechaSeleccionada || !this.horaSeleccionada || !this.tatuadorSeleccionado) {
       alert('Faltan datos');
       return;
     }
@@ -72,14 +87,17 @@ export class Schedule implements OnInit {
       id: Date.now(),
       fecha: this.fechaSeleccionada,
       hora: this.horaSeleccionada,
-      tatuador: this.tatuadorSeleccionado
+      tatuador: this.tatuadorSeleccionado,
+      correo: this.correoUsuario
     };
 
     this.citaService.crearCita(nuevaCita);
-    console.log('Cita creada', nuevaCita);
+    alert('Cita reservada con éxito');
   }
 
   get citas() {
-    return this.citaService.getCitas();
+    return this.citaService
+      .getCitas()
+      .filter(c => c.correo === this.correoUsuario);
   }
 }

@@ -5,15 +5,10 @@
     <div class="actions">
       <h1>Bienvenido</h1>
     </div>
-    <div class="buttons">
-    <button class="btn-primary" routerLink="./schedule">Agendar Cita</button>
-    <button class="btn-secondary" routerLink="./information">Como encontrarnos</button>
-    </div>
-  </section>
-  <!-- Filtros -->
-  <section class="filters">
-    <button class="active">Más Reciente</button>
-    <button>Más Popular</button>
+     <div class="buttons">
+       <button *ngIf="auth.estaLogueado()" class="btn-primary" routerLink="./schedule">Agendar Cita</button>
+       <button class="btn-secondary" routerLink="./information">Como encontrarnos</button>
+     </div>
   </section>
   <div class="comments">
     <app-comments></app-comments>

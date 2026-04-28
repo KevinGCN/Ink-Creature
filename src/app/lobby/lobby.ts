@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { Comments } from "../comments/comments";
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-lobby',
@@ -11,5 +12,5 @@ import { Comments } from "../comments/comments";
 })
 
 export class Lobby {
-
+  constructor(public auth: AuthService) {}
 }

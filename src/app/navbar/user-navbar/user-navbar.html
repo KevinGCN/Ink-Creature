@@ -1,11 +1,11 @@
 <nav class="userbar">
   <div class="usuario">
 
-    <button *ngIf="!auth.estaLogueado()" (click)="abrirLogin()">
-      Sesión
-    </button>
+     <button *ngIf="!(auth.isLoggedIn$ | async)" (click)="abrirLogin()">
+       Sesión
+     </button>
 
-    <div *ngIf="auth.estaLogueado()" class="menu-ajustes">
+     <div *ngIf="auth.isLoggedIn$ | async" class="menu-ajustes">
 
       <button (click)="toggleAjustes()">
         ⚙️ Ajustes

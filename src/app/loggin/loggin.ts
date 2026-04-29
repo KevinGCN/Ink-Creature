@@ -48,20 +48,6 @@ export class Loggin {
     }
   }
 
-  async recuperarContrasena() {
-    if (!this.correo) {
-      alert('Por favor ingresa tu correo electrónico');
-      return;
-    }
-
-    const ok = await this.auth.enviarRecuperacionContrasena(this.correo);
-    if (ok) {
-      alert('Se ha enviado un correo de recuperación a ' + this.correo);
-    } else {
-      alert('Error al enviar el correo de recuperación');
-    }
-  }
-
   registrarse() {
     this.mensajeError = '';
 

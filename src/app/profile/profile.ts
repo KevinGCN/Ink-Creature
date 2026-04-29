@@ -62,4 +62,8 @@ export class Profile implements OnInit {
   irAgenda() {
     this.router.navigate(['/schedule']);
   }
+
+  irResenas() {
+    this.router.navigate(['/']);
+  }
 }

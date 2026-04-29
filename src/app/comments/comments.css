@@ -1,38 +1,212 @@
+/* ── Sección de reseñas ── */
+.reviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  font-size: 22px;
+  color: #4B4453;
+  margin: 0 0 8px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Formulario ── */
+.review-form {
+  background: linear-gradient(135deg, #F4F1F7, #FFFFFF);
+  border: 1px solid #D6CEEA;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(94, 89, 107, 0.08);
+}
+
+.form-title {
+  margin: 0 0 14px;
+  font-size: 17px;
+  color: #5E596B;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6B6578;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group textarea {
+  padding: 10px 14px;
+  border: 1px solid #C9BEDD;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #2F2F2F;
+  background: #FDFCFF;
+  resize: vertical;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #5E596B;
+  box-shadow: 0 0 0 3px rgba(94, 89, 107, 0.12);
+}
+
+/* Selector de estrellas */
+.star-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #C9BEDD;
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.star-btn.active {
+  color: #5E596B;
+}
+
+.star-btn:hover {
+  transform: scale(1.2);
+  color: #4B4453;
+}
+
+/* Botón publicar */
+.btn-publicar {
+  padding: 11px 24px;
+  background: #5E596B;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  letter-spacing: 0.4px;
+}
+
+.btn-publicar:hover:not(:disabled) {
+  background: #4B4453;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(94, 89, 107, 0.25);
+}
+
+.btn-publicar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Alerta éxito */
+.alerta-exito {
+  background: #EAF7ED;
+  border: 1px solid #A8D5B0;
+  color: #2E7D3A;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+/* Aviso login */
+.aviso-login {
+  background: #F4F1F7;
+  border: 1px dashed #C9BEDD;
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: #6B6578;
+  font-size: 14px;
+  text-align: center;
+}
+
+.aviso-login p {
+  margin: 0;
+}
+
+/* Sin reseñas */
+.sin-resenas {
+  text-align: center;
+  color: #9992A6;
+  font-size: 14px;
+  padding: 20px;
+}
+
+/* ── Tarjeta de reseña ── */
 .review-card {
   background: linear-gradient(135deg, #FFFFFF, #F4F1F7);
   border: 1px solid #E0DCE6;
   border-radius: 15px;
-  padding: 20px;
-  margin: 15px 0;
+  padding: 18px 20px;
   color: #2F2F2F;
-
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  box-shadow: 0 6px 15px rgba(94, 89, 107, 0.10);
-  transition: 0.3s;
+  box-shadow: 0 4px 14px rgba(94, 89, 107, 0.09);
+  transition: 0.25s;
 }
 
 .review-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(94, 89, 107, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(94, 89, 107, 0.16);
 }
 
-.review-card h3 {
-  margin: 0;
-  font-size: 22px;
-  color: #4B4453; 
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.review-card p {
-  margin: 0;
-  line-height: 1.5;
-  color: #6B6578; 
-}
-
-.review-card .stars {
-  color: #5E596B; 
+.avatar {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: #5E596B;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 18px;
+  font-weight: 700;
+}
+
+.review-meta {
+  flex: 1;
+}
+
+.review-meta h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #4B4453;
+}
+
+.date {
+  font-size: 12px;
+  color: #9992A6;
+}
+
+.stars {
+  color: #5E596B;
+  font-size: 17px;
   letter-spacing: 2px;
+}
+
+.review-text {
+  margin: 0;
+  line-height: 1.6;
+  color: #6B6578;
+  font-size: 14px;
 }

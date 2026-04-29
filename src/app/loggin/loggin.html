@@ -13,12 +13,13 @@
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
 
+      <!-- Botón Google ARRIBA -->
       <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20" height="20">
-        {{ cargandoGoogle ? 'Iniciando...' : 'Continuar con Google' }}
+        <img src="/image/google.webp" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : 'Google' }}
       </button>
 
-      <div class="divider"><span>o</span></div>
+      
 
       <label>Correo</label>
       <input type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico">
@@ -27,8 +28,6 @@
       <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
 
       <button class="login-btn" (click)="iniciarSesion()">Iniciar sesión</button>
-
-      <button class="forgot" (click)="recuperarContrasena()">¿Olvidaste tu contraseña?</button>
 
       <div class="divider"><span>o</span></div>
 
@@ -39,18 +38,12 @@
 
     <!-- REGISTRO -->
     <div *ngIf="modoRegistro">
+      <!-- Botón volver (pequeño, izquierda) -->
       <button class="back-btn" (click)="irALogin()">
         ← Volver
       </button>
 
       <h2>Crear cuenta</h2>
-
-      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/google-icon.svg" alt="Google" width="20" height="20">
-        {{ cargandoGoogle ? 'Iniciando...' : 'Registrarse con Google' }}
-      </button>
-
-      <div class="divider"><span>o</span></div>
 
       <label>Nombre</label>
       <input type="text" [(ngModel)]="nombre" name="nombre">
@@ -62,6 +55,14 @@
       <input type="password" [(ngModel)]="password" name="password">
 
       <button class="register-btn" (click)="registrarse()">Registrarse</button>
+
+      <div class="divider"><span>o</span></div>
+
+      <!-- Botón Google ABAJO -->
+      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
+        <img src="/image/google.webp" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : ' Google' }}
+      </button>
     </div>
 
   </div>

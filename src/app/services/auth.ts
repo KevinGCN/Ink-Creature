@@ -12,6 +12,7 @@ import {
   sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,12 @@ export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
   private usuarioActual: User | null = null;
+  public isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
   constructor() {
+    const storedAuth = localStorage.getItem('logueado') === 'true';
+    this.isLoggedIn$.next(storedAuth);
+
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.usuarioActual = user;
@@ -34,12 +39,26 @@ export class AuthService {
         };
         localStorage.setItem('usuario', JSON.stringify(userData));
         localStorage.setItem('logueado', 'true');
+        this.isLoggedIn$.next(true);
       } else {
         this.usuarioActual = null;
         localStorage.removeItem('logueado');
         localStorage.removeItem('usuario');
+        this.isLoggedIn$.next(false);
       }
     });
+  }
+
+  private actualizarEstadoLocal(user: any) {
+    if (user) {
+      localStorage.setItem('usuario', JSON.stringify(user));
+      localStorage.setItem('logueado', 'true');
+      this.isLoggedIn$.next(true);
+    } else {
+      localStorage.removeItem('logueado');
+      localStorage.removeItem('usuario');
+      this.isLoggedIn$.next(false);
+    }
   }
 
   registrar(usuario: { nombre: string; correo: string; password: string }) {
@@ -57,14 +76,24 @@ export class AuthService {
           photoURL: user.photoURL || ''
         };
         
-        localStorage.setItem('usuario', JSON.stringify(userData));
+        this.actualizarEstadoLocal(userData);
         return user;
       });
   }
 
   login(correo: string, password: string): Promise<boolean> {
     return signInWithEmailAndPassword(this.auth, correo, password)
-      .then(() => true)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userData = {
+          uid: user.uid,
+          nombre: user.displayName || '',
+          email: user.email || '',
+          photoURL: user.photoURL || ''
+        };
+        this.actualizarEstadoLocal(userData);
+        return true;
+      })
       .catch(() => false);
   }
 
@@ -79,7 +108,7 @@ export class AuthService {
           email: user.email || '',
           photoURL: user.photoURL || ''
         };
-        localStorage.setItem('usuario', JSON.stringify(userData));
+        this.actualizarEstadoLocal(userData);
         return true;
       })
       .catch((error) => {

@@ -20,7 +20,7 @@
   padding: 26px;
 
   background: rgba(255, 255, 255, 0.96);
-  border-left: 1px solid #dbeafe;
+  border-left: 1px solid #1b1c1d;
   border-radius: 18px 0 0 18px;
 
   box-shadow: -12px 0 30px rgba(59, 130, 246, 0.15);
@@ -144,43 +144,26 @@ p {
   margin: 8px 0;
 }
 
-/* BOTÓN RECUPERAR CONTRASEÑA */
-.forgot {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  color: #6aaef3;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-  padding: 8px;
-  margin-top: 5px;
-  transition: color 0.2s;
-}
-
-.forgot:hover {
-  color: #82c0ff;
-  text-decoration: underline;
-}
-
-/* BOTÓN VOLVER (FLECHA) */
+/* BOTÓN VOLVER */
 .back-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
+ width: 100%;
+  padding: 12px;
+  margin-top: 8px;
   border: none;
-  color: #6aaef3;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 14px;
-  padding: 5px 0;
-  margin-bottom: 10px;
-  transition: color 0.2s;
+  font-weight: bold;
+  font-size: 15px;
+  transition: 0.3s;
+  width: auto;
 }
 
 .back-btn:hover {
   color: #82c0ff;
+}
+
+.back-btn:focus {
+  outline: none;
 }
 
 /* GOOGLE */

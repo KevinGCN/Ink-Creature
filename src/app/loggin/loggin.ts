@@ -63,7 +63,8 @@ export class Loggin {
     this.auth.registrar({
       nombre: this.nombre,
       correo: this.correo,
-      password: this.password
+      password: this.password,
+      charge: 'Normal'
     });
 
     alert('Registrado correctamente');

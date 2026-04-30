@@ -1,8 +1,8 @@
 .employees-page {
   padding: 40px 30px;
-  background: #1a1a2e;
+  background: #F4F1F7; 
   min-height: 100vh;
-  color: white;
+  color: #2F2F2F;
 }
 
 .encabezado {
@@ -16,7 +16,7 @@
 }
 
 .encabezado p {
-  color: #aaa;
+  color: #8E8899;
   font-size: 15px;
 }
 
@@ -29,17 +29,19 @@
 }
 
 .tarjeta {
-  background: #16213e;
+  background: #FFFFFF; 
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid #2c3e50;
+  border: 1px solid #E0DCE6;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(94, 89, 107, 0.08);
 }
 
 .tarjeta:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(94, 89, 107, 0.15);
 }
 
 .tarjeta-foto {
@@ -58,8 +60,8 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #e63946;
-  color: white;
+  background: #C9BEDD; 
+  color: #2F2F2F;
   font-size: 11px;
   padding: 3px 10px;
   border-radius: 20px;
@@ -74,22 +76,23 @@
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
+  color: #4B4453;
 }
 
 .cargo {
-  color: #7f8c8d;
+  color: #6B6578;
   font-size: 13px;
   margin-bottom: 3px;
 }
 
 .experiencia {
-  color: #aaa;
+  color: #8E8899;
   font-size: 12px;
   margin-bottom: 6px;
 }
 
 .estrellas {
-  color: #f4c542;
+  color: #5E596B;
   font-size: 15px;
   letter-spacing: 2px;
 }
@@ -101,22 +104,23 @@
 .btn-perfil {
   display: block;
   text-align: center;
-  background: #2c3e50;
+  background: #5E596B; 
   color: white;
   text-decoration: none;
   padding: 9px;
   border-radius: 8px;
   font-size: 14px;
-  transition: background 0.3s;
+  transition: 0.3s;
 }
 
 .btn-perfil:hover {
-  background: #e63946;
+  background: #4B4453;
 }
 
 @media (max-width: 900px) {
   .catalogo { grid-template-columns: repeat(2, 1fr); }
 }
+
 @media (max-width: 560px) {
   .catalogo { grid-template-columns: 1fr; }
 }

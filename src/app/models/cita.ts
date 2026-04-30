@@ -3,4 +3,5 @@ export interface Cita {
     fecha: number;
     hora: string;
     tatuador: string;
+    correo: string;
 }

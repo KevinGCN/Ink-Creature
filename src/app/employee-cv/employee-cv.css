@@ -1,30 +1,38 @@
 .cv-page {
   padding: 40px 30px;
-  background: #1a1a2e;
+  background: #F4F1F7; 
   min-height: 100vh;
-  color: white;
+  color: #2F2F2F;
 }
 
 .btn-volver {
   display: inline-block;
-  color: #aaa;
+  background: #5E596B; 
+  color: white;
   text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 25px;
   margin-bottom: 28px;
   font-size: 14px;
-  transition: color 0.2s;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(94, 89, 107, 0.25);
+  transition: 0.3s;
 }
 
-.btn-volver:hover { color: #e63946; }
+.btn-volver:hover {
+  background: #4B4453;
+  transform: translateY(-2px);
+}
 
 .perfil {
   display: flex;
   gap: 40px;
   max-width: 860px;
   margin: 0 auto;
-  background: #16213e;
+  background: #FFFFFF; 
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid #2c3e50;
+  border: 1px solid #E0DCE6;
 }
 
 .perfil-foto {
@@ -44,8 +52,8 @@
 }
 
 .badge {
-  background: #e63946;
-  color: white;
+  background: #C9BEDD; 
+  color: #2F2F2F;
   font-size: 11px;
   padding: 3px 12px;
   border-radius: 20px;
@@ -59,13 +67,13 @@
 }
 
 .cargo {
-  color: #7f8c8d;
+  color: #6B6578;
   font-size: 14px;
   margin-bottom: 8px;
 }
 
 .estrellas {
-  color: #f4c542;
+  color: #4B4453; 
   font-size: 20px;
   letter-spacing: 3px;
   margin-bottom: 20px;
@@ -85,7 +93,7 @@
 
 .etiqueta {
   font-size: 11px;
-  color: #7f8c8d;
+  color: #8E8899;
   text-transform: uppercase;
 }
 
@@ -95,13 +103,13 @@
 }
 
 .descripcion {
-  color: #ccc;
+  color: #555;
   font-size: 14px;
   line-height: 1.7;
 }
 
 .sin-desc {
-  color: #555;
+  color: #999;
   font-style: italic;
 }
 

@@ -32,8 +32,8 @@ export class EmployeeCV implements OnInit {
       cargo: 'Tatuador',
       especialidad: 'Estilo Anime',
       experiencia: 5,
-      descripcion: 'Goku le gana',
-      foto: 'image/tatuadora.png',
+      descripcion: 'Tatuadora especializada en anime y Dragon Ball: líneas que parecen Kamehamehas y color digno de una esfera del dragón.',
+      foto: 'image/Emilia Soplano.jpg',
       estrellas: 5
     },
     {
@@ -42,8 +42,8 @@ export class EmployeeCV implements OnInit {
       cargo: 'Tatuador',
       especialidad: 'Realismo y Fantasía Oscura',
       experiencia: 4,
-      descripcion: 'Me gusta el estilo de los souls, si tienes algo en mente escribeme,',
-      foto: 'image/tatuador.png',
+      descripcion: 'Tatuador especializado en estilo Souls: cinismo, armaduras rotas y fuegos fatuos con la misma elegancia oscura de morir una y otra vez.,',
+      foto: 'image/Gabe Fernandez.jpg',
       estrellas: 5
     },
     {
@@ -53,17 +53,17 @@ export class EmployeeCV implements OnInit {
       especialidad: 'Arte Fantástico y de videojuegos',
       experiencia: 4,
       descripcion: 'Soy bueno dandole caracteristicas unicas a los personajes',
-      foto: 'image/tatuador.png',
+      foto: 'image/Juan David Vernadez.webp',
       estrellas: 4
     },
     {
       id: 4,
       nombre: 'Valentina Ríos ',
       cargo: 'Tatuadora',
-      especialidad: 'Minimalismo',
+      especialidad: 'Minimalismo y Anime',
       experiencia: 3,
-      descripcion: 'KasuGOD > Basuro',
-      foto: 'image/tatuadora.png',
+      descripcion: 'Tatuadora de mundos fantasticos: personakes memorables, magia arcana y KasuGOD > Basuro',
+      foto: 'image/Valentina Ríos.jpg',
       estrellas: 5
     },
     {
@@ -73,7 +73,7 @@ export class EmployeeCV implements OnInit {
       especialidad: 'Chivi',
       experiencia: 6,
       descripcion: 'Soy experto en hacer arte lindo y adorable',
-      foto: 'image/tatuador.png',
+      foto: 'image/Sebastián Morales.jpg',
       estrellas: 4
     },
     {
@@ -82,8 +82,8 @@ export class EmployeeCV implements OnInit {
       cargo: 'Tatuador',
       especialidad: 'Warhammer 40k',
       experiencia: 3,
-      descripcion: 'Quieres el tatuaje de una monja de batalla con lanzallamas?',
-      foto: 'image/tatuador.png',
+      descripcion: 'Quieres el tatuaje de una monja de batalla con lanzallamas? Pues si la respuesta es si, yo soy tu hombre',
+      foto: 'image/Leonardo Taza.png',
       estrellas: 5
     }
   ];

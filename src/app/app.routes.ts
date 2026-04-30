@@ -7,15 +7,16 @@ import { Schedule } from './schedule/schedule';
 import { Information } from './information/information';
 import { Profile } from './profile/profile';
 import { EmployeeCV } from './employee-cv/employee-cv';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Lobby },
   { path: 'loggin', component: Loggin },
   { path: 'gallery', component: Gallery },
   { path: 'employees', component: Employees },
-  { path: 'schedule', component: Schedule },
+  { path: 'schedule', component: Schedule, canActivate: [AuthGuard] },
   { path: 'information', component: Information },
-  { path: 'profile', component: Profile },
+  { path: 'profile', component: Profile, canActivate: [AuthGuard] },
   { path: 'employeeCV/:id', component: EmployeeCV },
   { path: '**', redirectTo: '' }
 ];

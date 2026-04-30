@@ -1,11 +1,11 @@
 .gallery {
   padding: 40px;
-  background: #111;
+  background: #F4F1F7; 
   min-height: 100vh;
 }
 
 .title {
-  color: white;
+  color: #2F2F2F;
   text-align: center;
   margin-bottom: 30px;
   font-size: 35px;
@@ -26,27 +26,29 @@
 
 .grid-item img {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
   display: block;
-  transition: filter 0.3s ease;
+  transition: all 0.3s ease;
 }
+
 
 .grid-item:hover {
   transform: scale(1.03);
 }
 
 .grid-item:hover img {
-  filter: brightness(0.65);
+  filter: brightness(0.85);
 }
 
-/* ── Botón "Conoce al tatuador" ── */
+
 .btn-tatuador {
   position: absolute;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%) translateY(6px);
   opacity: 0;
-  background: #e63946;
+
+  background: #5E596B; 
   color: white;
   border: none;
   padding: 7px 14px;
@@ -55,7 +57,9 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  box-shadow: 0 4px 10px rgba(94, 89, 107, 0.25);
+  transition: all 0.3s ease;
 }
 
 .grid-item:hover .btn-tatuador {
@@ -64,17 +68,46 @@
 }
 
 .btn-tatuador:hover {
-  background: #c0392b;
+  background: #4B4453;
 }
 
-/* Visor */
+.admin-actions {
+  background: gray;
+  color: black;
+  font-size: 12px;
+  border-radius: 20%;
+  width: 38px;
+  height: 18px;
+}
+
+.btn-eliminar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 0, 0, 0.8);
+  border: none;
+  color: white;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.grid-item:hover .btn-eliminar {
+  opacity: 1;
+}
+
+
 .image-viewer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.9);
+  background: rgba(47, 47, 47, 0.9); 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,8 +118,9 @@
 .image-viewer img {
   max-width: 90%;
   max-height: 90%;
-  border-radius: 10px;
+  border-radius: 12px;
 }
+
 
 @media (max-width: 1200px) { .grid { column-count: 3; } }
 @media (max-width: 800px)  { .grid { column-count: 2; } }

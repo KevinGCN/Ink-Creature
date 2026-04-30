@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-comments',
-  imports: [],
-  templateUrl: './comments.html',
-  styleUrl: './comments.css',
-})
-export class Comments {
-
-=======
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -66,5 +54,4 @@ export class Comments implements OnInit {
   estrellas(n: number): string {
     return '★'.repeat(n) + '☆'.repeat(5 - n);
   }
->>>>>>> 6ff5d480ab359898f8b61316e91b947e931580cb
 }

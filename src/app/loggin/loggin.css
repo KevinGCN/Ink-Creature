@@ -1,4 +1,34 @@
-/* FONDO OSCURO */
+/* ---------------------------------------------------------------------------
+   STYLES DEL COMPONENTE LOGGIN - Modal de Autenticación
+   ---------------------------------------------------------------------------
+   
+   ESTRUCTURA DEL MODAL:
+   - overlay: Fondo oscuro semitransparente con blur que cubre toda la pantalla
+   - login-container: Panel deslizante desde la derecha (responsive: centrado en móvil)
+   - content: Área interna con formularios de login/registro
+   
+   FLUJO VISUAL:
+   1. Overlay oscuro (fondo inactivo)
+   2. Panel blanco deslizante (slide-in desde derecha)
+   3. Cabecera con título y botón cerrar
+   4. Contenido: dos estados (login | registro)
+   5. Inputs con estados: normal, focus, error
+   6. Botones de acción con jerarquía visual
+   
+   VARIABLES DE COLOR:
+   - Azul principal (#2563eb / #3b82f6): botones, acentos
+   - Gris oscuro (#16324f): textos principales
+   - Rojo error (#dc2626): mensajes y bordes de error
+   - Azul claro (#eff6ff / #f8fbff): fondos de inputs
+   --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   FONDO OSCURO (overlay)
+   - Cubre toda la pantalla al hacer clic fuera del modal
+   - Transparencia 55% con backdrop blur sutil
+   ---------------------------------------------------------------------------
+   FONDO OSCURO (overlay)
+   --------------------------------------------------------------------------*/
 .overlay {
   position: fixed;
   inset: 0;
@@ -7,29 +37,35 @@
   z-index: 1999;
 }
 
-/* CONTENEDOR */
+/* ---------------------------------------------------------------------------
+   CONTENEDOR PRINCIPAL
+   - Posición fija en borde derecho, verticalmente centrado
+   - Responsive: en móviles se centra horizontal y verticalmente
+   - Fondo blanco con ligera transparencia (96%)
+   - Borde izquierdo azul oscuro sólido
+   - Sombra azul suave hacia la izquierda
+   --------------------------------------------------------------------------*/
 .login-container {
   position: fixed;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
   z-index: 2000;
-
   width: 380px;
   max-width: 92%;
   padding: 26px;
-
   background: rgba(255, 255, 255, 0.96);
-  border-left: 1px solid #dbeafe;
+  border-left: 1px solid #1b1c1d;
   border-radius: 18px 0 0 18px;
-
   box-shadow: -12px 0 30px rgba(59, 130, 246, 0.15);
   font-family: Arial, sans-serif;
-
   animation: slideIn 0.35s ease forwards;
 }
 
-/* ANIMACIÓN */
+/* ---------------------------------------------------------------------------
+   ANIMACIÓN DE ENTRADA
+   - Desliza desde derecha (fuera de pantalla) hasta posición final
+   --------------------------------------------------------------------------*/
 @keyframes slideIn {
   from {
     transform: translateY(-50%) translateX(100%);
@@ -41,7 +77,10 @@
   }
 }
 
-/* HEADER */
+/* ---------------------------------------------------------------------------
+   CABECERA
+   - Título "Ink-Creature" + botón cerrar (X)
+   --------------------------------------------------------------------------*/
 .header {
   display: flex;
   justify-content: space-between;
@@ -56,7 +95,10 @@
   letter-spacing: 0.5px;
 }
 
-/* CERRAR */
+/* ---------------------------------------------------------------------------
+   BOTÓN CERRAR (X)
+   - Fondo azul muy claro, texto azul, hover más oscuro
+   --------------------------------------------------------------------------*/
 .close-btn {
   width: auto;
   padding: 6px 10px;
@@ -74,7 +116,9 @@
   transform: scale(1.08);
 }
 
-/* TITULOS */
+/* ---------------------------------------------------------------------------
+   TÍTULOS DE FORMULARIO
+   --------------------------------------------------------------------------*/
 .content h2 {
   text-align: center;
   margin-bottom: 18px;
@@ -82,11 +126,41 @@
   font-size: 26px;
 }
 
-/* INPUTS */
+/* ---------------------------------------------------------------------------
+   ETIQUETAS LABEL
+   - Bloque, negrita, tamaño 14px, color azul oscuro
+   --------------------------------------------------------------------------*/
+label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #16324f;
+}
+
+/* ---------------------------------------------------------------------------
+   MENSAJES DE ERROR (debajo de cada input)
+   - Texto rojo, tamaño reducido (12px)
+   - Margen superior pequeño, inferior mayor para separar del siguiente input
+   --------------------------------------------------------------------------*/
+.error-msg {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   INPUTS DE TEXTO
+   - Ancho 100%, padding generoso, borde redondeado
+   - Fondo azul muy claro (#f8fbff)
+   - Transición suave en focus
+   --------------------------------------------------------------------------*/
 input {
   width: 100%;
   padding: 12px 14px;
-  margin: 8px 0 14px;
+  margin: 8px 0 0;
   border-radius: 12px;
   border: 1px solid #bfdbfe;
   background: #f8fbff;
@@ -95,6 +169,20 @@ input {
   transition: 0.3s;
 }
 
+/* ---------------------------------------------------------------------------
+   INPUT EN ESTADO ERROR
+   - Borde rojo, fondo rosado muy claro
+   --------------------------------------------------------------------------*/
+input.error {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+/* ---------------------------------------------------------------------------
+   INPUT EN ESTADO FOCUS
+   - Borde azul más vivo, fondo blanco puro
+   - Sombra azul sutil
+   --------------------------------------------------------------------------*/
 input:focus {
   outline: none;
   border-color: #60a5fa;
@@ -102,7 +190,9 @@ input:focus {
   box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
 }
 
-/* BOTONES GENERALES */
+/* ---------------------------------------------------------------------------
+   BOTONES GENERALES
+   --------------------------------------------------------------------------*/
 button {
   width: 100%;
   padding: 12px;
@@ -115,7 +205,10 @@ button {
   transition: 0.3s;
 }
 
-/* BOTÓN PRINCIPAL */
+/* ---------------------------------------------------------------------------
+   BOTÓN PRINCIPAL (1er botón del contenedor)
+   - Gradiente azul, texto blanco, sombra
+   --------------------------------------------------------------------------*/
 button:nth-of-type(1) {
   background: linear-gradient(to right, #3b82f6, #60a5fa);
   color: white;
@@ -126,7 +219,10 @@ button:nth-of-type(1):hover {
   transform: translateY(-2px);
 }
 
-/* BOTÓN SECUNDARIO */
+/* ---------------------------------------------------------------------------
+   BOTÓN SECUNDARIO (2er botón del contenedor)
+   - Fondo azul muy claro, borde, texto azul
+   --------------------------------------------------------------------------*/
 button:nth-of-type(2) {
   background: #eef6ff;
   color: #2563eb;
@@ -137,26 +233,110 @@ button:nth-of-type(2):hover {
   background: #dbeafe;
 }
 
-/* MENSAJE ERROR */
+/* ---------------------------------------------------------------------------
+   MENSAJE DE ERROR GENERAL (bajo los botones)
+   --------------------------------------------------------------------------*/
 p {
   text-align: center;
   font-size: 14px;
-  margin: 8px 0;
+  margin: 12px 0 8px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
 }
 
-/* GOOGLE */
-#googleLogin,
-#googleRegister {
+/* ---------------------------------------------------------------------------
+   BOTÓN VOLVER (registro → login)
+   - Sin estilo de botón principal, texto plano con hover
+   --------------------------------------------------------------------------*/
+.back-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: 0.3s;
+  width: auto;
+}
+
+.back-btn:hover {
+  color: #82c0ff;
+}
+
+.back-btn:focus {
+  outline: none;
+}
+
+/* ---------------------------------------------------------------------------
+   BOTÓN GOOGLE
+   --------------------------------------------------------------------------*/
+.google-btn {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  padding: 8px;
-  border-radius: 12px;
-  background: #f8fbff;
-  border: 1px solid #dbeafe;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background: #ffffff;
+  color: #757575;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
 }
 
-/* RESPONSIVE */
+.google-btn:hover:not(:disabled) {
+  background: #f7f8f8;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+}
+
+.google-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.google-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------------------------------------------------------------------------
+   DIVISOR "o"
+   --------------------------------------------------------------------------*/
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 12px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.divider span {
+  padding: 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE: MÓVILES
+   - Panel centrado en pantalla
+   - Esquinas redondeadas completas
+   --------------------------------------------------------------------------*/
 @media (max-width: 768px) {
   .login-container {
     right: 50%;
@@ -170,7 +350,6 @@ p {
       transform: translate(120%, -50%);
       opacity: 0;
     }
-
     to {
       transform: translate(50%, -50%);
       opacity: 1;

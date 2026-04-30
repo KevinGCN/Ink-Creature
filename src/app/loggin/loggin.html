@@ -13,33 +13,56 @@
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
 
-      <div id="googleLogin"></div>
-     
-   
-      <input type="email" [(ngModel)]="correo" placeholder="Correo">
-      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
-      <button (click)="iniciarSesion()">Iniciar sesión</button>
+      <!-- Botón Google ARRIBA -->
+      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
+        <img src="/image/google.webp" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : 'Google' }}
+      </button>
 
-      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
+      <div class="divider"><span>o</span></div>
 
-      <button (click)="irARegistro()">Registrarse</button>
+      <label>Correo</label>
+      <input type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico">
+
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
+
+      <button class="login-btn" (click)="iniciarSesion()">Iniciar sesión</button>
+
+      <div class="divider"><span>o</span></div>
+
+      <button class="register-btn" (click)="irARegistro()">
+        Registrarse
+      </button>
     </div>
 
     <!-- REGISTRO -->
     <div *ngIf="modoRegistro">
+      <!-- Botón volver (pequeño, izquierda) -->
+      <button class="back-btn" (click)="irALogin()">
+        ← Volver
+      </button>
+
       <h2>Crear cuenta</h2>
 
-      <div id="googleRegister"></div>
+      <label>Nombre</label>
+      <input type="text" [(ngModel)]="nombre" name="nombre">
 
-      <input type="text" [(ngModel)]="nombre" placeholder="Nombre">
-      <input type="email" [(ngModel)]="correo" placeholder="Correo">
-      <input type="password" [(ngModel)]="password" placeholder="Contraseña">
+      <label>Correo</label>
+      <input type="email" [(ngModel)]="correo" name="correo">
 
-      <button (click)="registrarse()">Registrarse</button>
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" name="password">
 
-      <p *ngIf="mensajeError" style="color:red">{{mensajeError}}</p>
+      <button class="register-btn" (click)="registrarse()">Registrarse</button>
 
-      <button (click)="irALogin()">Volver</button>
+      <div class="divider"><span>o</span></div>
+
+      <!-- Botón Google ABAJO -->
+      <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
+        <img src="/image/google.webp" alt="Google" width="20" height="20">
+        {{ cargandoGoogle ? 'Iniciando...' : ' Google' }}
+      </button>
     </div>
 
   </div>

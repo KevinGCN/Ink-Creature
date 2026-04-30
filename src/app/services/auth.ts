@@ -31,11 +31,14 @@ export class AuthService {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.usuarioActual = user;
+        // Preservar el charge si ya estaba guardado
+        const prevData = JSON.parse(localStorage.getItem('usuario') || '{}');
         const userData = {
           uid: user.uid,
           nombre: user.displayName || '',
           email: user.email || '',
-          photoURL: user.photoURL || ''
+          photoURL: user.photoURL || '',
+          charge: prevData.charge || ''
         };
         localStorage.setItem('usuario', JSON.stringify(userData));
         localStorage.setItem('logueado', 'true');
@@ -61,21 +64,30 @@ export class AuthService {
     }
   }
 
+  /** Busca el cargo del empleado en assets/empleados.json por email */
+  private async obtenerCargoPorEmail(email: string): Promise<string> {
+    try {
+      const res = await fetch('assets/empleados.json');
+      const empleados: any[] = await res.json();
+      const encontrado = empleados.find(e => e.email === email);
+      return encontrado?.charge || '';
+    } catch {
+      return '';
+    }
+  }
+
   registrar(usuario: { nombre: string; correo: string; password: string }) {
     return createUserWithEmailAndPassword(this.auth, usuario.correo, usuario.password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        await updateProfile(user, {
-          displayName: usuario.nombre
-        });
-
+        await updateProfile(user, { displayName: usuario.nombre });
         const userData = {
           uid: user.uid,
           nombre: usuario.nombre,
           email: user.email,
-          photoURL: user.photoURL || ''
+          photoURL: user.photoURL || '',
+          charge: ''
         };
-        
         this.actualizarEstadoLocal(userData);
         return user;
       });
@@ -83,13 +95,15 @@ export class AuthService {
 
   login(correo: string, password: string): Promise<boolean> {
     return signInWithEmailAndPassword(this.auth, correo, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
+        const charge = await this.obtenerCargoPorEmail(correo);
         const userData = {
           uid: user.uid,
           nombre: user.displayName || '',
           email: user.email || '',
-          photoURL: user.photoURL || ''
+          photoURL: user.photoURL || '',
+          charge
         };
         this.actualizarEstadoLocal(userData);
         return true;
@@ -100,13 +114,15 @@ export class AuthService {
   loginConGoogle(): Promise<boolean> {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(this.auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         const user = result.user;
+        const charge = await this.obtenerCargoPorEmail(user.email || '');
         const userData = {
           uid: user.uid,
           nombre: user.displayName || '',
           email: user.email || '',
-          photoURL: user.photoURL || ''
+          photoURL: user.photoURL || '',
+          charge
         };
         this.actualizarEstadoLocal(userData);
         return true;

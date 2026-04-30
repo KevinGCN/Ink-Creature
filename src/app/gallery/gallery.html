@@ -4,7 +4,7 @@
   <!-- BOTÓN SOLO ADMIN -->
   <div class="admin-actions" *ngIf="esAdmin">
     <input type="file" (change)="cargarImagen($event)" hidden #fileInput>
-    <button (click)="fileInput.click()">Subir imagen</button>
+    <button (click)="fileInput.click()">Subir Imagen</button>
   </div>
 
   <div class="grid">

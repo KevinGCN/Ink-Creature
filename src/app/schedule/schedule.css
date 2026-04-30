@@ -1,60 +1,97 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  margin: 0;
-  padding: 20px;
-}
-
+/* Contenedor principal */
 .container {
-  max-width: 900px;
+  max-width: 1100px;
   margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 25px;
+  border-radius: 18px;
+  min-height: calc(100vh - 40px);
+
+  background: linear-gradient(135deg, #F4F1F7, #E9E3F0, #D7D1DB);
+  color: #2F2F2F;
+
+  border: 1px solid #E0DCE6;
+  box-shadow: 0 8px 20px rgba(94, 89, 107, 0.18);
+  backdrop-filter: blur(4px);
+  font-family: Arial, sans-serif;
 }
 
+/* Título */
 h1 {
   text-align: center;
-  background: linear-gradient(#ccc, #999);
+  background: linear-gradient(to right, #5E596B, #C9BEDD);
   color: white;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 30px;
+  margin-top: 0;
+  letter-spacing: 1px;
 }
 
+/* Distribución */
 .content {
   display: flex;
   gap: 20px;
   margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* Calendario */
+.calendar,
+.artists {
+  background: #FFFFFF;
+  padding: 18px;
+  border-radius: 15px;
+  border: 1px solid #E0DCE6;
 }
 
 /* Calendario */
 .calendar {
-  background: #eee;
-  padding: 10px;
-  border-radius: 10px;
+  min-width: 320px;
+  flex: 1;
 }
 
 .calendar-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.days, .dates {
+.calendar-header select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #E0DCE6;
+  background: #F4F1F7;
+  color: #2F2F2F;
+}
+
+/* Días */
+.days,
+.dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  gap: 5px;
+  gap: 8px;
+}
+
+.days span {
+  font-weight: bold;
+  color: #5E596B;
 }
 
 .dates span {
-  padding: 5px;
-  border-radius: 5px;
+  padding: 8px;
+  border-radius: 8px;
   cursor: pointer;
+  background: #F4F1F7;
+}
+
+.dates span:hover {
+  background: #E9E3F0;
 }
 
 .dates .active {
-  background: #333;
+  background: #5E596B;
   color: white;
 }
 
@@ -66,55 +103,81 @@ h1 {
 }
 
 .hours button {
-  padding: 5px 10px;
-  border: none;
+  padding: 10px;
+  border: 1px solid #E0DCE6;
   border-radius: 10px;
-  background: #ddd;
+  background: #FFFFFF;
+  color: #2F2F2F;
   cursor: pointer;
+}
+
+.hours button:hover:not(.selected) {
+  background: #F4F1F7;
+}
+
+.hours button.selected {
+  background: #5E596B !important;
+  font-weight: bold;
+  color: white;
 }
 
 /* Tatuadores */
 .artists {
   flex: 1;
-  background: #eee;
-  padding: 10px;
-  border-radius: 10px;
+  min-width: 220px;
 }
 
 .artist {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+  padding: 12px;
+  border-bottom: 1px solid #E0DCE6;
+  cursor: pointer;
+}
+
+.artist:hover {
+  background: #F4F1F7;
+}
+
+.artist.selected {
+  background: #5E596B;
+  color: white;
+  border-radius: 8px;
 }
 
 /* Botones */
 .actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 20px;
 }
 
-.delete {
-  background: #f28b82;
+.cancelar,
+.reserve {
   border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 12px 22px;
+  border-radius: 22px;
   color: white;
   cursor: pointer;
+}
+
+.cancelar {
+  background: #8E8899;
 }
 
 .reserve {
-  background: #a7c7e7;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  color: white;
-  cursor: pointer;
+  background: #5E596B;
 }
 
-.selected {
-  background: black;
-  color: white;
+/* Citas */
+hr {
+  margin: 25px 0;
+  border: none;
+  border-top: 1px solid #E0DCE6;
+}
+
+p {
+  background: #FFFFFF;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #E0DCE6;
 }

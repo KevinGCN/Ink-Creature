@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
@@ -12,10 +12,13 @@ import { AuthService } from '../services/auth';
 })
 export class Gallery implements OnInit {
 
+  // Imagen seleccionada para visualización ampliada
   selectedImage: string | null = null;
+
+  // Indica si el usuario tiene permisos administrativos
   esAdmin = false;
 
-  // Imágenes base
+  // Imágenes predefinidas que no se almacenan en localStorage
   imagenesBase = [
     { src: 'image/DBZ.jpg', alt: 'Goku Y Vegeta', empleadoId: 1 },
     { src: 'image/arquemis.png', alt: 'Arquemis', empleadoId: 1 },
@@ -26,22 +29,24 @@ export class Gallery implements OnInit {
     { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 }
   ];
 
-  // Aquí se combinan base + nuevas
+  // Arreglo que contiene las imágenes visibles en la galería
   imagenes: any[] = [];
 
   constructor(
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     const usuario = this.auth.obtenerUsuario();
     this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
   }
 
+  // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
     this.cargarImagenes();
   }
 
-  // Cargar imágenes evitando duplicados
+  // Obtiene imágenes desde localStorage y evita duplicados con las imágenes base
   cargarImagenes() {
     const data = localStorage.getItem('galeria');
     const guardadas = data ? JSON.parse(data) : [];
@@ -53,42 +58,51 @@ export class Gallery implements OnInit {
     this.imagenes = [...this.imagenesBase, ...unicas];
   }
 
+  // Muestra la imagen seleccionada en el visor
   openImage(img: string) {
     this.selectedImage = img;
   }
 
+  // Cierra el visor de imágenes
   closeImage() {
     this.selectedImage = null;
   }
 
+  // Redirige al perfil del tatuador asociado
   verTatuador(empleadoId: number, event: Event) {
     event.stopPropagation();
     this.router.navigate(['/employeeCV', empleadoId]);
   }
 
+  // Reemplaza la imagen por una alternativa en caso de error
   handleImageError(event: any) {
-    console.error('Error cargando imagen:', event);
     event.target.src = 'image/placeholder.jpg';
   }
 
-  // Subir imagen
+  // Procesa la carga de una nueva imagen desde el input
   cargarImagen(event: any) {
     const file = event.target.files[0];
     if (!file) return;
+
+    // Validar tamaño antes de procesar
+    if (!this.validarTamanoArchivo(file, 2)) {
+      event.target.value = '';
+      return;
+    }
 
     const reader = new FileReader();
 
     reader.onload = () => {
       const nuevaImagen = {
-        id: Date.now(), // 🔥 ID único
+        id: Date.now(),
         src: reader.result as string,
-        alt: 'Nueva imagen',
+        alt: file.name,
         empleadoId: 1
       };
 
-      this.imagenes = [...this.imagenes, nuevaImagen];
-
       this.guardarImagenes(nuevaImagen);
+      this.imagenes = [...this.imagenes, nuevaImagen];
+      this.cdr.detectChanges();
 
       event.target.value = '';
     };
@@ -96,13 +110,14 @@ export class Gallery implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  // Guardar solo imágenes nuevas (no base)
+  // Almacena una nueva imagen en localStorage evitando duplicados
   guardarImagenes(nuevaImagen: any) {
     const data = localStorage.getItem('galeria');
     const existentes = data ? JSON.parse(data) : [];
 
-    // compara por ID
-    const yaExiste = existentes.some((img: any) => img.id === nuevaImagen.id);
+    const yaExiste = existentes.some((img: any) =>
+      img.id === nuevaImagen.id || img.src === nuevaImagen.src
+    );
 
     if (!yaExiste) {
       existentes.push(nuevaImagen);
@@ -110,25 +125,36 @@ export class Gallery implements OnInit {
     }
   }
 
+  // Elimina una imagen almacenada, excluyendo las imágenes base
   eliminarImagen(img: any, event: Event) {
-  event.stopPropagation(); // evita que abra la imagen
+    event.stopPropagation();
 
-  // NO permitir borrar imágenes base
-  const esBase = this.imagenesBase.some(base => base.src === img.src);
-  if (esBase) {
-    alert('No puedes eliminar imágenes base');
-    return;
+    const esBase = this.imagenesBase.some(base => base.src === img.src);
+    if (esBase) {
+      alert('No puedes eliminar imágenes base');
+      return;
+    }
+
+    this.imagenes = this.imagenes.filter(i => i !== img);
+
+    const data = localStorage.getItem('galeria');
+    let guardadas = data ? JSON.parse(data) : [];
+
+    guardadas = guardadas.filter((i: any) => i.id !== img.id);
+
+    localStorage.setItem('galeria', JSON.stringify(guardadas));
+
+    this.cdr.detectChanges();
   }
 
-  // eliminar del array visual
-  this.imagenes = this.imagenes.filter(i => i !== img);
+  validarTamanoArchivo(file: File, maxMB: number = 2): boolean {
+    const maxBytes = maxMB * 1024 * 1024;
 
-  // eliminar del localStorage
-  const data = localStorage.getItem('galeria');
-  let guardadas = data ? JSON.parse(data) : [];
+    if (file.size > maxBytes) {
+      alert(`El archivo supera el tamaño permitido de ${maxMB} MB`);
+      return false;
+    }
 
-  guardadas = guardadas.filter((i: any) => i.id !== img.id);
-
-  localStorage.setItem('galeria', JSON.stringify(guardadas));
-}
+    return true;
+  }
 }

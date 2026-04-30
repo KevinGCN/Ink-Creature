@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { cargarListaTatuadores, Tatuador } from '../employees/employees';
 
 @Component({
   selector: 'app-employee-cv',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   standalone: true,
   templateUrl: './employee-cv.html',
   styleUrl: './employee-cv.css',

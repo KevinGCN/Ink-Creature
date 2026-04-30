@@ -1,6 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Employees } from './employees';
+import { AuthService } from '../services/auth';
+import { ActivatedRoute } from '@angular/router';
+
+// Mocks
+const mockAuthService = {
+  obtenerUsuario: () => ({ charge: 'Tatuador' })
+};
+
+const mockActivatedRoute = {
+  snapshot: {
+    paramMap: {
+      get: (id: string) => null
+    }
+  }
+};
 
 describe('Employees', () => {
   let component: Employees;
@@ -8,7 +22,11 @@ describe('Employees', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Employees]
+      imports: [Employees],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+      ]
     })
     .compileComponents();
 

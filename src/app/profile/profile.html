@@ -1,6 +1,5 @@
 <div class="profile-container">
 
-
   <div class="profile-header">
     <h2>Mi Perfil</h2>
   </div>
@@ -15,14 +14,38 @@
       <input type="file" (change)="cambiarFoto($event)">
     </div>
 
-    <div class="datos" *ngIf="usuario">
+    <!-- MODO VISUAL -->
+    <div class="datos" *ngIf="usuario && !editando">
       <p><b>Nombre:</b> {{ usuario?.nombre || usuario?.name }}</p>
       <p><b>Email:</b> {{ usuario?.correo || usuario?.email }}</p>
+
+      <button (click)="activarEdicion()">Editar</button>
+    </div>
+
+    <!-- MODO EDICIÓN -->
+    <div class="datos" *ngIf="editando">
+      <input 
+        [(ngModel)]="usuario.name" 
+        placeholder="Nombre">
+
+      <input 
+        [(ngModel)]="usuario.email" 
+        placeholder="Correo">
+
+      <div class="edit-actions">
+        <button (click)="guardarCambios()">Guardar</button>
+        <button (click)="cancelarEdicion()">Cancelar</button>
+      </div>
     </div>
 
   </div>
 
+  <!-- MENSAJE DE ERROR -->
+  <p class="error" *ngIf="mensajeError">
+    {{ mensajeError }}
+  </p>
 
+  <!-- ACCIONES -->
   <div class="acciones">
     <button (click)="irAgenda()">Modificar cita</button>
     <button (click)="irResenas()">Publicar reseña</button>

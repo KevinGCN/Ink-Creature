@@ -50,6 +50,7 @@ export class Schedule implements OnInit {
 
   ngOnInit(): void {
     this.cargarEmpleados();
+    this.generarCalendario();
 
     const usuario = this.auth.obtenerUsuario();
     this.correoUsuario = usuario?.correo || '';

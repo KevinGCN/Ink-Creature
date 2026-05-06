@@ -7,12 +7,15 @@
    <!-- INFO USUARIO -->
    <div class="profile-info">
 
-     <div class="foto">
-       <img *ngIf="foto" [src]="foto">
-       <div *ngIf="!foto" class="placeholder">Sin foto</div>
+      <div class="foto">
+        <img *ngIf="foto" [src]="foto">
+        <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
-       <input type="file" (change)="cambiarFoto($event)">
-     </div>
+        <label class="btn-subir-foto">
+          <input type="file" (change)="cambiarFoto($event)" accept="image/*" hidden>
+          {{ foto ? 'Cambiar foto' : 'Subir foto' }}
+        </label>
+      </div>
 
      <div class="datos">
        <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }}</p>
@@ -20,22 +23,36 @@
      </div>
 
    </div>
-   <!-- CITAS -->
-   <div class="citas">
-     <h3>Mis Citas</h3>
 
-     <div *ngIf="citas.length === 0" class="empty">
-       No tienes citas registradas
-     </div>
 
-     <div class="cita-card" *ngFor="let cita of citas">
-       <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-       <p><strong>Hora:</strong> {{ cita.hora }}</p>
-       <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
+    <!-- CITAS -->
+    <div class="citas">
+      <div class="citas-header">
+        <h3>Mis Citas</h3>
+        <button class="btn-agenda" (click)="irAgenda()">
+          Ir a Agenda
+        </button>
+      </div>
 
-       <button class="eliminar" (click)="eliminar(cita.id)">
-         Eliminar
-       </button>
-     </div>
-   </div>
+      <div *ngIf="citas.length === 0" class="empty">
+        No tienes citas registradas
+      </div>
+
+      <div class="cita-card" *ngFor="let cita of citas">
+        <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
+        <p><strong>Hora:</strong> {{ cita.hora }}</p>
+        <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
+
+        <div class="cita-actions">
+          <button class="editar" (click)="editarCita(cita)">
+            Editar
+          </button>
+          <button class="eliminar" (click)="eliminar(cita.id)">
+            Eliminar
+          </button>
+        </div>
+      </div>
+
+    </div>
+
  </div>

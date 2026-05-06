@@ -97,45 +97,33 @@ export class Schedule implements OnInit {
       (!this.citaEditar || c.id !== this.citaEditar.id)
     );
 
-    if (existe) {
-      alert('Ese horario ya está ocupado');
-      return;
-    }
-<<<<<<< HEAD
+     if (existe) {
+       alert('Ese horario ya está ocupado');
+       return;
+     }
 
-    if (this.modoEdicion && this.citaEditar) {
-      // Actualizar cita existente
-      const citaActualizada: Cita = {
-        ...this.citaEditar,
-        fecha: this.fechaSeleccionada,
-        hora: this.horaSeleccionada,
-        tatuador: this.tatuadorSeleccionado
-      };
-=======
-    const nuevaCita = {
-      id: Date.now(),
-      fecha: this.fechaSeleccionada,
-      hora: this.horaSeleccionada,
-      tatuador: this.tatuadorSeleccionado,
-      correo: this.correoUsuario
-    };
->>>>>>> 4ed305dc448fa9c8c817beb4e1feac5b8b0cd874
-
-      this.citaService.actualizarCita(citaActualizada);
-      alert('Cita modificada con éxito');
-    } else {
-      // Crear nueva cita
-      const nuevaCita: Cita = {
-        id: Date.now(),
-        fecha: this.fechaSeleccionada,
-        hora: this.horaSeleccionada,
-        tatuador: this.tatuadorSeleccionado,
-        correo: this.correoUsuario
-      };
-
-      this.citaService.crearCita(nuevaCita);
-      alert('Cita reservada con éxito');
-    }
+     if (this.modoEdicion && this.citaEditar) {
+       // Actualizar cita existente
+       const citaActualizada: Cita = {
+         ...this.citaEditar,
+         fecha: this.fechaSeleccionada,
+         hora: this.horaSeleccionada,
+         tatuador: this.tatuadorSeleccionado
+       };
+       this.citaService.actualizarCita(citaActualizada);
+       alert('Cita modificada con éxito');
+     } else {
+       // Crear nueva cita
+       const nuevaCita: Cita = {
+         id: Date.now(),
+         fecha: this.fechaSeleccionada,
+         hora: this.horaSeleccionada,
+         tatuador: this.tatuadorSeleccionado,
+         correo: this.correoUsuario
+       };
+       this.citaService.crearCita(nuevaCita);
+       alert('Cita reservada con éxito');
+     }
 
     // Resetear y volver
     this.router.navigate(['/profile']);

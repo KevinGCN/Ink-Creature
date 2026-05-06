@@ -1,7 +1,7 @@
 export interface Cita {
-    id: number;
-    fecha: number;
-    hora: string;
-    tatuador: string;
-    correo: string;
+  id: number;
+  fecha: string;
+  hora: string;
+  tatuador: string;
+  correo: string;
 }

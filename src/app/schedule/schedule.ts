@@ -71,7 +71,6 @@ export class Schedule implements OnInit {
       alert('Faltan datos');
       return;
     }
-
     const existe = this.citaService.getCitas().find(c =>
       c.fecha === this.fechaSeleccionada &&
       c.hora === this.horaSeleccionada &&
@@ -82,7 +81,6 @@ export class Schedule implements OnInit {
       alert('Ese horario ya está ocupado');
       return;
     }
-
     const nuevaCita = {
       id: Date.now(),
       fecha: this.fechaSeleccionada,

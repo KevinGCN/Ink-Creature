@@ -62,4 +62,8 @@ export class Profile implements OnInit {
   irAgenda() {
     this.router.navigate(['/schedule']);
   }
+
+  editarCita(cita: Cita) {
+    this.router.navigate(['/schedule'], { state: { citaEditar: cita } });
+  }
 }

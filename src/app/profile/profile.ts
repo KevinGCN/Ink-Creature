@@ -66,4 +66,8 @@ export class Profile implements OnInit {
   irResenas() {
     this.router.navigate(['/']);
   }
+  
+  editarCita(cita: Cita) {
+    this.router.navigate(['/schedule'], { state: { citaEditar: cita } });
+  }
 }

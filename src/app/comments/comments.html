@@ -1,25 +1,67 @@
-<!-- Reviews -->
-<section class="reviews">
-    <div class="review-card">
-        <div class="avatar"></div>
-        <div class="review-info">
-            <h3>Pepito Perez</h3>
-            <span class="date">12/02/2026</span>
-            <p>
-                Estoy muy contento con el servicio y el diseño que realizó el tatuador.
-            </p>
-        </div>
-        <div class="stars">★★★★★</div>
+<section class="reviews-section">
+
+  <h2 class="section-title">Reseñas de clientes</h2>
+
+  <!-- Formulario para usuarios logueados -->
+  <div class="review-form" *ngIf="auth.estaLogueado()">
+    <h3 class="form-title">✍️ Publicar reseña</h3>
+
+    <div *ngIf="exito" class="alerta-exito">
+    ¡Tu reseña fue publicada exitosamente!
     </div>
-    <div class="review-card">
-        <div class="avatar"></div>
-        <div class="review-info">
-            <h3>Karen Figderald</h3>
-            <span class="date">24/12/2025</span>
-            <p>
-                Estoy contenta, el artista entendió lo que quería.
-            </p>
-        </div>
-        <div class="stars">★★★★☆</div>
+
+    <div class="form-group">
+      <label>Calificación</label>
+      <div class="star-selector">
+        <button
+          *ngFor="let i of [1,2,3,4,5]"
+          class="star-btn"
+          [class.active]="i <= calificacion"
+          (click)="calificacion = i"
+          type="button">
+          ★
+        </button>
+      </div>
     </div>
+
+    <div class="form-group">
+      <label for="comentario">Comentario</label>
+      <textarea
+        id="comentario"
+        [(ngModel)]="comentario"
+        placeholder="Comparte tu experiencia con el servicio..."
+        rows="3">
+      </textarea>
+    </div>
+
+    <button
+      class="btn-publicar"
+      (click)="publicar()"
+      [disabled]="!comentario.trim()">
+      Publicar reseña
+    </button>
+  </div>
+
+  <!-- Aviso si no está logueado -->
+  <div class="aviso-login" *ngIf="!auth.estaLogueado()">
+    <p>Inicia sesión para publicar tu reseña</p>
+  </div>
+
+  <!-- Lista de reseñas -->
+  <div *ngIf="resenas.length === 0" class="sin-resenas">
+    Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!
+  </div>
+
+  <div class="review-card" *ngFor="let r of resenas">
+    <div class="review-header">
+      <div class="avatar">{{ r.nombreUsuario[0].toUpperCase() }}</div>
+      <div class="review-meta">
+        <h3>{{ r.nombreUsuario }}</h3>
+        <span class="date">{{ r.fecha }}</span>
+      </div>
+      <div class="stars">{{ estrellas(r.calificacion) }}</div>
+    </div>
+    <p class="review-text">{{ r.comentario }}</p>
+  </div>
+
 </section>

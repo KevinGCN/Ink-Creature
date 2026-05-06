@@ -90,7 +90,6 @@ export class Schedule implements OnInit {
       alert('Faltan datos');
       return;
     }
-
     const existe = this.citaService.getCitas().find(c =>
       c.fecha === this.fechaSeleccionada &&
       c.hora === this.horaSeleccionada &&
@@ -102,6 +101,7 @@ export class Schedule implements OnInit {
       alert('Ese horario ya está ocupado');
       return;
     }
+<<<<<<< HEAD
 
     if (this.modoEdicion && this.citaEditar) {
       // Actualizar cita existente
@@ -111,6 +111,15 @@ export class Schedule implements OnInit {
         hora: this.horaSeleccionada,
         tatuador: this.tatuadorSeleccionado
       };
+=======
+    const nuevaCita = {
+      id: Date.now(),
+      fecha: this.fechaSeleccionada,
+      hora: this.horaSeleccionada,
+      tatuador: this.tatuadorSeleccionado,
+      correo: this.correoUsuario
+    };
+>>>>>>> 4ed305dc448fa9c8c817beb4e1feac5b8b0cd874
 
       this.citaService.actualizarCita(citaActualizada);
       alert('Cita modificada con éxito');

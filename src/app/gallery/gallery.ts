@@ -1,12 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { cargarListaTatuadores, Tatuador } from '../employees/employees';
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './gallery.html',
   styleUrls: ['./gallery.css']
 })
@@ -25,6 +27,13 @@ export class Gallery implements OnInit {
   ];
   imagenes: any[] = [];
 
+  // ── Estado modal de subida 
+  mostrarModalSubida = false;
+  archivoTemporal: File | null = null;
+  previewTemporal: string = '';
+  tatuadorSeleccionado: number = 1;
+  nombreImagenTemp: string = '';
+
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -35,17 +44,19 @@ export class Gallery implements OnInit {
   }
 
   ngOnInit() {
+    this.tatuadores = cargarListaTatuadores();
+    if (this.tatuadores.length > 0) {
+      this.tatuadorSeleccionado = this.tatuadores[0].id;
+    }
     this.cargarImagenes();
   }
 
   cargarImagenes() {
     const data = localStorage.getItem('galeria');
     const guardadas = data ? JSON.parse(data) : [];
-
     const unicas = guardadas.filter((img: any) =>
       !this.imagenesBase.some(base => base.src === img.src)
     );
-
     this.imagenes = [...this.imagenesBase, ...unicas];
   }
 
@@ -70,39 +81,62 @@ export class Gallery implements OnInit {
     event.target.src = 'image/placeholder.jpg';
   }
 
-  // Subir imagen
-  cargarImagen(event: any) {
+  obtenerNombreTatuador(id: number): string {
+    const t = this.tatuadores.find(t => t.id === id);
+    return t ? t.nombre : 'Tatuador';
+  }
+
+  // ── Paso 1: archivo seleccionado → abrir modal 
+  seleccionarArchivo(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
+    this.archivoTemporal = file;
+    this.nombreImagenTemp = file.name.replace(/\.[^.]+$/, '');
+    // Recargar tatuadores por si se agregaron nuevos
+    this.tatuadores = cargarListaTatuadores();
+    if (this.tatuadores.length > 0) {
+      this.tatuadorSeleccionado = this.tatuadores[0].id;
+    }
+
     const reader = new FileReader();
-
     reader.onload = () => {
-      const nuevaImagen = {
-        id: Date.now(), // 🔥 ID único
-        src: reader.result as string,
-        alt: 'Nueva imagen',
-        empleadoId: 1
-      };
-
-      this.imagenes = [...this.imagenes, nuevaImagen];
-
-      this.guardarImagenes(nuevaImagen);
-
-      event.target.value = '';
+      this.previewTemporal = reader.result as string;
+      this.mostrarModalSubida = true;
     };
-
     reader.readAsDataURL(file);
+
+    // Limpiar input para permitir resubir el mismo archivo
+    event.target.value = '';
   }
 
-  // Guardar solo imágenes nuevas (no base)
-  guardarImagenes(nuevaImagen: any) {
+  // ── Paso 2: confirmar con tatuador seleccionado 
+  confirmarSubida() {
+    if (!this.previewTemporal) return;
+
+    const nuevaImagen = {
+      id: Date.now(),
+      src: this.previewTemporal,
+      alt: this.nombreImagenTemp || 'Nueva imagen',
+      empleadoId: this.tatuadorSeleccionado
+    };
+
+    this.imagenes = [...this.imagenes, nuevaImagen];
+    this.guardarImagen(nuevaImagen);
+    this.cerrarModalSubida();
+  }
+
+  cerrarModalSubida() {
+    this.mostrarModalSubida = false;
+    this.archivoTemporal = null;
+    this.previewTemporal = '';
+    this.nombreImagenTemp = '';
+  }
+
+  guardarImagen(nuevaImagen: any) {
     const data = localStorage.getItem('galeria');
     const existentes = data ? JSON.parse(data) : [];
-
-    // compara por ID
     const yaExiste = existentes.some((img: any) => img.id === nuevaImagen.id);
-
     if (!yaExiste) {
       existentes.push(nuevaImagen);
       localStorage.setItem('galeria', JSON.stringify(existentes));
@@ -110,24 +144,16 @@ export class Gallery implements OnInit {
   }
 
   eliminarImagen(img: any, event: Event) {
-  event.stopPropagation(); // evita que abra la imagen
-
-  // NO permitir borrar imágenes base
-  const esBase = this.imagenesBase.some(base => base.src === img.src);
-  if (esBase) {
-    alert('No puedes eliminar imágenes base');
-    return;
+    event.stopPropagation();
+    const esBase = this.imagenesBase.some(base => base.src === img.src);
+    if (esBase) {
+      alert('No puedes eliminar imágenes base.');
+      return;
+    }
+    this.imagenes = this.imagenes.filter(i => i !== img);
+    const data = localStorage.getItem('galeria');
+    let guardadas = data ? JSON.parse(data) : [];
+    guardadas = guardadas.filter((i: any) => i.id !== img.id);
+    localStorage.setItem('galeria', JSON.stringify(guardadas));
   }
-
-  // eliminar del array visual
-  this.imagenes = this.imagenes.filter(i => i !== img);
-
-  // eliminar del localStorage
-  const data = localStorage.getItem('galeria');
-  let guardadas = data ? JSON.parse(data) : [];
-
-  guardadas = guardadas.filter((i: any) => i.id !== img.id);
-
-  localStorage.setItem('galeria', JSON.stringify(guardadas));
-}
 }

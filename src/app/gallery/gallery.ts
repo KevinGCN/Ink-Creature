@@ -14,7 +14,10 @@ import { cargarListaTatuadores, Tatuador } from '../employees/employees';
 })
 export class Gallery implements OnInit {
 
+  // Imagen seleccionada para visualización ampliada
   selectedImage: string | null = null;
+
+  // Indica si el usuario tiene permisos administrativos
   esAdmin = false;
 
   // Lista de tatuadores para el selector
@@ -30,7 +33,6 @@ export class Gallery implements OnInit {
     { src: 'image/kuromi.jpg', alt: 'Kuromi', empleadoId: 5 },
     { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 }
   ];
-
   imagenes: any[] = [];
 
   // ── Estado modal de subida 
@@ -48,6 +50,7 @@ export class Gallery implements OnInit {
     this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
   }
 
+  // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
     this.tatuadores = cargarListaTatuadores();
     if (this.tatuadores.length > 0) {
@@ -145,6 +148,7 @@ export class Gallery implements OnInit {
     }
   }
 
+  // Elimina una imagen almacenada, excluyendo las imágenes base
   eliminarImagen(img: any, event: Event) {
     event.stopPropagation();
     const esBase = this.imagenesBase.some(base => base.src === img.src);

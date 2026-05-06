@@ -1,6 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ActivatedRoute } from '@angular/router';
 import { EmployeeCV } from './employee-cv';
+
+// Mock de ActivatedRoute
+const mockActivatedRoute = {
+  snapshot: {
+    paramMap: {
+      get: (id: string) => '1'
+    }
+  }
+};
 
 describe('EmployeeCV', () => {
   let component: EmployeeCV;
@@ -8,7 +17,8 @@ describe('EmployeeCV', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmployeeCV]
+      imports: [EmployeeCV],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }]
     })
     .compileComponents();
 

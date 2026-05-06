@@ -59,13 +59,28 @@
 }
 
 .foto input {
+  display: none;
+}
+
+/* Botón subir foto */
+.btn-subir-foto {
+  display: inline-block;
   margin-top: 12px;
-  width: 100%;
-  padding: 8px;
-  border-radius: 10px;
-  border: 1px solid #E0DCE6;
-  background: white;
-  color: #2F2F2F;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #7C6A9E, #5E4D85);
+  color: white;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(94, 89, 107, 0.2);
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-subir-foto:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(94, 89, 107, 0.3);
 }
 
 /* Datos */
@@ -115,11 +130,36 @@
   border: 1px solid #E0DCE6;
 }
 
-.citas h3 {
-  margin-top: 0;
+.citas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
+}
+
+.citas-header h3 {
+  margin: 0;
   font-size: 24px;
   color: #4B4453;
+}
+
+/* Botón ir a agenda */
+.btn-agenda {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #7C6A9E, #5E4D85);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(94, 89, 107, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-agenda:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(94, 89, 107, 0.3);
 }
 
 /* Sin registros */

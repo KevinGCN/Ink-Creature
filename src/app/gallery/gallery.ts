@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -44,8 +44,7 @@ export class Gallery implements OnInit {
 
   constructor(
     private router: Router,
-    private auth: AuthService,
-    private cdr: ChangeDetectorRef
+    private auth: AuthService
   ) {
     const usuario = this.auth.obtenerUsuario();
     this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
@@ -69,24 +68,21 @@ export class Gallery implements OnInit {
     this.imagenes = [...this.imagenesBase, ...unicas];
   }
 
-  // Muestra la imagen seleccionada en el visor
   openImage(img: string) {
     this.selectedImage = img;
   }
 
-  // Cierra el visor de imágenes
   closeImage() {
     this.selectedImage = null;
   }
 
-  // Redirige al perfil del tatuador asociado
   verTatuador(empleadoId: number, event: Event) {
     event.stopPropagation();
     this.router.navigate(['/employeeCV', empleadoId]);
   }
 
-  // Reemplaza la imagen por una alternativa en caso de error
   handleImageError(event: any) {
+    console.error('Error cargando imagen:', event);
     event.target.src = 'image/placeholder.jpg';
   }
 

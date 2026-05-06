@@ -1,22 +1,25 @@
-/* MAINBAR */
+/* ===== SIDEBAR BASE ===== */
 .sidebar {
-  border-radius: 15px;
-  width: 170px;
+  width: 130px;
   height: 100%;
   background-color: #E9E3F0;
+  border-radius: 15px;
   transition: width 0.3s ease;
   position: relative;
-  z-index: 1000;
+  overflow: hidden;
 }
 
-/* BOTON */
+/* ===== BOTÓN ===== */
 .toggle-btn {
+  width: 100%;
+  height: 70px;
   background: none;
   border: none;
   color: #4B4453;
-  font-size: 15px;
-  padding: 10px 46%;
+  font-size: 18px;
+  padding: 12px;
   cursor: pointer;
+  text-align: center;
 }
 
 .toggle-btn:hover {
@@ -24,38 +27,61 @@
   border-radius: 5px;
 }
 
-/* LINKS */
+/* ===== LINKS ===== */
 .sidebar a {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 0px;
+  padding: 0px 8px;
+  text-align: center;
   color: #2F2F2F;
   text-decoration: none;
-  padding: 50px 15%;
-  white-space: nowrap;
+  transition: 0.3s;
 }
 
 .sidebar a:hover {
   background-color: #D7D1DB;
+  color: black;
+  border-radius: 8px;
 }
 
-/*=======ESTADO COLAPSADO========*/
-.sidebar.collapsed{
+/* ===== ICONOS ===== */
+.sidebar .icon {
+  font-size: 24px;
+}
+
+/* ===== TEXTO ===== */
+.sidebar .text {
+  font-size: 12px;
+  white-space: nowrap;
+  transition: 0.3s ease;
+}
+
+/* ===== ESTADO ACTIVO ===== */
+.sidebar a.active {
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: default;
+  background-color: #D7D1DB;
+}
+
+/* ========================================= */
+/* ===== ESTADO COLAPSADO ===== */
+/* ========================================= */
+
+.sidebar.collapsed {
   width: 70px;
-  height: 70px;
-  transition: width 0.3s ease;
 }
 
-/* OCULTAR TEXTO */
-.sidebar.collapsed .text,
-.sidebar.collapsed .icon {
+/* ocultar SOLO texto */
+.sidebar.collapsed .text {
   display: none;
 }
 
-.sidebar.collapsed .toggle-btn {
-  font-size: 38px;
-}
-
+/* mantener iconos centrados */
 .sidebar.collapsed a {
-  pointer-events: none;
+  flex-direction: column;
+  padding: 14px 0;
 }

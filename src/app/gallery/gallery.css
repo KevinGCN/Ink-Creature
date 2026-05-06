@@ -1,132 +1,146 @@
+/* ===== CONTENEDOR ===== */
 .gallery {
-  padding: 40px;
-  background: #F4F1F7; 
+  padding: 30px;
+  background: #F4F1F7;
   min-height: 100vh;
 }
 
+/* ===== TÍTULO ===== */
 .title {
   color: #2F2F2F;
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 35px;
+  margin-bottom: 25px;
+  font-size: 32px;
 }
 
+/* ===== GRID REAL (MEJOR QUE COLUMN) ===== */
 .grid {
-  column-count: 4;
-  column-gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
 }
 
+/* ===== ITEM ===== */
 .grid-item {
   position: relative;
-  margin-bottom: 15px;
-  break-inside: avoid;
   cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
   transition: transform 0.3s ease;
 }
 
+/* ===== IMAGEN ===== */
 .grid-item img {
   width: 100%;
-  border-radius: 12px;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
 }
 
-
+/* ===== HOVER ===== */
 .grid-item:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
-
 .grid-item:hover img {
-  filter: brightness(0.85);
+  filter: brightness(0.75);
 }
-
-
-.btn-tatuador {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  opacity: 0;
-
-  background: #5E596B; 
-  color: white;
-  border: none;
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-
-  box-shadow: 0 4px 10px rgba(94, 89, 107, 0.25);
-  transition: all 0.3s ease;
-}
-
 .grid-item:hover .btn-tatuador {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-
-.btn-tatuador:hover {
-  background: #4B4453;
-}
-
-.admin-actions {
-  background: gray;
-  color: black;
-  font-size: 12px;
-  border-radius: 20%;
-  width: 38px;
-  height: 18px;
-}
-
-.btn-eliminar {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 0, 0, 0.8);
-  border: none;
-  color: white;
-  font-size: 14px;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  opacity: 0;
-  transition: 0.3s;
-}
-
 .grid-item:hover .btn-eliminar {
   opacity: 1;
 }
+.admin-actions button:hover {
+  background-color: #6B5C7A;
+  transform: translateY(-1px);
+}
+.btn-subir:hover {
+  background: #5E4D85;
+}
+.btn-cancelar:hover { background: #F0EBF8; }
+.modal-close:hover { color: #4B4453; }
+.btn-confirmar:hover { background: #5E4D85; }
 
 
+
+/* ===== BOTÓN TATUADOR ===== */
+.btn-tatuador {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0;
+
+  background: #5E596B;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+
+/*========= ADMIN ACTIONS ===========*/
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.admin-actions button {
+  background-color: #4B4453;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+/* Estado deshabilitado */
+.admin-actions button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* Click */
+.admin-actions button:active {
+  transform: scale(0.97);
+}
+
+
+/* ===== VISOR ===== */
 .image-viewer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(47, 47, 47, 0.9); 
+  background: rgba(47, 47, 47, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  cursor: pointer;
 }
-
 .image-viewer img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 12px;
 }
 
+/* ===== ADMIN ACTIONS (CORREGIDO) ===== */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
-@media (max-width: 1200px) { .grid { column-count: 3; } }
-@media (max-width: 800px)  { .grid { column-count: 2; } }
-@media (max-width: 500px)  { .grid { column-count: 1; } }
-
-/* ── Botón subir imagen ────────────────────────────────── */
+/* ============== BOTONES ================= */
 .btn-subir {
   display: inline-block;
   background: #7C6A9E;
@@ -139,10 +153,41 @@
   margin-bottom: 20px;
   transition: background 0.25s;
 }
-
-.btn-subir:hover {
-  background: #5E4D85;
+.btn-cancelar {
+  padding: 9px 18px;
+  border: 1px solid #C9BEDD;
+  background: white;
+  color: #5E596B;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
 }
+.btn-confirmar {
+  padding: 9px 18px;
+  background: #7C6A9E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-eliminar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 0, 0, 0.85);
+  border: none;
+  color: white;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.3s;
+}
+
 
 /* ── Modal overlay ─────────────────────────────────────── */
 .modal-overlay {
@@ -168,7 +213,6 @@
   flex-direction: column;
   overflow: hidden;
 }
-
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -176,13 +220,11 @@
   padding: 18px 22px 12px;
   border-bottom: 1px solid #EDE9F3;
 }
-
 .modal-header h3 {
   font-size: 17px;
   color: #4B4453;
   margin: 0;
 }
-
 .modal-close {
   background: none;
   border: none;
@@ -190,22 +232,17 @@
   cursor: pointer;
   color: #8E8899;
 }
-
-.modal-close:hover { color: #4B4453; }
-
 .modal-body {
   padding: 18px 22px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .modal-body label {
   font-size: 13px;
   font-weight: 600;
   color: #5E596B;
 }
-
 .modal-body input,
 .modal-body select {
   padding: 9px 12px;
@@ -217,18 +254,15 @@
   width: 100%;
   box-sizing: border-box;
 }
-
 .modal-body input:focus,
 .modal-body select:focus {
   outline: none;
   border-color: #7C6A9E;
 }
-
 .img-preview {
   text-align: center;
   margin-bottom: 6px;
 }
-
 .img-preview img {
   width: 120px;
   height: 120px;
@@ -236,7 +270,6 @@
   border-radius: 10px;
   border: 2px solid #C9BEDD;
 }
-
 .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -245,27 +278,16 @@
   border-top: 1px solid #EDE9F3;
 }
 
-.btn-cancelar {
-  padding: 9px 18px;
-  border: 1px solid #C9BEDD;
-  background: white;
-  color: #5E596B;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
 }
 
-.btn-cancelar:hover { background: #F0EBF8; }
-
-.btn-confirmar {
-  padding: 9px 18px;
-  background: #7C6A9E;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.2s;
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
-
-.btn-confirmar:hover { background: #5E4D85; }

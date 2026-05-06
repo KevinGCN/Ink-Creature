@@ -113,11 +113,13 @@
 
   </div>
 
-  <!-- Botones -->
-  <div class="actions">
-    <button class="cancelar" routerLink="">Cancelar</button>
-    <button class="reserve" (click)="reservar()">Reservar</button>
-  </div>
+   <!-- Botones -->
+   <div class="actions">
+     <button class="cancelar" routerLink="">Cancelar</button>
+     <button class="reserve" (click)="reservar()">
+       {{ modoEdicion ? 'Actualizar Cita' : 'Reservar' }}
+     </button>
+   </div>
 
   <hr>
   <div>

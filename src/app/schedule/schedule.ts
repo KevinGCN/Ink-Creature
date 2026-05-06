@@ -23,8 +23,21 @@ export class Schedule implements OnInit {
 
   empleados: Empleado[] = [];
   private correoUsuario: string = '';
-  citaEditar: Cita | null = null;
-  modoEdicion: boolean = false;
+
+  // =========================
+  // CALENDARIO DINÁMICO
+  // =========================
+  meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  anios = [2026, 2027];
+
+  mesActual = new Date().getMonth();
+  anioActual = new Date().getFullYear();
+
+  diasMes: number[] = [];
 
   constructor(
     private citaService: CitaService,
@@ -36,6 +49,7 @@ export class Schedule implements OnInit {
 
    ngOnInit(): void {
     this.cargarEmpleados();
+    this.generarCalendario();
 
     const usuario = this.auth.obtenerUsuario();
     this.correoUsuario = usuario?.correo || '';
@@ -56,11 +70,17 @@ export class Schedule implements OnInit {
     }
   }
 
+  // Genera los días según mes y año
+  generarCalendario() {
+    const dias = new Date(this.anioActual, this.mesActual + 1, 0).getDate();
+    this.diasMes = Array.from({ length: dias }, (_, i) => i + 1);
+  }
+
   cargarEmpleados(): void {
     this.empleadoService.getEmpleados().subscribe({
       next: data => {
         this.empleados = data;
-        this.cdr.detectChanges(); // fuerza refresco
+        this.cdr.detectChanges();
       },
       error: err => {
         console.error(err);
@@ -68,7 +88,27 @@ export class Schedule implements OnInit {
     });
   }
 
+  // =========================
+  // VALIDACIÓN DE FECHA
+  // =========================
+  esFechaPasada(dia: number): boolean {
+    const hoy = new Date();
+
+    const fechaSeleccion = new Date(this.anioActual, this.mesActual, dia);
+
+    // Comparar solo fecha (sin horas)
+    hoy.setHours(0, 0, 0, 0);
+    fechaSeleccion.setHours(0, 0, 0, 0);
+
+    return fechaSeleccion < hoy;
+  }
+
   seleccionarFecha(dia: number) {
+    if (this.esFechaPasada(dia)) {
+      alert('No puedes seleccionar fechas pasadas');
+      return;
+    }
+
     this.fechaSeleccionada = dia;
   }
 
@@ -90,12 +130,26 @@ export class Schedule implements OnInit {
       alert('Faltan datos');
       return;
     }
-    const existe = this.citaService.getCitas().find(c =>
-      c.fecha === this.fechaSeleccionada &&
-      c.hora === this.horaSeleccionada &&
-      c.tatuador === this.tatuadorSeleccionado &&
-      (!this.citaEditar || c.id !== this.citaEditar.id)
-    );
+
+    // Validar nuevamente antes de reservar
+    if (this.esFechaPasada(this.fechaSeleccionada)) {
+      alert('No puedes reservar en fechas pasadas');
+      return;
+    }
+
+    const fechaNueva = new Date(this.anioActual, this.mesActual, this.fechaSeleccionada);
+
+    const existe = this.citaService.getCitas().find(c => {
+      const fechaCita = new Date(c.fecha);
+
+      return (
+        fechaCita.getFullYear() === fechaNueva.getFullYear() &&
+        fechaCita.getMonth() === fechaNueva.getMonth() &&
+        fechaCita.getDate() === fechaNueva.getDate() &&
+        c.hora === this.horaSeleccionada &&
+        c.tatuador === this.tatuadorSeleccionado
+      );
+    });
 
     if (existe) {
       alert('Ese horario ya está ocupado');
@@ -103,7 +157,7 @@ export class Schedule implements OnInit {
     }
     const nuevaCita = {
       id: Date.now(),
-      fecha: this.fechaSeleccionada,
+      fecha: `${this.fechaSeleccionada}/${this.mesActual + 1}/${this.anioActual}`,
       hora: this.horaSeleccionada,
       tatuador: this.tatuadorSeleccionado,
       correo: this.correoUsuario

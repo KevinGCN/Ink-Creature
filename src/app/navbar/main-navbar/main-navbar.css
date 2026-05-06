@@ -12,6 +12,7 @@
 /* ===== BOTÓN ===== */
 .toggle-btn {
   width: 100%;
+  height: 70px;
   background: none;
   border: none;
   color: #4B4453;
@@ -29,11 +30,12 @@
 /* ===== LINKS ===== */
 .sidebar a {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
-
+  justify-content: center;
+  gap: 0px;
+  padding: 0px 8px;
+  text-align: center;
   color: #2F2F2F;
   text-decoration: none;
   transition: 0.3s;
@@ -47,56 +49,39 @@
 
 /* ===== ICONOS ===== */
 .sidebar .icon {
-  font-size: 26px;
-  width: 40px;
-  text-align: center;
-  flex-shrink: 0;
+  font-size: 24px;
 }
 
 /* ===== TEXTO ===== */
 .sidebar .text {
+  font-size: 12px;
   white-space: nowrap;
   transition: 0.3s ease;
 }
 
+/* ===== ESTADO ACTIVO ===== */
+.sidebar a.active {
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: default;
+  background-color: #D7D1DB;
+}
+
 /* ========================================= */
-/* ===== ESTADO COLAPSADO (TU LÓGICA TS) ==== */
+/* ===== ESTADO COLAPSADO ===== */
 /* ========================================= */
 
 .sidebar.collapsed {
   width: 70px;
 }
 
-/* 🔥 ocultas SOLO texto, no iconos */
+/* ocultar SOLO texto */
 .sidebar.collapsed .text {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
+  display: none;
 }
 
-/* iconos centrados */
+/* mantener iconos centrados */
 .sidebar.collapsed a {
-  justify-content: center;
+  flex-direction: column;
   padding: 14px 0;
-}
-
-/* ========================================= */
-/* ===== HOVER SOBRE SIDEBAR COLAPSADO ===== */
-/* ========================================= */
-
-/* expandir sidebar SOLO visual */
-.sidebar.collapsed:hover {
-  width: 180px;
-}
-
-/* mostrar texto en hover */
-.sidebar.collapsed:hover .text {
-  opacity: 1;
-  width: auto;
-}
-
-/* reacomodar contenido */
-.sidebar.collapsed:hover a {
-  justify-content: flex-start;
-  padding: 12px 16px;
 }

@@ -133,6 +133,12 @@
   border-radius: 12px;
 }
 
+/* ===== ADMIN ACTIONS (CORREGIDO) ===== */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
 /* ============== BOTONES ================= */
 .btn-subir {

@@ -3,30 +3,96 @@
   <div class="encabezado">
     <h1>Nuestros Tatuadores</h1>
     <p>Conoce al equipo de artistas de Ink Creature</p>
+
+    <!--  Botón solo visible para CEO / Admin -->
+    <button *ngIf="esAdmin" class="btn-agregar" (click)="abrirAgregar()">
+      + Agregar Tatuador
+    </button>
   </div>
 
   <div class="catalogo">
-    <div class="tarjeta" *ngFor="let empleado of empleados">
+    <div class="tarjeta" *ngFor="let t of tatuadores">
 
       <div class="tarjeta-foto">
-        <img [src]="empleado.foto" [alt]="empleado.nombre">
-        <span class="badge">{{ empleado.especialidad }}</span>
+        <img [src]="t.foto" [alt]="t.nombre">
+        <span class="badge">{{ t.especialidad }}</span>
       </div>
 
       <div class="tarjeta-info">
-        <h2>{{ empleado.nombre }}</h2>
-        <p class="cargo">{{ empleado.cargo }}</p>
-        <p class="experiencia">{{ empleado.experiencia }} años de experiencia</p>
-        <div class="estrellas">{{ obtenerEstrellas(empleado.estrellas) }}</div>
+        <h2>{{ t.nombre }}</h2>
+        <p class="cargo">{{ t.cargo }}</p>
+        <p class="experiencia">{{ t.experiencia }} años de experiencia</p>
+        <div class="estrellas">{{ obtenerEstrellas(t.estrellas) }}</div>
       </div>
 
       <div class="tarjeta-footer">
-        <a [routerLink]="['/employeeCV', empleado.id]" class="btn-perfil">
+        <a [routerLink]="['/employeeCV', t.id]" class="btn-perfil">
           Ver perfil
         </a>
+
+        <!-- Botones de edición solo para CEO / Admin -->
+        <div *ngIf="esAdmin" class="admin-btns">
+          <button class="btn-editar" (click)="abrirEditar(t)">✏️ Editar</button>
+          <button class="btn-eliminar" (click)="eliminar(t.id)">🗑️ Eliminar</button>
+        </div>
       </div>
 
     </div>
   </div>
 
 </main>
+
+<!-- 
+     MODAL: Agregar / Editar Tatuador  (solo admin/CEO) -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()"></div>
+
+<div class="modal" *ngIf="mostrarModal">
+
+  <div class="modal-header">
+    <h2>{{ modoEdicion ? 'Editar Tatuador' : 'Agregar Tatuador' }}</h2>
+    <button class="modal-close" (click)="cerrarModal()">✕</button>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- Foto -->
+    <div class="foto-preview" *ngIf="fotoPreview">
+      <img [src]="fotoPreview" alt="Preview">
+    </div>
+
+    <label>Foto del tatuador *</label>
+    <input type="file" accept="image/*" (change)="cargarFoto($event)">
+
+    <label>Nombre *</label>
+    <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre completo">
+
+    <label>Cargo</label>
+    <select [(ngModel)]="form.cargo">
+      <option value="Tatuador">Tatuador</option>
+      <option value="Tatuadora">Tatuadora</option>
+    </select>
+
+    <label>Especialidad *</label>
+    <input type="text" [(ngModel)]="form.especialidad" placeholder="Ej: Estilo Anime, Realismo...">
+
+    <label>Años de experiencia</label>
+    <input type="number" [(ngModel)]="form.experiencia" min="1" max="50">
+
+    <label>Descripción</label>
+    <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Descripción del artista..."></textarea>
+
+    <label>Estrellas (1–5)</label>
+    <input type="number" [(ngModel)]="form.estrellas" min="1" max="5">
+
+    <p class="error-msg" *ngIf="errorForm">{{ errorForm }}</p>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+    <button class="btn-guardar" (click)="guardar()">
+      {{ modoEdicion ? 'Guardar cambios' : 'Agregar' }}
+    </button>
+  </div>
+
+</div>

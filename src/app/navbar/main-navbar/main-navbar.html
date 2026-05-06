@@ -3,23 +3,23 @@
     <button class="toggle-btn" (click)="toggleNavbar()">
         ☰
     </button>
-    <a routerLink="/lobby">
+    <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">🏠</p>
         <p class="text">Inicio</p>
     </a>
-    <a routerLink="/gallery">
+    <a routerLink="/gallery" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">🖼️</p>
         <p class="text">Galeria</p>
     </a>
-    <a routerLink="/schedule">
+    <a routerLink="/schedule" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">📅</p>
         <p class="text">Citas</p>
     </a>
-    <a routerLink="/employees">
+    <a routerLink="/employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">💼</p>
         <p class="text">Tatuadores</p>
     </a>
-    <a routerLink="/information">
+    <a routerLink="/information" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">⁉️</p>
         <p class="text">Información</p>
     </a>

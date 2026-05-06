@@ -119,16 +119,8 @@ export class Loggin {
     this.auth.registrar({
       nombre: this.nombre,
       correo: this.correo,
-      password: this.password
-    }).then(() => {
-      alert('¡Cuenta creada exitosamente!');
-      this.cerrarModal();
-    }).catch((error: any) => {
-      if (error.code === 'auth/email-already-in-use') {
-        this.mensajeError = 'Este correo ya está registrado. Por favor, usa otro o inicia sesión.';
-      } else {
-        this.mensajeError = 'Hubo un problema al crear tu cuenta. Por favor, intenta nuevamente.';
-      }
+      password: this.password,
+   
     });
   }
 

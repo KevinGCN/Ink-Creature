@@ -57,6 +57,18 @@ export class CitaService {
   }
 
   /**
+   * Actualiza una cita existente por su ID
+   * @param citaActualizada Cita con los datos actualizados (debe incluir ID)
+   */
+  actualizarCita(citaActualizada: Cita) {
+    const index = this.citas.findIndex(c => c.id === citaActualizada.id);
+    if (index !== -1) {
+      this.citas[index] = citaActualizada;
+      this.guardar();
+    }
+  }
+
+  /**
    * Elimina una cita por su ID
    * @param id Identificador único de la cita
    */

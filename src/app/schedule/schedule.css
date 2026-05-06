@@ -95,6 +95,25 @@ h1 {
   color: white;
 }
 
+/* Día deshabilitado (pasado) */
+.dates span.disabled {
+  background: #ECEAF1;
+  color: #B0AAB8;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Quitar hover en días pasados */
+.dates span.disabled:hover {
+  background: #ECEAF1;
+}
+
+/* Evitar interacción visual */
+.dates span.disabled.active {
+  background: #ECEAF1;
+  color: #B0AAB8;
+}
+
 /* Horarios */
 .hours {
   display: flex;

@@ -28,9 +28,8 @@
 
       <!-- Fechas dinámicas -->
       <div class="dates">
-        <span *ngFor="let dia of diasMes"
-              (click)="seleccionarFecha(dia)"
-              [class.active]="fechaSeleccionada === dia">
+        <span *ngFor="let dia of diasMes" (click)="!esFechaPasada(dia) && seleccionarFecha(dia)"
+          [class.active]="fechaSeleccionada === dia" [class.disabled]="esFechaPasada(dia)">
           {{ dia }}
         </span>
       </div>
@@ -51,10 +50,8 @@
 
     <!-- Tatuadores -->
     <div class="artists">
-      <div class="artist"
-           *ngFor="let empleado of empleados"
-           (click)="seleccionarTatuador(empleado.name)"
-           [class.selected]="tatuadorSeleccionado === empleado.name">
+      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado.name)"
+        [class.selected]="tatuadorSeleccionado === empleado.name">
         {{ empleado.name }}
       </div>
     </div>

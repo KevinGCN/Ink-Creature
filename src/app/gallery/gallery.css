@@ -1,74 +1,95 @@
+/* ===== CONTENEDOR ===== */
 .gallery {
-  padding: 40px;
-  background: #F4F1F7; 
+  padding: 30px;
+  background: #F4F1F7;
   min-height: 100vh;
 }
 
+/* ===== TÍTULO ===== */
 .title {
   color: #2F2F2F;
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 35px;
+  margin-bottom: 25px;
+  font-size: 32px;
 }
 
+/* ===== GRID REAL (MEJOR QUE COLUMN) ===== */
 .grid {
-  column-count: 4;
-  column-gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
 }
 
+/* ===== ITEM ===== */
 .grid-item {
   position: relative;
-  margin-bottom: 15px;
-  break-inside: avoid;
   cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
   transition: transform 0.3s ease;
 }
 
+/* ===== IMAGEN ===== */
 .grid-item img {
   width: 100%;
-  border-radius: 12px;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
 }
 
-
+/* ===== HOVER ===== */
 .grid-item:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .grid-item:hover img {
-  filter: brightness(0.85);
+  filter: brightness(0.75);
 }
 
-
+/* ===== BOTÓN TATUADOR ===== */
 .btn-tatuador {
   position: absolute;
-  bottom: 12px;
+  bottom: 10px;
   left: 50%;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateX(-50%) translateY(10px);
   opacity: 0;
 
-  background: #5E596B; 
+  background: #5E596B;
   color: white;
   border: none;
-  padding: 7px 14px;
-  border-radius: 20px;
+  padding: 6px 12px;
+  border-radius: 16px;
   font-size: 12px;
-  font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
 
-  box-shadow: 0 4px 10px rgba(94, 89, 107, 0.25);
   transition: all 0.3s ease;
 }
 
+/* mostrar en hover */
 .grid-item:hover .btn-tatuador {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-.btn-tatuador:hover {
-  background: #4B4453;
+/* ===== BOTÓN ELIMINAR ===== */
+.btn-eliminar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  background: rgba(255, 0, 0, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.3s;
 }
 
 .admin-actions {
@@ -101,18 +122,18 @@
 }
 
 
+/* ===== VISOR ===== */
 .image-viewer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(47, 47, 47, 0.9); 
+  background: rgba(47, 47, 47, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  cursor: pointer;
 }
 
 .image-viewer img {
@@ -121,7 +142,37 @@
   border-radius: 12px;
 }
 
+/* ===== ADMIN ACTIONS (CORREGIDO) ===== */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
-@media (max-width: 1200px) { .grid { column-count: 3; } }
-@media (max-width: 800px)  { .grid { column-count: 2; } }
-@media (max-width: 500px)  { .grid { column-count: 1; } }
+.admin-actions button {
+  background-color: #4B4453;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.admin-actions button:hover {
+  background-color: #6B5C7A;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

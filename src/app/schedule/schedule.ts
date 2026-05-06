@@ -31,7 +31,7 @@ export class Schedule implements OnInit {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  anios = [2025, 2026, 2027];
+  anios = [2026, 2027];
 
   mesActual = new Date().getMonth();
   anioActual = new Date().getFullYear();

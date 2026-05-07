@@ -13,7 +13,6 @@ import {
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +21,6 @@ export class AuthService {
 
   private auth = inject(Auth);
   private router = inject(Router);
-  private http = inject(HttpClient);
   private usuarioActual: User | null = null;
   public isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
@@ -33,18 +31,22 @@ export class AuthService {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.usuarioActual = user;
-        // Preservar el charge si ya estaba guardado
+        // Preservar datos existentes en localStorage (ya incluyen el charge si login ya los guardó)
         const prevData = JSON.parse(localStorage.getItem('usuario') || '{}');
-        const userData = {
-          uid: user.uid,
-          nombre: user.displayName || '',
-          email: user.email || '',
-          photoURL: user.photoURL || '',
-          charge: prevData.charge || ''
-        };
-        localStorage.setItem('usuario', JSON.stringify(userData));
+        
+        if (!prevData.uid) {
+          // Solo actualizar si no hay datos previos (flujo normal sin login previo)
+          const userData = {
+            uid: user.uid,
+            nombre: user.displayName || '',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            charge: prevData.charge || ''
+          };
+          localStorage.setItem('usuario', JSON.stringify(userData));
+        }
+        
         localStorage.setItem('logueado', 'true');
-        this.cargarYGuardarDatosUsuario(user);
         this.isLoggedIn$.next(true);
       } else {
         this.usuarioActual = null;
@@ -53,31 +55,6 @@ export class AuthService {
         this.isLoggedIn$.next(false);
       }
     });
-  }
-
-  private async cargarYGuardarDatosUsuario(user: User) {
-    const userData = {
-      uid: user.uid,
-      nombre: user.displayName || '',
-      email: user.email || '',
-      photoURL: user.photoURL || '',
-      charge: '' // valor por defecto
-    };
-
-    // Buscar el charge en empleados.json si el email coincide
-    try {
-      const empleados = await this.http.get<any[]>('assets/empleados.json').toPromise();
-      if (empleados && empleados.length > 0) {
-        const empleado = empleados.find(e => e.email === user.email);
-        if (empleado) {
-          userData.charge = empleado.charge || '';
-        }
-      }
-    } catch (error) {
-      console.error('No se pudo cargar empleados.json:', error);
-    }
-
-    this.actualizarEstadoLocal(userData);
   }
 
   private actualizarEstadoLocal(user: any) {
@@ -92,15 +69,14 @@ export class AuthService {
     }
   }
 
-  /** Busca el cargo del empleado en assets/empleados.json por email */
-  private async obtenerCargoPorEmail(email: string): Promise<string> {
+  /** Busca el empleado en assets/empleados.json por email y retorna el objeto completo */
+  private async obtenerEmpleadoPorEmail(email: string): Promise<any> {
     try {
       const res = await fetch('assets/empleados.json');
       const empleados: any[] = await res.json();
-      const encontrado = empleados.find(e => e.email === email);
-      return encontrado?.charge || '';
+      return empleados.find(e => e.email === email);
     } catch {
-      return '';
+      return null;
     }
   }
 
@@ -125,15 +101,14 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, correo, password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        const charge = await this.obtenerCargoPorEmail(correo);
-        // Aquí confiamos en onAuthStateChanged que ya carga el charge
-        // pero aseguramos datos mínimos si falla la carga del JSON
+        const empleado = await this.obtenerEmpleadoPorEmail(correo);
         const userData = {
           uid: user.uid,
-          nombre: user.displayName || '',
+          nombre: user.displayName || empleado?.name || '',
+          apellido: empleado?.last_name || '',
           email: user.email || '',
           photoURL: user.photoURL || '',
-          charge: '' // se completará en onAuthStateChanged
+          charge: empleado?.charge || 'Normal'
         };
         this.actualizarEstadoLocal(userData);
         return true;
@@ -146,14 +121,14 @@ export class AuthService {
     return signInWithPopup(this.auth, provider)
       .then(async (result) => {
         const user = result.user;
-        const charge = await this.obtenerCargoPorEmail(user.email || '');
-        // onAuthStateChanged se encargará de cargar el charge
+        const empleado = await this.obtenerEmpleadoPorEmail(user.email || '');
         const userData = {
           uid: user.uid,
-          nombre: user.displayName || '',
+          nombre: user.displayName || empleado?.name || '',
+          apellido: empleado?.last_name || '',
           email: user.email || '',
           photoURL: user.photoURL || '',
-          charge: ''
+          charge: empleado?.charge || 'Normal'
         };
         this.actualizarEstadoLocal(userData);
         return true;
@@ -192,5 +167,10 @@ export class AuthService {
 
   getAuthUser(): User | null {
     return this.usuarioActual;
+  }
+
+  esAdmin(): boolean {
+    const usuario = this.obtenerUsuario();
+    return usuario?.charge === 'Admin' || usuario?.charge === 'CEO';
   }
 }

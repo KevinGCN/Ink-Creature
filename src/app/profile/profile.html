@@ -17,10 +17,11 @@
         </label>
       </div>
 
-     <div class="datos">
-       <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }}</p>
-       <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
-     </div>
+<div class="datos">
+         <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }} {{ usuario?.apellido || usuario?.last_name || '' }}</p>
+         <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
+         <p><strong>Cargo:</strong> {{ usuario?.charge || 'Normal' }}</p>
+       </div>
 
    </div>
 

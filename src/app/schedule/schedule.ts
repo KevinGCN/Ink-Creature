@@ -229,7 +229,6 @@ export class Schedule implements OnInit {
       this.router.navigate(['/profile']);
     }
 
-
   get citas() {
       return this.citaService
         .getCitas()

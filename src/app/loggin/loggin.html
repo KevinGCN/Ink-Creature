@@ -27,7 +27,9 @@
       <label>Contraseña</label>
       <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
 
-      <button class="login-btn" (click)="iniciarSesion()">Iniciar sesión</button>
+       <button class="login-btn" (click)="iniciarSesion()" [disabled]="cargandoLogin">
+         {{ cargandoLogin ? 'Iniciando...' : 'Iniciar sesión' }}
+       </button>
 
       <div class="divider"><span>o</span></div>
 
@@ -54,7 +56,9 @@
       <label>Contraseña</label>
       <input type="password" [(ngModel)]="password" name="password">
 
-      <button class="register-btn" (click)="registrarse()">Registrarse</button>
+       <button class="register-btn" (click)="registrarse()" [disabled]="cargandoRegistro">
+         {{ cargandoRegistro ? 'Registrando...' : 'Registrarse' }}
+       </button>
 
       <div class="divider"><span>o</span></div>
 

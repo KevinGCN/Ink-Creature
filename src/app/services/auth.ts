@@ -80,7 +80,7 @@ export class AuthService {
     }
   }
 
-  registrar(usuario: { nombre: string; correo: string; password: string }) {
+  registrar(usuario: { nombre: string; correo: string; password: string }): Promise<boolean> {
     return createUserWithEmailAndPassword(this.auth, usuario.correo, usuario.password)
       .then(async (userCredential) => {
         const user = userCredential.user;
@@ -93,7 +93,11 @@ export class AuthService {
           charge: 'Normal' // por defecto para nuevos registros
         };
         this.actualizarEstadoLocal(userData);
-        return user;
+        return true;
+      })
+      .catch((error: any) => {
+        console.error('Error en registrar:', error);
+        throw error; // Re-lanzar para que el componente lo capture
       });
   }
 

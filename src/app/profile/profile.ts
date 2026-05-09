@@ -53,7 +53,13 @@ export class Profile implements OnInit {
   // FOTO DE PERFIL
   // =========================
   cargarFoto() {
-    this.foto = localStorage.getItem('fotoPerfil') || '';
+    const usuario = this.auth.obtenerUsuario();
+    const uid = usuario?.uid;
+    if (uid) {
+      this.foto = localStorage.getItem('fotoPerfil_' + uid) || '';
+    } else {
+      this.foto = '';
+    }
   }
 
   cambiarFoto(event: any) {
@@ -70,10 +76,14 @@ export class Profile implements OnInit {
 
     reader.onload = () => {
       this.foto = reader.result as string;
-      localStorage.setItem('fotoPerfil', this.foto);
+      const uid = this.auth.getAuthUser()?.uid || this.usuario?.uid;
+      if (uid) {
+        localStorage.setItem('fotoPerfil_' + uid, this.foto);
+      }
     };
 
     reader.readAsDataURL(file);
+    event.target.value = ''; // Resetea el input para evitar doble explorador
   }
 
   // =========================

@@ -23,6 +23,7 @@ export class AuthService {
   private router = inject(Router);
   private usuarioActual: User | null = null;
   public isLoggedIn$ = new BehaviorSubject<boolean>(false);
+  public usuario$ = new BehaviorSubject<any>(this.obtenerUsuario());
 
   constructor() {
     const storedAuth = localStorage.getItem('logueado') === 'true';
@@ -58,16 +59,18 @@ export class AuthService {
   }
 
   private actualizarEstadoLocal(user: any) {
-    if (user) {
-      localStorage.setItem('usuario', JSON.stringify(user));
-      localStorage.setItem('logueado', 'true');
-      this.isLoggedIn$.next(true);
-    } else {
-      localStorage.removeItem('logueado');
-      localStorage.removeItem('usuario');
-      this.isLoggedIn$.next(false);
-    }
+  if (user) {
+    localStorage.setItem('usuario', JSON.stringify(user));
+    localStorage.setItem('logueado', 'true');
+    this.isLoggedIn$.next(true);
+    this.usuario$.next(user);
+  } else {
+    localStorage.removeItem('logueado');
+    localStorage.removeItem('usuario');
+    this.isLoggedIn$.next(false);
+    this.usuario$.next(null);
   }
+}
 
   /** Busca el empleado en assets/empleados.json por email y retorna el objeto completo */
   private async obtenerEmpleadoPorEmail(email: string): Promise<any> {

@@ -93,5 +93,6 @@ export class UserNavbar {
     this.auth.logout();
     this.mostrarAjustes = false;
     this.router.navigate(['/']);
+    window.location.reload();
   }
 }

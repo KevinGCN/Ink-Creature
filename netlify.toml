@@ -1,0 +1,9 @@
+[build]
+#   base = "Ink-Creature"
+    command = "ng build"
+    publish = "dist/Ink-Creature/browser"
+
+    [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200

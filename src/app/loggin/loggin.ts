@@ -96,6 +96,7 @@ export class Loggin {
 
       if (ok) {
         this.cerrarModal();
+        window.location.reload();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
       }
@@ -115,19 +116,15 @@ export class Loggin {
    */
   async registrarse() {
     if (this.cargandoRegistro) return;
-    
     this.mensajeError = '';
-
     if (!this.nombre || !this.correo || !this.password) {
       this.mensajeError = 'Por favor, completa todos los campos para registrarte';
       return;
     }
-
     if (!this.correo.includes('@')) {
       this.mensajeError = 'Por favor, ingresa un correo electrónico válido';
       return;
     }
-
     if (this.password.length < 8) {
       this.mensajeError = 'La contraseña debe tener al menos 8 caracteres para mayor seguridad';
       return;
@@ -146,7 +143,6 @@ export class Loggin {
       console.error('Error al verificar empleados:', error);
       // Continuamos de todos modos, por si el JSON no está disponible
     }
-
     this.cargandoRegistro = true;
 
     try {
@@ -155,9 +151,9 @@ export class Loggin {
         correo: this.correo,
         password: this.password,
       });
-
       if (ok) {
         this.cerrarModal();
+        window.location.reload();
       } else {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
       }
@@ -186,6 +182,7 @@ export class Loggin {
       const ok = await this.auth.loginConGoogle();
       if (ok) {
         this.cerrarModal();
+        window.location.reload();
       } else {
         this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
       }

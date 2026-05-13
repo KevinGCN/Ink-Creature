@@ -12,10 +12,10 @@
     <!-- LOGIN -->
     <div *ngIf="!modoRegistro">
       <h2>Iniciar sesión</h2>
-
+      
       <!-- Botón Google ARRIBA -->
       <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="/image/google.webp" alt="Google" width="20" height="20">
+       <img src="/image/google.webp" alt="Google" width="20" height="20">
         {{ cargandoGoogle ? 'Iniciando...' : 'Google' }}
       </button>
 

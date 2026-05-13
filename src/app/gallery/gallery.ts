@@ -26,12 +26,12 @@ export class Gallery implements OnInit {
   // Imágenes base
   imagenesBase = [
     { src: 'image/DBZ.jpg', alt: 'Goku Y Vegeta', empleadoId: 1 },
-    { src: 'image/arquemis.png', alt: 'Arquemis', empleadoId: 1 },
     { src: 'image/ladymaria.png', alt: 'Lady Maria', empleadoId: 2 },
     { src: 'image/mercy.png', alt: 'Mercy', empleadoId: 3 },
     { src: 'image/rem.png', alt: 'Rem', empleadoId: 4 },
     { src: 'image/kuromi.jpg', alt: 'Kuromi', empleadoId: 5 },
-    { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 }
+    { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 },
+    { src: 'image/arquemis.png', alt: 'Arquemis', empleadoId: 7 }
   ];
   imagenes: any[] = [];
 
@@ -42,21 +42,23 @@ export class Gallery implements OnInit {
   tatuadorSeleccionado: number = 1;
   nombreImagenTemp: string = '';
 
-  constructor(
-    private router: Router,
-    private auth: AuthService
-  ) {
+  constructor(private router: Router, private auth: AuthService) {
     const usuario = this.auth.obtenerUsuario();
     this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
   }
 
   // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
+    this.auth.usuario$.subscribe(usuario => {
+      this.esAdmin =
+        usuario?.charge === 'CEO' ||
+        usuario?.charge === 'Admin';
+    });
+    this.cargarImagenes();
     this.tatuadores = cargarListaTatuadores();
     if (this.tatuadores.length > 0) {
       this.tatuadorSeleccionado = this.tatuadores[0].id;
     }
-    this.cargarImagenes();
   }
 
   cargarImagenes() {
@@ -104,12 +106,8 @@ export class Gallery implements OnInit {
       this.tatuadorSeleccionado = this.tatuadores[0].id;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.previewTemporal = reader.result as string;
-      this.mostrarModalSubida = true;
-    };
-    reader.readAsDataURL(file);
+    this.previewTemporal = URL.createObjectURL(file);
+    this.mostrarModalSubida = true;
 
     // Limpiar input para permitir resubir el mismo archivo
     event.target.value = '';

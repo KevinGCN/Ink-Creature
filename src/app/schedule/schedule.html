@@ -36,17 +36,34 @@
 
     </div>
 
-    <!-- Horarios -->
-    <div class="hours">
-      <button (click)="seleccionarHora('8:00 AM')" [class.selected]="horaSeleccionada === '8:00 AM'">8:00 AM</button>
-      <button (click)="seleccionarHora('8:30 AM')" [class.selected]="horaSeleccionada === '8:30 AM'">8:30 AM</button>
-      <button (click)="seleccionarHora('9:00 AM')" [class.selected]="horaSeleccionada === '9:00 AM'">9:00 AM</button>
-      <button (click)="seleccionarHora('9:30 AM')" [class.selected]="horaSeleccionada === '9:30 AM'">9:30 AM</button>
-      <button (click)="seleccionarHora('10:00 AM')" [class.selected]="horaSeleccionada === '10:00 AM'">10:00 AM</button>
-      <button (click)="seleccionarHora('2:00 PM')" [class.selected]="horaSeleccionada === '2:00 PM'">2:00 PM</button>
-      <button (click)="seleccionarHora('2:30 PM')" [class.selected]="horaSeleccionada === '2:30 PM'">2:30 PM</button>
-      <button (click)="seleccionarHora('3:00 PM')" [class.selected]="horaSeleccionada === '3:00 PM'">3:00 PM</button>
-    </div>
+<!-- Horarios -->
+
+<div class="hours">
+  <button (click)="!esHoraPasada('8:00 AM') && seleccionarHora('8:00 AM')" 
+          [class.selected]="horaSeleccionada === '8:00 AM'" 
+          [class.disabled]="esHoraPasada('8:00 AM')">8:00 AM</button>
+  <button (click)="!esHoraPasada('8:30 AM') && seleccionarHora('8:30 AM')" 
+          [class.selected]="horaSeleccionada === '8:30 AM'" 
+          [class.disabled]="esHoraPasada('8:30 AM')">8:30 AM</button>
+  <button (click)="!esHoraPasada('9:00 AM') && seleccionarHora('9:00 AM')" 
+          [class.selected]="horaSeleccionada === '9:00 AM'" 
+          [class.disabled]="esHoraPasada('9:00 AM')">9:00 AM</button>
+  <button (click)="!esHoraPasada('9:30 AM') && seleccionarHora('9:30 AM')" 
+          [class.selected]="horaSeleccionada === '9:30 AM'" 
+          [class.disabled]="esHoraPasada('9:30 AM')">9:30 AM</button>
+  <button (click)="!esHoraPasada('10:00 AM') && seleccionarHora('10:00 AM')" 
+          [class.selected]="horaSeleccionada === '10:00 AM'" 
+          [class.disabled]="esHoraPasada('10:00 AM')">10:00 AM</button>
+  <button (click)="!esHoraPasada('2:00 PM') && seleccionarHora('2:00 PM')" 
+          [class.selected]="horaSeleccionada === '2:00 PM'" 
+          [class.disabled]="esHoraPasada('2:00 PM')">2:00 PM</button>
+  <button (click)="!esHoraPasada('2:30 PM') && seleccionarHora('2:30 PM')" 
+          [class.selected]="horaSeleccionada === '2:30 PM'" 
+          [class.disabled]="esHoraPasada('2:30 PM')">2:30 PM</button>
+  <button (click)="!esHoraPasada('3:00 PM') && seleccionarHora('3:00 PM')" 
+          [class.selected]="horaSeleccionada === '3:00 PM'" 
+          [class.disabled]="esHoraPasada('3:00 PM')">3:00 PM</button>
+</div>
 
     <!-- Tatuadores -->
     <div class="artists">

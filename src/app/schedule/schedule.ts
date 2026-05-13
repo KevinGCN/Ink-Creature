@@ -121,6 +121,34 @@ export class Schedule implements OnInit {
 
       return fechaSeleccion < hoy;
     }
+//aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual//
+    esHoraPasada(hora: string): boolean {
+      const hoy = new Date();
+      const esHoy =
+        this.fechaSeleccionada === hoy.getDate() &&
+        this.mesActual === hoy.getMonth() &&
+        this.anioActual === hoy.getFullYear();
+
+      if (!esHoy) {
+        return false;
+      }
+
+      const [horaParte, minutoParte, periodo] = hora.split(/[: ]/);
+      let horaNumero = parseInt(horaParte);
+      const minutoNumero = parseInt(minutoParte);
+
+      if (periodo === 'PM' && horaNumero !== 12) {
+        horaNumero += 12;
+      }
+      if (periodo === 'AM' && horaNumero === 12) {
+        horaNumero = 0;
+      }
+
+      const horaActual = hoy.getHours();
+      const minutoActual = hoy.getMinutes();
+
+      return horaNumero < horaActual || (horaNumero === horaActual && minutoNumero <= minutoActual);
+    }
 
     seleccionarFecha(dia: number) {
       if (this.esFechaPasada(dia)) {

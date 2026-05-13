@@ -22,6 +22,7 @@ import { routes } from './app.routes';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { firebaseConfig } from './config/firebase.config';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,6 +36,9 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
 
     // Proveedor del servicio Auth de Firebase
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+
+    // Proveedor de HttpClient para peticiones HTTP
+    provideHttpClient()
   ]
 };

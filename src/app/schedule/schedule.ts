@@ -121,7 +121,7 @@ export class Schedule implements OnInit {
 
       return fechaSeleccion < hoy;
     }
-//aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual
+//aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual//
     esHoraPasada(hora: string): boolean {
       const hoy = new Date();
       const esHoy =

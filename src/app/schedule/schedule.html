@@ -37,7 +37,7 @@
     </div>
 
 <!-- Horarios -->
- //aqui agremaos la validacion eshorapasada, que solo se aplicara si la fecha seleccionada es el día actual, para evitar que se bloqueen horas de días futuros
+
 <div class="hours">
   <button (click)="!esHoraPasada('8:00 AM') && seleccionarHora('8:00 AM')" 
           [class.selected]="horaSeleccionada === '8:00 AM'" 

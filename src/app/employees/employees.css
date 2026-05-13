@@ -181,7 +181,9 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
-  z-index: 900;
+  z-index: 9998;
+  display: block; /* Para asegurar que el overlay se sobreponga */
+
 }
 
 /* ── Modal caja ───────────────────────────────────────── */
@@ -190,7 +192,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 901;
+  z-index: 9999; /*Subi el valor para asegurar que esté por encima del overlay*/
   background: #FFFFFF;
   border-radius: 16px;
   width: 460px;

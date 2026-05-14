@@ -35,6 +35,17 @@ export class Schedule implements OnInit {
   ];
 
   anios = [2026, 2027];
+  
+  // Horas disponibles por defecto (se filtrarán según empleado)
+  horasDisponibles = [
+    '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM',
+    '10:30 AM', '11:00 AM', '11:30 AM',
+    '12:00 PM', '12:30 PM',
+    '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM',
+    '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
+    '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM'
+  ];
+
   mesActual = new Date().getMonth();
   anioActual = new Date().getFullYear();
 
@@ -121,7 +132,59 @@ export class Schedule implements OnInit {
 
       return fechaSeleccion < hoy;
     }
-//aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual//
+// Verifica si el empleado trabaja en el día y hora seleccionados
+    estaEnHorarioEmpleado(hora: string): boolean {
+      if (!this.tatuadorSeleccionado) return true;
+
+      const empleado = this.empleados.find(e => e.name === this.tatuadorSeleccionado);
+      if (!empleado?.schedule) return true;
+
+      // Verificar si el empleado trabaja el día seleccionado
+      const nombreDia = this.obtenerNombreDia(this.fechaSeleccionada, this.mesActual, this.anioActual);
+      if (!empleado.schedule.days.includes(nombreDia)) return false;
+
+      const horaNum = this.horaATiempo(hora);
+      const startNum = this.horaATiempo(empleado.schedule.start);
+      const endNum = this.horaATiempo(empleado.schedule.end);
+
+      return horaNum >= startNum && horaNum <= endNum;
+    }
+
+    // Verifica si el empleado seleccionado descansa en un día dado
+    esDescansoEmpleado(dia: number): boolean {
+      if (!this.tatuadorSeleccionado) return false;
+
+      const empleado = this.empleados.find(e => e.name === this.tatuadorSeleccionado);
+      if (!empleado?.schedule) return false;
+
+      const nombreDia = this.obtenerNombreDia(dia, this.mesActual, this.anioActual);
+      return !empleado.schedule.days.includes(nombreDia);
+    }
+
+    // Convierte una fecha a nombre de día en español
+    private obtenerNombreDia(dia: number, mes: number, anio: number): string {
+    const nombres = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const fecha = new Date(anio, mes, dia);
+    return nombres[fecha.getDay()];
+  }
+
+  // Convierte hora "8:00 AM" a objeto {hora, minuto} en formato 24h
+    private horaATiempo(hora: string): number {
+      // Manejar formato "8:00 AM" o "08:00"
+      if (hora.includes('AM') || hora.includes('PM')) {
+        const [parte, periodo] = hora.split(' ');
+        let [h, m] = parte.split(':').map(Number);
+        if (periodo === 'PM' && h !== 12) h += 12;
+        if (periodo === 'AM' && h === 12) h = 0;
+        return h + m / 60;
+      } else {
+        // Formato 24h "08:00"
+        const [h, m] = hora.split(':').map(Number);
+        return h + m / 60;
+      }
+    }
+
+    //aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual//
     esHoraPasada(hora: string): boolean {
       const hoy = new Date();
       const esHoy =
@@ -150,14 +213,19 @@ export class Schedule implements OnInit {
       return horaNumero < horaActual || (horaNumero === horaActual && minutoNumero <= minutoActual);
     }
 
-    seleccionarFecha(dia: number) {
-      if (this.esFechaPasada(dia)) {
-        alert('No puedes seleccionar fechas pasadas');
-        return;
-      }
+seleccionarFecha(dia: number) {
+     if (this.esFechaPasada(dia)) {
+       alert('No puedes seleccionar fechas pasadas');
+       return;
+     }
 
-      this.fechaSeleccionada = dia;
-    }
+     if (this.esDescansoEmpleado(dia)) {
+       alert('El tatuador seleccionado descansa ese día');
+       return;
+     }
+
+     this.fechaSeleccionada = dia;
+   }
 
     seleccionarHora(hora: string) {
       this.horaSeleccionada = hora;
@@ -167,7 +235,26 @@ export class Schedule implements OnInit {
       this.tatuadorSeleccionado = nombre;
     }
 
-    reservar() {
+// Filtra horas según el horario y días del empleado seleccionado
+    horasFiltradas(): string[] {
+      if (!this.tatuadorSeleccionado) return this.horasDisponibles;
+
+      const empleado = this.empleados.find(e => e.name === this.tatuadorSeleccionado);
+      if (!empleado?.schedule) return this.horasDisponibles;
+
+      // Verificar si el empleado trabaja el día seleccionado
+      const nombreDia = this.obtenerNombreDia(this.fechaSeleccionada, this.mesActual, this.anioActual);
+      if (!empleado.schedule.days.includes(nombreDia)) return [];
+
+      return this.horasDisponibles.filter(hora => {
+        const horaNum = this.horaATiempo(hora);
+        const startNum = this.horaATiempo(empleado.schedule!.start);
+        const endNum = this.horaATiempo(empleado.schedule!.end);
+        return horaNum >= startNum && horaNum <= endNum;
+      });
+    }
+
+reservar() {
       if (!this.auth.estaLogueado()) {
         alert('Debes iniciar sesión antes de reservar');
         return;
@@ -175,6 +262,12 @@ export class Schedule implements OnInit {
 
       if (!this.fechaSeleccionada || !this.horaSeleccionada || !this.tatuadorSeleccionado) {
         alert('Faltan datos');
+        return;
+      }
+
+      // Validar que la hora esté dentro del horario del empleado
+      if (!this.estaEnHorarioEmpleado(this.horaSeleccionada)) {
+        alert('La hora seleccionada está fuera del horario de ' + this.tatuadorSeleccionado);
         return;
       }
 

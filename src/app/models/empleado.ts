@@ -1,3 +1,9 @@
+export interface Schedule {
+  start: string;
+  end: string;
+  days: string[];
+}
+
 export interface Empleado {
     id: number;
     name: string;
@@ -6,4 +12,5 @@ export interface Empleado {
     password: string;
     phone: string;
     charge: string;
+    schedule?: Schedule;
 }

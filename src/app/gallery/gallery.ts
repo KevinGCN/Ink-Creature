@@ -49,6 +49,7 @@ export class Gallery implements OnInit {
 
   // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
+    window.location.reload();
     this.auth.usuario$.subscribe(usuario => {
       this.esAdmin =
         usuario?.charge === 'CEO' ||

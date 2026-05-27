@@ -177,6 +177,16 @@ h1 {
   background: #B8A8CC;
 }
 
+.hours button:hover:not(.selected) {
+  background: #F4F1F7;
+}
+
+.hours button.selected {
+  background: #5E596B !important;
+  font-weight: bold;
+  color: white;
+}
+
 /* Tatuadores */
 .artists {
   flex: 1;

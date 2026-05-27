@@ -8,6 +8,7 @@ import { Information } from './information/information';
 import { Profile } from './profile/profile';
 import { EmployeeCV } from './employee-cv/employee-cv';
 import { AuthGuard } from './guards/auth.guard';
+import { TattooAiGeneratorComponent } from './tattoo-ai-generator/tattoo-ai-generator';
 
 export const routes: Routes = [
   { path: '', component: Lobby },
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'information', component: Information },
   { path: 'profile', component: Profile, canActivate: [AuthGuard] },
   { path: 'employeeCV/:id', component: EmployeeCV },
+  { path: 'tattoo-ai', component: TattooAiGeneratorComponent },
   { path: '**', redirectTo: '' }
 ];

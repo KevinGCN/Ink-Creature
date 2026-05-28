@@ -1,14 +1,14 @@
 [
   {
     "id":1, "name":"Kevin", "last_name":"Cobo", "email":"kgcn@gmail.com", "password":"12345678", "phone":"1234567890", "charge":"Admin",
-    "schedule": { "start": "7:00 AM", "end": "10:00 AM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"] }
+    "schedule": { "start": "8:00 AM", "end": "5:00 PM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] }
   },
   {
     "id":2, "name":"Emerson", "last_name":"Mosquera", "email":"edmosquera@gmail.com", "password":"12345678", "phone":"1234567891", "charge":"Admin",
-    "schedule": { "start": "10:00 AM", "end": "2:00 PM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"] }
+    "schedule": { "start": "9:00 AM", "end": "6:00 PM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] }
   },
   {
     "id":3, "name":"Andres", "last_name":"Patiño", "email":"jpatino@gmail.com", "password":"12345678", "phone":"1234567892", "charge":"CEO",
-    "schedule": { "start": "2:00 PM", "end": "5:00 PM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"] }
+    "schedule": { "start": "7:00 AM", "end": "3:00 PM", "days": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] }
   }
 ]

@@ -28,25 +28,25 @@
 
       <!-- Fechas dinámicas -->
       <div class="dates">
-<span *ngFor="let dia of diasMes" (click)="!esFechaPasada(dia) && !esDescansoEmpleado(dia) && seleccionarFecha(dia)"
-           [class.active]="fechaSeleccionada === dia" [class.disabled]="esFechaPasada(dia) || esDescansoEmpleado(dia)">
-           {{ dia }}
-         </span>
+        <span *ngFor="let dia of diasMes" (click)="!esFechaPasada(dia) && seleccionarFecha(dia)"
+          [class.active]="fechaSeleccionada === dia" [class.disabled]="esFechaPasada(dia)">
+          {{ dia }}
+        </span>
       </div>
 
     </div>
 
-<!-- Horarios -->
+ <!-- Horarios -->
 
-<div class="hours">
-  <ng-container *ngFor="let hora of horasFiltradas()">
-    <button (click)="!esHoraPasada(hora) && seleccionarHora(hora)" 
-            [class.selected]="horaSeleccionada === hora" 
-            [class.disabled]="esHoraPasada(hora)">
-      {{ hora }}
-    </button>
-  </ng-container>
-</div>
+ <div class="hours">
+   <ng-container *ngFor="let hora of horasFiltradas()">
+     <button (click)="!esHoraPasada(hora) && seleccionarHora(hora)"
+             [class.selected]="horaSeleccionada === hora"
+             [class.disabled]="esHoraPasada(hora)">
+       {{ hora }}
+     </button>
+   </ng-container>
+ </div>
 
     <!-- Tatuadores -->
     <div class="artists">

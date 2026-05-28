@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core'; // 1. Añadimos OnInit aquí
 import { RouterOutlet } from '@angular/router';
 import { UserNavbar } from "./navbar/user-navbar/user-navbar";
 import { MainNavbar } from "./navbar/main-navbar/main-navbar";
 import { HttpClientModule } from '@angular/common/http';
+// 2. Importamos tu servicio de Tawk (ajusta los puntos si la carpeta está en otro nivel)
+import { TawkService } from './services/tawk'; 
 
 @Component({
   selector: 'app-root',
@@ -11,6 +13,14 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit { // 3. Le decimos que implemente OnInit
   protected readonly title = signal('Ink-Creature');
+
+  // 4. Inyectamos el servicio en el constructor
+  constructor(private tawkService: TawkService) {}
+
+  // 5. Ejecutamos la carga del chat cuando inicie la app
+  ngOnInit() {
+    this.tawkService.loadChat();
+  }
 }

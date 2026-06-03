@@ -8,7 +8,8 @@ import { Information } from './information/information';
 import { Profile } from './profile/profile';
 import { EmployeeCV } from './employee-cv/employee-cv';
 import { AuthGuard } from './guards/auth.guard';
-import { TattooAiGeneratorComponent } from './tattoo-ai-generator/tattoo-ai-generator';
+import { TattooQuote } from './tattoo-quote/tattoo-quote';
+import { TattooAiQuoteComponent } from './tattoo-ia-quote/tattoo-ia-quote';
 
 export const routes: Routes = [
   { path: '', component: Lobby },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'information', component: Information },
   { path: 'profile', component: Profile, canActivate: [AuthGuard] },
   { path: 'employeeCV/:id', component: EmployeeCV },
-  { path: 'tattoo-ai', component: TattooAiGeneratorComponent },
+  { path: 'tattoo-ia', component: TattooQuote },
+  { path: 'gemini-ia', component: TattooAiQuoteComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

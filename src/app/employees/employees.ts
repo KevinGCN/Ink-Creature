@@ -118,7 +118,6 @@ export class Employees implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit() {
-    window.location.reload();
     const usuario = this.auth.obtenerUsuario();
     this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
     this.cargarTatuadores();

@@ -44,4 +44,4 @@ __screenshots__/
 Thumbs.db
 
 # Tokken
-backend/.env
+src/environments/environment.local.ts

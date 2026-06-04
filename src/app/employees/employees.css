@@ -181,7 +181,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
-  z-index: 9998;
+  z-index: 9998; /*Valor menor que el modal para asegurar que el modal esté por encima*/
   display: block; /* Para asegurar que el overlay se sobreponga */
 
 }

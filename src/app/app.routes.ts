@@ -9,6 +9,7 @@ import { Profile } from './profile/profile';
 import { EmployeeCV } from './employee-cv/employee-cv';
 import { AuthGuard } from './guards/auth.guard';
 
+
 export const routes: Routes = [
   { path: '', component: Lobby },
   { path: 'loggin', component: Loggin },
@@ -18,5 +19,7 @@ export const routes: Routes = [
   { path: 'information', component: Information },
   { path: 'profile', component: Profile, canActivate: [AuthGuard] },
   { path: 'employeeCV/:id', component: EmployeeCV },
+
+ 
   { path: '**', redirectTo: '' }
 ];

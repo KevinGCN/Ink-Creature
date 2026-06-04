@@ -5,14 +5,21 @@
     <div class="actions">
       <h1>Bienvenido</h1>
     </div>
+
     <div class="buttons">
       <button class="btn-primary" routerLink="/schedule">Agendar Cita</button>
       <button class="btn-secondary" routerLink="/information">Como encontrarnos</button>
     </div>
   </section>
-  <!-- Mostar Reseña/ verificar que se elimino el duplivado -->
+
+  <!-- Comentarios -->
   <div class="comments">
     <app-comments></app-comments>
   </div>
 
 </main>
+
+<!-- BOTÓN FLOTANTE -->
+<button class="chat-float" (click)="irChat()">
+Ayudante
+</button>

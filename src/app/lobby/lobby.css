@@ -82,3 +82,31 @@
   border: 1px solid #E0DCE6;
   box-shadow: 0 6px 18px rgba(94, 89, 107, 0.10);
 }
+
+/* boton flotante de chat */
+.chat-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  width: 55px;
+  height: 55px;
+
+  border-radius: 50%;
+  border: none;
+
+  background-color: #25D366;
+  color: white;
+  font-size: 22px;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  z-index: 9999;
+}
+
+.chat-float:hover {
+  transform: scale(1.1);
+  transition: 0.2s;
+}

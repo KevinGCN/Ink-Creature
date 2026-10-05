@@ -2,64 +2,74 @@
   <h1 class="title">Galería</h1>
 
   <!-- Botón subir imagen — solo admin/CEO -->
-  <div class="admin-actions" *ngIf="esAdmin">
-    <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
-    <button class="btn-subir" (click)="fileInput.click()"> Subir imagen</button>
-  </div>
+  @if (esAdmin()) {
+    <div class="admin-actions">
+      <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
+      <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
+    </div>
+  }
 
   <div class="grid">
-    <div class="grid-item"
-         *ngFor="let imagen of imagenes"
-         (click)="openImage(imagen.src)">
+    @for (imagen of imagenes(); track imagen.id ?? imagen.src) {
+      <div class="grid-item" (click)="openImage(imagen.src)">
 
-      <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
+        <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
 
-      <button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
-        Conoce al tatuador
-      </button>
+        <button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
+          Conoce al tatuador
+        </button>
 
-      <button class="btn-eliminar" *ngIf="esAdmin" (click)="eliminarImagen(imagen, $event)">✕</button>
+        @if (esAdmin()) {
+          <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
+        }
 
-    </div>
+      </div>
+    }
   </div>
 
   <!-- Visor de imagen ampliada -->
-  <div class="image-viewer" *ngIf="selectedImage" (click)="closeImage()">
-    <img [src]="selectedImage" alt="Imagen ampliada">
-  </div>
+  @if (selectedImage(); as imagenAmpliada) {
+    <div class="image-viewer" (click)="closeImage()">
+      <img [src]="imagenAmpliada" alt="Imagen ampliada">
+    </div>
+  }
 </div>
 
-<!-- MODAL: Vincular imagen a tatuador  (solo admin/CEO) -->
-<div class="modal-overlay" *ngIf="mostrarModalSubida" (click)="cerrarModalSubida()"></div>
+<!-- MODAL: Vincular imagen a tatuador (solo admin/CEO) -->
+@if (mostrarModalSubida()) {
+  <div class="modal-overlay" (click)="cerrarModalSubida()"></div>
 
-<div class="modal-subida" *ngIf="mostrarModalSubida">
+  <div class="modal-subida">
 
-  <div class="modal-header">
-    <h3>Subir imagen a la galería</h3>
-    <button class="modal-close" (click)="cerrarModalSubida()">✕</button>
-  </div>
-
-  <div class="modal-body">
-
-    <div class="img-preview" *ngIf="previewTemporal">
-      <img [src]="previewTemporal" alt="Preview">
+    <div class="modal-header">
+      <h3>Subir imagen a la galería</h3>
+      <button class="modal-close" (click)="cerrarModalSubida()">✕</button>
     </div>
 
-    <label>Nombre de la imagen</label>
-    <input type="text" [(ngModel)]="nombreImagenTemp" placeholder="Ej: Dragón rojo">
+    <div class="modal-body">
 
-    <label>Vincular a tatuador</label>
-    <select [(ngModel)]="tatuadorSeleccionado">
-      <option *ngFor="let t of tatuadores" [value]="t.id">
-        {{ t.nombre }} — {{ t.especialidad }}
-      </option>
-    </select>
+      @if (previewTemporal()) {
+        <div class="img-preview">
+          <img [src]="previewTemporal()" alt="Preview">
+        </div>
+      }
+
+      <label>Nombre de la imagen</label>
+      <input type="text" [(ngModel)]="nombreImagenTemp" placeholder="Ej: Dragón rojo">
+
+      <label>Vincular a tatuador</label>
+      <select [(ngModel)]="tatuadorSeleccionado">
+        @for (t of tatuadores(); track t.id) {
+          <option [ngValue]="t.id">{{ t.nombre }} — {{ t.especialidad }}</option>
+        }
+      </select>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModalSubida()">Cancelar</button>
+      <button class="btn-confirmar" (click)="confirmarSubida()">Subir imagen</button>
+    </div>
 
   </div>
-
-  <div class="modal-footer">
-    <button class="btn-cancelar" (click)="cerrarModalSubida()">Cancelar</button>
-    <button class="btn-confirmar" (click)="confirmarSubida()">Subir imagen</button>
-  </div>
-
-</div>
+}

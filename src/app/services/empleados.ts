@@ -22,16 +22,33 @@ import { Empleado } from '../models/empleado';
   providedIn: 'root',
 })
 export class EmpleadoService {
-  /** Ruta al recurso JSON (empaquetado en assets durante build) */
-  private url = 'assets/empleados.json';
+
+  // URL del backend local.
+  // Cuando usemos el backend desplegado, cambiaremos esta URL.
+  private url = 'http://localhost:3000/empleados';
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Obtiene el catálogo completo de empleados
-   * @returns Observable que emite el array de empleados
-   */
   getEmpleados(): Observable<Empleado[]> {
     return this.http.get<Empleado[]>(this.url);
+  }
+
+   getEmpleado(id: number): Observable<Empleado> {
+    return this.http.get<Empleado>(`${this.url}/${id}`);
+  }
+
+  crearEmpleado(datos: Partial<Empleado>): Observable<Empleado> {
+    return this.http.post<Empleado>(this.url, datos);
+  }
+
+  actualizarEmpleado(
+    id: number,
+    datos: Partial<Empleado>
+  ): Observable<Empleado> {
+    return this.http.patch<Empleado>(`${this.url}/${id}`, datos);
+  }
+
+  eliminarEmpleado(id: number): Observable<Empleado> {
+    return this.http.delete<Empleado>(`${this.url}/${id}`);
   }
 }

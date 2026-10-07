@@ -1,0 +1,47 @@
+<div class="ai-container">
+
+    <div class="ai-header">
+        <h1>Asistente IA para Cotización</h1>
+        <p>
+            Describe tu idea y recibe una estimación inteligente de precio,
+            tiempo y complejidad.
+        </p>
+    </div>
+
+    <div class="input-card">
+        <textarea [(ngModel)]="description" rows="8"
+            placeholder="Ejemplo: Quiero un dragón japonés a color rodeando todo el antebrazo con flores de cerezo...">
+        </textarea>
+        <button class="analyze-btn" (click)="analyzeTattoo()" [disabled]="loading">
+            {{ loading ? 'Analizando...' : 'Analizar Diseño' }}
+        </button>
+    </div>
+
+    <div *ngIf="analysis">
+        <div class="result-grid">
+            <div class="info-card price-card">
+                <h3>Complejidad</h3>
+                <p>{{ analysis.complejidad }}</p>
+            </div>
+
+            <div class="info-card price-card">
+                <h3>Tiempo Estimado</h3>
+                <p>{{ analysis.tiempo }}</p>
+            </div>
+
+            <div class="info-card price-card">
+                <h3>Precio Estimado</h3>
+                <p>
+                    {{ analysis.precioMin | currency:'COP':'symbol':'1.0-0' }}
+                    -
+                    {{ analysis.precioMax | currency:'COP':'symbol':'1.0-0' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="justification-card">
+            <h3>Justificación Profesional</h3>
+            <p> {{ analysis.justificacion }} </p>
+        </div>
+    </div>
+</div>

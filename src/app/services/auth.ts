@@ -158,6 +158,7 @@ export class AuthService {
   logout() {
     signOut(this.auth);
     this.router.navigate(['/']);
+    window.location.reload();
   }
 
   estaLogueado(): boolean {

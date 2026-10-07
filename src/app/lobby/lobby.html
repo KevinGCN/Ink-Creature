@@ -17,9 +17,17 @@
     <app-comments></app-comments>
   </div>
 
+  <!-- Botones de IA -->
+  <div class="IA">
+    <button routerLink="/tattoo-ia">Obten una Cotización Rapida</button>
+    <button routerLink="/gemini-ia" [disabled]="!auth.estaLogueado()">
+      {{ auth.estaLogueado() ?
+         'Obten una Cotización con IA' : 'Inicia Sesión para Premium' }}
+    </button>
+  </div>
 </main>
 
 <!-- BOTÓN FLOTANTE -->
 <button class="chat-float" (click)="irChat()">
-Ayudante
+  Ayudante
 </button>

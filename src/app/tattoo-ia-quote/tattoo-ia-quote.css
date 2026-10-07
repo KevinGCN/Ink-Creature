@@ -1,0 +1,213 @@
+/* Página */
+.ai-container {
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        #ffffff,
+        #f3f3f3
+    );
+    padding: 60px 20px;
+}
+
+/* Encabezado */
+.ai-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+/* Título */
+.ai-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #111111;
+    letter-spacing: -2px;
+    margin-bottom: 15px;
+}
+
+/* Descripción */
+.ai-header p {
+    max-width: 700px;
+    margin: auto;
+    color: #666666;
+    line-height: 1.8;
+}
+
+/* Tarjeta de entrada */
+.input-card {
+    max-width: 900px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Textarea */
+textarea {
+    width: 100%;
+    min-height: 240px;
+    border: none;
+    border-radius: 18px;
+    background: #f5f5f5;
+    padding: 24px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+/* Focus */
+textarea:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón */
+.analyze-btn {
+    margin-top: 25px;
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        #111111,
+        #333333
+    );
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover */
+.analyze-btn:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Deshabilitado */
+.analyze-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Indicador IA */
+.ai-result-header {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+/* Badge */
+.ai-result-header span {
+    display: inline-block;
+    background: #111111;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Grid resultados */
+.result-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Tarjeta */
+.info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid #e5e5e5;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+}
+
+/* Hover */
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Título */
+.info-card h3 {
+    color: #666666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+/* Valor */
+.info-card p {
+    color: #111111;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Tarjeta precio */
+.price-card {
+    background: linear-gradient(
+        135deg,
+        #111111,
+        #2c2c2c
+    );
+}
+
+/* Texto precio */
+.price-card h3,
+.price-card p {
+    color: white;
+}
+
+/* Justificación */
+.justification-card {
+    margin-top: 25px;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid #e5e5e5;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Título */
+.justification-card h3 {
+    color: #111111;
+    margin-bottom: 15px;
+}
+
+/* Contenido */
+.justification-card p {
+    color: #555555;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .ai-header h1 {
+        font-size: 2rem;
+    }
+
+    .input-card {
+        padding: 20px;
+    }
+
+    .justification-card {
+        padding: 20px;
+    }
+}

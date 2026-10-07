@@ -235,6 +235,7 @@ export class AuthService {
     this.isLoggedIn$.next(false);
 
     this.router.navigate(['/']);
+    window.location.reload();
   }
 
   estaLogueado(): boolean {

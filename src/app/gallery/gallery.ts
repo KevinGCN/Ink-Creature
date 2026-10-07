@@ -49,7 +49,6 @@ export class Gallery implements OnInit {
   ];
   readonly imagenes = signal<ImagenGaleria[]>([]);
 
-  // ── Estado modal de subida
   readonly mostrarModalSubida = signal(false);
   readonly archivoTemporal = signal<File | null>(null);
   readonly previewTemporal = signal('');

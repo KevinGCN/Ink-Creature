@@ -57,6 +57,11 @@ export class Gallery implements OnInit {
 
   // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
+    this.auth.usuario$.subscribe(usuario => {
+      this.esAdmin =
+        usuario?.charge === 'CEO' ||
+        usuario?.charge === 'Admin';
+    });
     this.cargarImagenes();
     this.recargarTatuadores();
   }

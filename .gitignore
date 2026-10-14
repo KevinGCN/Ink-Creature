@@ -50,3 +50,5 @@ Thumbs.db
 #env
 .env
 backend/.env
+
+/src/app/config/firebase.config.ts

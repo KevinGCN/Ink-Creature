@@ -1,4 +1,4 @@
 export const environment = {
     production: false, 
-    geminiApiKey: '***REMOVED-GEMINI-ANTIGUA***'
+    geminiApiKey: '***REMOVED-GEMINI-NUEVA***'
 };

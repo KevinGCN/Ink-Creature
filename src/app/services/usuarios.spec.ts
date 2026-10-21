@@ -67,4 +67,18 @@ describe('UsuarioService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });
+
+  it('subirFoto consulta POST /api/usuarios/:id/foto con multipart', () => {
+    const archivo = new File(['bytes'], 'foto.jpg', { type: 'image/jpeg' });
+
+    service.subirFoto(7, archivo).subscribe();
+
+    const req = httpMock.expectOne(`${API}/usuarios/7/foto`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body instanceof FormData).toBe(true);
+    const enviado = (req.request.body as FormData).get('imagen') as File;
+    expect(enviado.name).toBe('foto.jpg');
+    expect(enviado.type).toBe('image/jpeg');
+    req.flush({ id: 7, foto_perfil_url: '/api/imagenes/3' });
+  });
 });

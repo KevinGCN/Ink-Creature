@@ -4,7 +4,8 @@
  * - Signals + control flow (@if/@for) en vez de NgModules/*ngIf/*ngFor.
  * - Imágenes en vivo desde el backend NestJS (GET/POST/DELETE /api/galeria).
  * - La subida de archivos usa POST /api/galeria/upload (multipart) del
- *   backend, que guarda el archivo en /uploads y devuelve su URL.
+ *   backend, que guarda el archivo en la base de datos y devuelve su ruta
+ *   "/api/imagenes/<id>", que se resuelve con `urlImagen()` al pintarla.
  * - Se muestran además las imágenes base del proyecto (assets locales),
  *   que no se pueden eliminar desde la UI.
  */
@@ -16,6 +17,7 @@ import { AuthService } from '../services/auth';
 import { Empleado, EmpleadoService } from '../services/empleados';
 import { GaleriaService, ImagenGaleria } from '../services/galeria';
 import { FOTO_PLACEHOLDER } from '../utils/placeholder';
+import { urlImagen } from '../utils/imagen-url';
 
 /** Imágenes base embebidas en el frontend (no pertenecen al backend) */
 const IMAGENES_BASE: ImagenGaleria[] = [
@@ -106,6 +108,15 @@ export class Gallery implements OnInit {
 
   esImagenDeBase(imagen: ImagenGaleria): boolean {
     return imagen.id < 0;
+  }
+
+  /**
+   * URL real de la imagen. Las guardadas en la BD son rutas relativas
+   * ("/api/imagenes/<id>") y se resuelven contra el backend; las externas
+   * (https://...) y las de los assets se usan tal cual.
+   */
+  srcImagen(imagen: ImagenGaleria): string {
+    return urlImagen(imagen.imagen_url);
   }
 
   openImage(src: string): void {

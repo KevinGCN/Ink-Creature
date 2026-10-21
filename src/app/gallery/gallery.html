@@ -18,9 +18,9 @@
 
   <div class="grid">
     @for (imagen of imagenes(); track imagen.id) {
-      <div class="grid-item" (click)="openImage(imagen.imagen_url)">
+      <div class="grid-item" (click)="openImage(srcImagen(imagen))">
 
-        <img [src]="imagen.imagen_url" [alt]="imagen.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
+        <img [src]="srcImagen(imagen)" [alt]="imagen.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
 
         @if (imagen.empleado_id) {
           <button class="btn-tatuador" (click)="verTatuador(imagen.empleado_id, $event)">

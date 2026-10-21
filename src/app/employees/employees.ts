@@ -17,6 +17,7 @@ import { Empleado, EmpleadoService } from '../services/empleados';
 import { UsuarioService } from '../services/usuarios';
 import { RolUsuario, Usuario } from '../models/usuario';
 import { FOTO_PLACEHOLDER } from '../utils/placeholder';
+import { urlImagen } from '../utils/imagen-url';
 
 /** Datos del formulario del modal (agregar/editar/promover) */
 interface FormTatuador {
@@ -26,10 +27,15 @@ interface FormTatuador {
   password: string;
   especialidad: string;
   biografia: string;
+  /** Ruta de la foto ya guardada en el backend ("/api/imagenes/<id>") */
   foto: string;
   activo: boolean;
   rol: RolUsuario;
 }
+
+/** Tamaño máximo de la foto de perfil (2 MB). */
+const FOTO_MAX_BYTES = 2 * 1024 * 1024;
+const FOTO_TIPOS = /^image\/(jpeg|png|webp)$/;
 
 @Component({
   selector: 'app-employees',
@@ -60,6 +66,22 @@ export class Employees implements OnInit {
     this.usuarios().filter((u) => !this.empleados().some((e) => e.usuario_id === u.id))
   );
 
+  /** Estado del panel colapsable de usuarios pendientes (cerrado por defecto) */
+  readonly pendientesAbierto = signal(false);
+
+  /** Texto del buscador de usuarios pendientes */
+  readonly busquedaPendientes = signal('');
+
+  /** Usuarios pendientes filtrados por nombre, apellido o correo */
+  readonly usuariosPendientesFiltrados = computed(() => {
+    const q = this.busquedaPendientes().trim().toLowerCase();
+    const lista = this.usuariosSinTatuador();
+    if (!q) return lista;
+    return lista.filter((u) =>
+      `${u.nombre} ${u.apellido} ${u.email}`.toLowerCase().includes(q)
+    );
+  });
+
   /** Roles disponibles en el backend */
   readonly roles: RolUsuario[] = ['cliente', 'empleado', 'admin'];
 
@@ -72,6 +94,11 @@ export class Employees implements OnInit {
   readonly form = signal<FormTatuador>(Employees.formVacio());
   readonly errorForm = signal('');
   readonly guardando = signal(false);
+
+  /** Archivo de foto elegido en el modal (aún no subido al backend) */
+  readonly fotoArchivo = signal<File | null>(null);
+  /** Vista previa local del archivo elegido */
+  readonly vistaPreviaFoto = signal('');
 
   readonly placeholder = FOTO_PLACEHOLDER;
 
@@ -108,7 +135,15 @@ export class Employees implements OnInit {
   }
 
   fotoDe(empleado: Empleado): string {
-    return empleado.usuarios?.foto_perfil_url || FOTO_PLACEHOLDER;
+    return urlImagen(empleado.usuarios?.foto_perfil_url) || FOTO_PLACEHOLDER;
+  }
+
+  /**
+   * Foto a mostrar en el modal: la vista previa del archivo recién elegido
+   * o, si no hay, la foto ya guardada en el backend.
+   */
+  fotoDelFormulario(): string {
+    return this.vistaPreviaFoto() || urlImagen(this.form().foto);
   }
 
   // ── Modal: Agregar ────────────────────────────────────────
@@ -117,6 +152,7 @@ export class Employees implements OnInit {
     this.modoPromocion.set(false);
     this.editandoId.set(null);
     this.form.set(Employees.formVacio());
+    this.limpiarFotoElegida();
     this.errorForm.set('');
     this.mostrarModal.set(true);
   }
@@ -137,6 +173,7 @@ export class Employees implements OnInit {
       activo: empleado.activo,
       rol: empleado.usuarios?.rol ?? 'empleado'
     });
+    this.limpiarFotoElegida();
     this.errorForm.set('');
     this.mostrarModal.set(true);
   }
@@ -154,11 +191,71 @@ export class Employees implements OnInit {
       foto: usuario.foto_perfil_url ?? '',
       rol: 'empleado'
     });
+    this.limpiarFotoElegida();
     this.errorForm.set('');
     this.mostrarModal.set(true);
   }
 
+  // ── Foto del tatuador ─────────────────────────────────────
+  /**
+   * Elige un archivo de imagen para la foto del tatuador. El archivo se
+   * sube al backend al guardar (POST /api/usuarios/:id/foto), que lo
+   * almacena en la base de datos.
+   */
+  seleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    input.value = ''; // permite volver a elegir el mismo archivo
+    if (!archivo) return;
+
+    if (!FOTO_TIPOS.test(archivo.type)) {
+      this.errorForm.set('La foto debe ser una imagen JPG, PNG o WEBP.');
+      return;
+    }
+    if (archivo.size > FOTO_MAX_BYTES) {
+      this.errorForm.set('La foto no puede pesar más de 2 MB.');
+      return;
+    }
+
+    this.errorForm.set('');
+    this.fotoArchivo.set(archivo);
+    this.vistaPreviaFoto.set(URL.createObjectURL(archivo));
+  }
+
+  /** Descarta el archivo elegido (sigue la foto que ya estaba guardada). */
+  quitarFoto(): void {
+    this.limpiarFotoElegida();
+  }
+
+  private limpiarFotoElegida(): void {
+    const previa = this.vistaPreviaFoto();
+    if (previa) URL.revokeObjectURL(previa);
+    this.fotoArchivo.set(null);
+    this.vistaPreviaFoto.set('');
+  }
+
+  /**
+   * Sube la foto elegida al backend (si hay). El backend guarda el binario
+   * en la base de datos y actualiza `foto_perfil_url` del usuario.
+   */
+  private subirFotoElegida(
+    usuarioId: number,
+    alTerminar: (error?: HttpErrorResponse) => void,
+  ): void {
+    const archivo = this.fotoArchivo();
+    if (!archivo) {
+      alTerminar();
+      return;
+    }
+
+    this.usuariosService.subirFoto(usuarioId, archivo).subscribe({
+      next: () => alTerminar(),
+      error: (err: HttpErrorResponse) => alTerminar(err),
+    });
+  }
+
   cerrarModal(): void {
+    this.limpiarFotoElegida();
     this.mostrarModal.set(false);
   }
 
@@ -166,6 +263,19 @@ export class Employees implements OnInit {
   seleccionarRol(event: Event): void {
     const valor = (event.target as HTMLSelectElement).value as RolUsuario;
     this.form.set({ ...this.form(), rol: valor });
+  }
+
+  /** Abre/cierra el panel de usuarios pendientes */
+  togglePendientes(): void {
+    this.pendientesAbierto.update((abierto) => !abierto);
+  }
+
+  /** Iniciales para el avatar de la lista de pendientes */
+  iniciales(usuario: Usuario): string {
+    const nombre = (usuario.nombre ?? '').trim();
+    const apellido = (usuario.apellido ?? '').trim();
+    const ini = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+    return ini || '?';
   }
 
   // ── Guardar (agregar, editar o promover) ──────────────────
@@ -209,35 +319,50 @@ export class Employees implements OnInit {
         nombre: f.nombre.trim(),
         apellido: f.apellido.trim(),
         email: f.email.trim(),
-        password: f.password,
-        foto_perfil_url: f.foto.trim() || undefined
+        password: f.password
       })
       .subscribe({
         next: (usuario) => {
-          this.empleadosService
-            .crearEmpleado({
-              usuario_id: usuario.id,
-              especialidad: f.especialidad.trim(),
-              biografia: f.biografia.trim() || undefined,
-              activo: f.activo
-            })
-            .subscribe({
-              next: () => {
-                this.guardando.set(false);
-                this.aplicarRol(usuario.id, f.rol, () => {
-                  this.cerrarModal();
-                  this.cargarTatuadores();
-                  this.cargarUsuarios();
-                });
-              },
-              error: (err: HttpErrorResponse) => {
-                console.error('Error creando empleado:', err);
-                this.guardando.set(false);
-                this.errorForm.set(
-                  this.mensajeDeError(err, 'El usuario se creó pero no se pudo vincularlo como tatuador.')
-                );
-              }
-            });
+          // La foto (si se eligió un archivo) se sube al backend, que la
+          // guarda en la base de datos.
+          this.subirFotoElegida(usuario.id, (errorFoto) => {
+            if (errorFoto) {
+              console.error('Error subiendo la foto:', errorFoto);
+              this.guardando.set(false);
+              this.errorForm.set(
+                this.mensajeDeError(
+                  errorFoto,
+                  'El tatuador se creó, pero no se pudo subir su foto.'
+                )
+              );
+              return;
+            }
+
+            this.empleadosService
+              .crearEmpleado({
+                usuario_id: usuario.id,
+                especialidad: f.especialidad.trim(),
+                biografia: f.biografia.trim() || undefined,
+                activo: f.activo
+              })
+              .subscribe({
+                next: () => {
+                  this.guardando.set(false);
+                  this.aplicarRol(usuario.id, f.rol, () => {
+                    this.cerrarModal();
+                    this.cargarTatuadores();
+                    this.cargarUsuarios();
+                  });
+                },
+                error: (err: HttpErrorResponse) => {
+                  console.error('Error creando empleado:', err);
+                  this.guardando.set(false);
+                  this.errorForm.set(
+                    this.mensajeDeError(err, 'El usuario se creó pero no se pudo vincularlo como tatuador.')
+                  );
+                }
+              });
+          });
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error creando usuario:', err);
@@ -256,37 +381,52 @@ export class Employees implements OnInit {
     this.guardando.set(true);
     this.errorForm.set('');
 
-    // 1) Actualizar los datos del usuario (nombre, apellido, foto)
+    // 1) Actualizar los datos del usuario (nombre, apellido).
+    //    La foto NO se manda aquí: si se eligió un archivo se sube después
+    //    con POST /api/usuarios/:id/foto.
     this.usuariosService
       .actualizarUsuario(empleado.usuario_id, {
         nombre: f.nombre.trim(),
-        apellido: f.apellido.trim(),
-        foto_perfil_url: f.foto.trim() || undefined
+        apellido: f.apellido.trim()
       })
       .subscribe({
         next: () => {
-          // 2) Actualizar el empleado (especialidad, biografía, activo)
-          this.empleadosService
-            .actualizarEmpleado(id, {
-              especialidad: f.especialidad.trim(),
-              biografia: f.biografia.trim() || undefined,
-              activo: f.activo
-            })
-            .subscribe({
-              next: () => {
-                this.guardando.set(false);
-                this.aplicarRol(empleado.usuario_id, f.rol, () => {
-                  this.cerrarModal();
-                  this.cargarTatuadores();
-                  this.cargarUsuarios();
-                });
-              },
-              error: (err: HttpErrorResponse) => {
-                console.error('Error actualizando tatuador:', err);
-                this.guardando.set(false);
-                this.errorForm.set(this.mensajeDeError(err, 'No se pudo actualizar el tatuador.'));
-              }
-            });
+          this.subirFotoElegida(empleado.usuario_id, (errorFoto) => {
+            if (errorFoto) {
+              console.error('Error subiendo la foto:', errorFoto);
+              this.guardando.set(false);
+              this.errorForm.set(
+                this.mensajeDeError(
+                  errorFoto,
+                  'Se actualizaron los datos, pero no se pudo subir la foto.'
+                )
+              );
+              return;
+            }
+
+            // 2) Actualizar el empleado (especialidad, biografía, activo)
+            this.empleadosService
+              .actualizarEmpleado(id, {
+                especialidad: f.especialidad.trim(),
+                biografia: f.biografia.trim() || undefined,
+                activo: f.activo
+              })
+              .subscribe({
+                next: () => {
+                  this.guardando.set(false);
+                  this.aplicarRol(empleado.usuario_id, f.rol, () => {
+                    this.cerrarModal();
+                    this.cargarTatuadores();
+                    this.cargarUsuarios();
+                  });
+                },
+                error: (err: HttpErrorResponse) => {
+                  console.error('Error actualizando tatuador:', err);
+                  this.guardando.set(false);
+                  this.errorForm.set(this.mensajeDeError(err, 'No se pudo actualizar el tatuador.'));
+                }
+              });
+          });
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error actualizando usuario:', err);
@@ -319,11 +459,25 @@ export class Employees implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.guardando.set(false);
-          this.aplicarRol(usuario.id, f.rol, () => {
-            this.cerrarModal();
-            this.cargarTatuadores();
-            this.cargarUsuarios();
+          this.subirFotoElegida(usuario.id, (errorFoto) => {
+            if (errorFoto) {
+              console.error('Error subiendo la foto:', errorFoto);
+              this.guardando.set(false);
+              this.errorForm.set(
+                this.mensajeDeError(
+                  errorFoto,
+                  'Se creó la ficha de tatuador, pero no se pudo subir la foto.'
+                )
+              );
+              return;
+            }
+
+            this.guardando.set(false);
+            this.aplicarRol(usuario.id, f.rol, () => {
+              this.cerrarModal();
+              this.cargarTatuadores();
+              this.cargarUsuarios();
+            });
           });
         },
         error: (err: HttpErrorResponse) => {

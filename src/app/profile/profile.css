@@ -83,6 +83,17 @@
   box-shadow: 0 8px 20px rgba(94, 89, 107, 0.3);
 }
 
+.btn-subir-foto input[disabled] {
+  pointer-events: none;
+}
+
+.foto-nota {
+  display: block;
+  margin-top: 6px;
+  color: #6b6478;
+  font-size: 12px;
+}
+
 /* Datos */
 .datos {
   flex: 1;

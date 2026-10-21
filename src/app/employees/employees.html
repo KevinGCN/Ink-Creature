@@ -34,8 +34,8 @@
         <div class="tarjeta-info">
           <h2>{{ nombreCompleto(t) }}</h2>
           <p class="cargo">Tatuador</p>
-          @if (t.usuarios?.rol) {
-            <p class="rol">Rol: {{ t.usuarios?.rol }}</p>
+          @if (t.usuarios.rol) {
+            <p class="rol">Rol: {{ t.usuarios.rol }}</p>
           }
           @if (t.biografia) {
             <p class="descripcion">{{ t.biografia }}</p>
@@ -60,29 +60,86 @@
     }
   </div>
 
-  <!-- USUARIOS SIN ASIGNAR COMO TATUADORES (solo admin) -->
-  @if (esAdmin() && usuariosSinTatuador().length > 0) {
-    <section class="pendientes">
-      <h2>Usuarios registrados sin asignar como tatuadores</h2>
-      <p class="descripcion">
-        Estas personas ya tienen cuenta en el sistema. Puedes convertirlas en
-        tatuadores creándoles su ficha y asignándoles el rol correspondiente.
-      </p>
+  <!-- USUARIOS SIN ASIGNAR COMO TATUADORES (solo admin) - panel colapsable -->
+  @if (esAdmin()) {
+    <section class="panel-pendientes" [class.abierto]="pendientesAbierto()">
 
-      <ul class="lista-pendientes">
-        @for (u of usuariosSinTatuador(); track u.id) {
-          <li>
-            <div class="datos">
-              <strong>{{ u.nombre }} {{ u.apellido }}</strong>
-              <span class="email">{{ u.email }}</span>
-              <span class="rol-chip">{{ u.rol }}</span>
+      <button type="button" class="panel-cabecera"
+              (click)="togglePendientes()"
+              [attr.aria-expanded]="pendientesAbierto()">
+
+        <span class="panel-icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M19 8v6M22 11h-6"/>
+          </svg>
+        </span>
+
+        <span class="panel-titulo">
+          <span class="panel-titulo-texto">Usuarios sin asignar como tatuadores</span>
+          <span class="panel-subtitulo">
+            Cuentas registradas en la base de datos que aún no forman parte del equipo
+          </span>
+        </span>
+
+        <span class="badge-conteo" [class.vacio]="usuariosSinTatuador().length === 0">
+          {{ usuariosSinTatuador().length }}
+        </span>
+
+        <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+
+      @if (pendientesAbierto()) {
+        <div class="panel-cuerpo">
+
+          @if (usuariosSinTatuador().length === 0) {
+            <p class="estado-vacio">
+              Todos los usuarios registrados ya están asignados como tatuadores.
+            </p>
+          } @else {
+            <div class="panel-buscador">
+              <input type="search" class="buscador"
+                     placeholder="Buscar por nombre o correo..."
+                     [ngModel]="busquedaPendientes()"
+                     (ngModelChange)="busquedaPendientes.set($event)">
+              @if (busquedaPendientes()) {
+                <button type="button" class="buscador-limpiar"
+                        (click)="busquedaPendientes.set('')"
+                        aria-label="Limpiar búsqueda">×</button>
+              }
             </div>
-            <button class="btn-editar" (click)="abrirPromover(u)">
-              Convertir en tatuador
-            </button>
-          </li>
-        }
-      </ul>
+
+            <ul class="lista-pendientes">
+              @for (u of usuariosPendientesFiltrados(); track u.id) {
+                <li class="pendiente">
+                  <span class="avatar" aria-hidden="true">{{ iniciales(u) }}</span>
+
+                  <div class="datos">
+                    <strong>{{ u.nombre }} {{ u.apellido }}</strong>
+                    <span class="email">{{ u.email }}</span>
+                  </div>
+
+                  <span class="rol-chip"
+                        [class.rol-admin]="u.rol === 'admin'"
+                        [class.rol-empleado]="u.rol === 'empleado'"
+                        [class.rol-cliente]="u.rol === 'cliente'">{{ u.rol }}</span>
+
+                  <button type="button" class="btn-promover" (click)="abrirPromover(u)">
+                    Promover
+                  </button>
+                </li>
+              } @empty {
+                <li class="pendiente vacio">
+                  Sin resultados para «{{ busquedaPendientes() }}».
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
     </section>
   }
 
@@ -153,14 +210,22 @@
                 (ngModelChange)="form.set({ ...form(), biografia: $event })"
                 rows="3" placeholder="Descripción del artista..."></textarea>
 
-      <label>URL de la foto</label>
-      <input type="url" [ngModel]="form().foto"
-             (ngModelChange)="form.set({ ...form(), foto: $event })"
-             placeholder="https://...">
+      <label>Foto del tatuador</label>
+      <div class="foto-selector">
+        <input type="file" accept="image/jpeg,image/png,image/webp"
+               (change)="seleccionarFoto($event)" hidden #fotoInput>
+        <button type="button" class="btn-foto" (click)="fotoInput.click()">
+          {{ fotoArchivo() ? 'Cambiar foto' : (form().foto ? 'Reemplazar foto' : 'Subir foto') }}
+        </button>
+        @if (fotoArchivo()) {
+          <button type="button" class="btn-quitar-foto" (click)="quitarFoto()">Descartar</button>
+        }
+        <span class="foto-hint">Se guarda en la base de datos del servidor (JPG, PNG o WEBP, máx. 2 MB).</span>
+      </div>
 
-      @if (form().foto) {
+      @if (fotoDelFormulario()) {
         <div class="foto-preview">
-          <img [src]="form().foto" alt="Preview">
+          <img [src]="fotoDelFormulario()" alt="Preview">
         </div>
       }
 

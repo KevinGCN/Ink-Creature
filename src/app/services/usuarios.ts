@@ -5,6 +5,10 @@
  *                               para crear la cuenta de un tatuador)
  * GET    /api/usuarios       → listar (público)
  * PATCH  /api/usuarios/:id   → actualizar (requiere JWT)
+ * POST   /api/usuarios/:id/foto → subir la foto de perfil; el backend la
+ *                               guarda en la base de datos y devuelve el
+ *                               usuario con `foto_perfil_url` actualizado
+ *                               (requiere JWT: el propio usuario o un admin)
  * DELETE /api/usuarios/:id   → eliminar; cascada borra su registro empleado
  *                              (requiere JWT)
  */
@@ -53,6 +57,17 @@ export class UsuarioService {
 
   eliminarUsuario(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
+  }
+
+  /**
+   * Sube la foto de perfil al backend (multipart/form-data, campo "imagen").
+   * El archivo se guarda en la base de datos y el usuario vuelve con
+   * `foto_perfil_url` apuntando a "/api/imagenes/<id>".
+   */
+  subirFoto(id: number, file: File): Observable<Usuario> {
+    const formData = new FormData();
+    formData.append('imagen', file, file.name);
+    return this.http.post<Usuario>(`${this.url}/${id}/foto`, formData);
   }
 
   /**

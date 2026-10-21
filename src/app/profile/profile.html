@@ -12,9 +12,10 @@
         <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
         <label class="btn-subir-foto">
-          <input type="file" (change)="cambiarFoto($event)" accept="image/*" hidden>
-          {{ foto ? 'Cambiar foto' : 'Subir foto' }}
+          <input type="file" accept="image/jpeg,image/png,image/webp" (change)="cambiarFoto($event)" [disabled]="subiendoFoto" hidden>
+          {{ subiendoFoto ? 'Subiendo…' : (foto ? 'Cambiar foto' : 'Subir foto') }}
         </label>
+        <small class="foto-nota">La foto se guarda en el servidor (máx. 2 MB).</small>
       </div>
 
       <div class="datos">

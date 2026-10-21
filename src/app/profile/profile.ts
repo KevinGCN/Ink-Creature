@@ -3,6 +3,9 @@
  *
  * - Datos del usuario: estado real del AuthService (GET /api/auth/me).
  * - Edición de perfil: PATCH /api/usuarios/:id (vía auth.actualizarPerfil).
+ * - Foto de perfil: POST /api/usuarios/:id/foto (multipart). El backend
+ *   guarda el archivo en la base de datos y devuelve el usuario con
+ *   `foto_perfil_url` = "/api/imagenes/<id>".
  * - Mis citas: GET /api/citas?usuario_id=…
  */
 import { HttpErrorResponse } from '@angular/common/http';
@@ -12,8 +15,14 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
 import { Cita, CitaService } from '../services/citas';
+import { UsuarioService } from '../services/usuarios';
 import { Usuario } from '../models/usuario';
 import { a12h, aFechaLegible } from '../utils/fechas';
+import { urlImagen } from '../utils/imagen-url';
+
+/** Tamaño máximo de la foto de perfil (2 MB). */
+const FOTO_MAX_BYTES = 2 * 1024 * 1024;
+const FOTO_TIPOS = /^image\/(jpeg|png|webp)$/;
 
 @Component({
   selector: 'app-profile',
@@ -28,6 +37,9 @@ export class Profile implements OnInit {
   citas = signal<Cita[]>([]);
   foto = '';
 
+  /** true mientras se sube la foto de perfil al backend */
+  subiendoFoto = false;
+
   // Control de edición
   editando = false;
 
@@ -38,11 +50,13 @@ export class Profile implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly citaService = inject(CitaService);
+  private readonly usuarioService = inject(UsuarioService);
 
   ngOnInit() {
     this.usuario = this.auth.obtenerUsuario();
     this.cargarCitas();
     this.cargarFoto();
+    this.limpiarFotosLocales();
   }
 
   // =========================
@@ -94,35 +108,71 @@ export class Profile implements OnInit {
   // =========================
   // FOTO DE PERFIL
   // =========================
+  /**
+   * La foto vive en el backend (tabla `imagenes`). Se resuelve la ruta
+   * relativa "/api/imagenes/<id>" contra el origen del API.
+   */
   cargarFoto() {
-    if (this.usuario?.foto_perfil_url) {
-      this.foto = this.usuario.foto_perfil_url;
-      return;
-    }
-    this.foto = this.usuario ? localStorage.getItem('fotoPerfil_' + this.usuario.id) || '' : '';
+    this.foto = urlImagen(this.usuario?.foto_perfil_url);
   }
 
-  cambiarFoto(event: any) {
-    const file = event.target.files[0];
+  /**
+   * Sube la foto de perfil al backend, que la guarda en la base de datos.
+   * Antes se guardaba en base64 dentro del localStorage (solo en ese
+   * navegador); esas fotos antiguas se limpian al cargar el perfil.
+   */
+  cambiarFoto(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // permite volver a elegir el mismo archivo
     if (!file) return;
 
-    // Validar tamaño antes de cargar
-    if (!this.validarTamanoArchivo(file, 2)) {
-      event.target.value = '';
+    if (!FOTO_TIPOS.test(file.type)) {
+      this.mensajeError = 'La foto debe ser una imagen JPG, PNG o WEBP';
       return;
     }
+    if (!this.validarTamanoArchivo(file, 2)) return;
 
-    const reader = new FileReader();
+    const usuario = this.usuario;
+    if (!usuario) return;
 
-    reader.onload = () => {
-      this.foto = reader.result as string;
-      if (this.usuario) {
-        localStorage.setItem('fotoPerfil_' + this.usuario.id, this.foto);
+    this.subiendoFoto = true;
+    this.mensajeError = '';
+
+    this.usuarioService.subirFoto(usuario.id, file).subscribe({
+      next: (actualizado) => {
+        this.subiendoFoto = false;
+        this.auth.actualizarUsuario(actualizado);
+        this.usuario = actualizado;
+        this.cargarFoto();
+        this.mensajeExito = 'Foto de perfil actualizada';
+        setTimeout(() => (this.mensajeExito = ''), 3000);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error subiendo la foto:', err);
+        this.subiendoFoto = false;
+        this.mensajeError =
+          err.status === 401
+            ? 'Tu sesión expiró. Cierra sesión y vuelve a entrar.'
+            : 'No se pudo subir la foto. Intenta nuevamente.';
+      },
+    });
+  }
+
+  /**
+   * Limpia las fotos en base64 que la versión anterior guardaba en el
+   * localStorage: ya no se usan (ahora viven en la base de datos).
+   */
+  private limpiarFotosLocales() {
+    try {
+      const claves = Object.keys(localStorage).filter((k) => k.startsWith('fotoPerfil_'));
+      claves.forEach((k) => localStorage.removeItem(k));
+      if (claves.length) {
+        console.info(`Se limpiaron ${claves.length} foto(s) antigua(s) del localStorage.`);
       }
-    };
-
-    reader.readAsDataURL(file);
-    event.target.value = ''; // Resetea el input para evitar doble explorador
+    } catch {
+      // localStorage puede estar bloqueado: no es crítico.
+    }
   }
 
   // =========================

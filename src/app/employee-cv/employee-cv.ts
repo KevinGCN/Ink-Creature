@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Empleado, EmpleadoService } from '../services/empleados';
 import { FOTO_PLACEHOLDER } from '../utils/placeholder';
+import { urlImagen } from '../utils/imagen-url';
 
 @Component({
   selector: 'app-employee-cv',
@@ -52,6 +53,6 @@ export class EmployeeCV implements OnInit {
   }
 
   foto(): string {
-    return this.empleado()?.usuarios?.foto_perfil_url || FOTO_PLACEHOLDER;
+    return urlImagen(this.empleado()?.usuarios?.foto_perfil_url) || FOTO_PLACEHOLDER;
   }
 }

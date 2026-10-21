@@ -270,6 +270,48 @@
   resize: vertical;
 }
 
+.foto-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.btn-foto {
+  padding: 8px 14px;
+  border: 1px solid #7C6A9E;
+  border-radius: 6px;
+  background: #7C6A9E;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-foto:hover {
+  background: #6b5a8a;
+}
+
+.btn-quitar-foto {
+  padding: 8px 12px;
+  border: 1px solid #C0392B;
+  border-radius: 6px;
+  background: transparent;
+  color: #C0392B;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-quitar-foto:hover {
+  background: rgba(192, 57, 43, 0.1);
+}
+
+.foto-hint {
+  flex-basis: 100%;
+  color: #7a7286;
+  font-size: 12px;
+}
+
 .foto-preview {
   text-align: center;
   margin-bottom: 4px;
@@ -327,11 +369,333 @@
   background: #5E4D85;
 }
 
+/* ── Estados vacíos / mensajes ────────────────────────── */
+.estado-vacio {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 20px;
+  text-align: center;
+  font-size: 15px;
+  color: #8E8899;
+  background: #FFFFFF;
+  border: 1px dashed #D6D0E0;
+  border-radius: 14px;
+}
+
+.estado-vacio.error-msg {
+  color: #C0392B;
+  background: #FFF6F5;
+  border-color: #F0C4C0;
+}
+
+/* ── Tarjeta: rol y descripción ───────────────────────── */
+.rol {
+  font-size: 12px;
+  color: #6B6578;
+  margin-bottom: 4px;
+}
+
+.descripcion {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6B6578;
+}
+
+/* ── Panel colapsable: usuarios sin asignar (admin) ───── */
+.panel-pendientes {
+  max-width: 1100px;
+  margin: 38px auto 0;
+  background: #FFFFFF;
+  border: 1px solid #E0DCE6;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(94, 89, 107, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.25s;
+}
+
+.panel-pendientes.abierto {
+  box-shadow: 0 8px 18px rgba(94, 89, 107, 0.14);
+}
+
+.panel-cabecera {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 20px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.panel-cabecera:hover {
+  background: #FAF8FC;
+}
+
+.panel-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #EDE7F6;
+  color: #5E4D85;
+}
+
+.panel-icono svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.panel-titulo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-titulo-texto {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4B4453;
+}
+
+.panel-subtitulo {
+  font-size: 12.5px;
+  color: #8E8899;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge-conteo {
+  flex: 0 0 auto;
+  min-width: 26px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: #7C6A9E;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.badge-conteo.vacio {
+  background: #E0DCE6;
+  color: #6B6578;
+}
+
+.chevron {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: #8E8899;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s;
+}
+
+.panel-pendientes.abierto .chevron {
+  transform: rotate(180deg);
+}
+
+.panel-cuerpo {
+  padding: 16px 20px 20px;
+  border-top: 1px solid #EDE9F3;
+  animation: panel-aparece 0.25s ease;
+}
+
+@keyframes panel-aparece {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Buscador del panel ──────────────────────────────── */
+.panel-buscador {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.buscador {
+  width: 100%;
+  padding: 10px 38px 10px 14px;
+  border: 1px solid #D6D0E0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #2F2F2F;
+  background: #FAF8FC;
+  box-sizing: border-box;
+  transition: border 0.2s, background 0.2s;
+}
+
+.buscador:focus {
+  outline: none;
+  border-color: #7C6A9E;
+  background: #FFFFFF;
+}
+
+.buscador-limpiar {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #E0DCE6;
+  color: #4B4453;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.buscador-limpiar:hover {
+  background: #CFC8DC;
+}
+
+/* ── Lista de usuarios pendientes ────────────────────── */
+.lista-pendientes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pendiente {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #EDE9F3;
+  border-radius: 10px;
+  background: #FCFBFE;
+  transition: border 0.2s, background 0.2s, transform 0.2s;
+}
+
+.pendiente:hover {
+  border-color: #C9BEDD;
+  background: #FFFFFF;
+  transform: translateX(2px);
+}
+
+.pendiente.vacio {
+  justify-content: center;
+  color: #8E8899;
+  font-size: 13.5px;
+  border-style: dashed;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #D6CCEC;
+  color: #4B3A7A;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.pendiente .datos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pendiente .datos strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4B4453;
+}
+
+.pendiente .email {
+  font-size: 12.5px;
+  color: #8E8899;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rol-chip {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+  background: #F0EEF4;
+  color: #6B6578;
+}
+
+.rol-chip.rol-empleado {
+  background: #D6CCEC;
+  color: #4B3A7A;
+}
+
+.rol-chip.rol-admin {
+  background: #7C6A9E;
+  color: #FFFFFF;
+}
+
+.btn-promover {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #7C6A9E;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-promover:hover {
+  background: #5E4D85;
+}
+
 /*  Responsive */
 @media (max-width: 900px) {
   .catalogo { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 640px) {
   .catalogo { grid-template-columns: 1fr; }
+
+  .panel-subtitulo { display: none; }
+
+  .pendiente { flex-wrap: wrap; }
+
+  .pendiente .datos {
+    flex: 1 1 calc(100% - 48px);
+  }
+
+  .btn-promover {
+    width: 100%;
+    order: 4;
+  }
 }

@@ -4,7 +4,9 @@
  * GET    /api/galeria             → todas las imágenes (público)
  * POST   /api/galeria             → registrar imagen (requiere JWT)
  * DELETE /api/galeria/:id         → eliminar (requiere JWT)
- * POST   /api/galeria/upload      → subir archivo a /uploads (requiere JWT)
+ * POST   /api/galeria/upload      → subir archivo; el backend lo guarda en
+ *                                   la base de datos (tabla `imagenes`) y
+ *                                   devuelve la ruta "/api/imagenes/<id>"
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -56,15 +58,19 @@ export class GaleriaService {
   }
 
   /**
-   * Sube un archivo de imagen al backend (multipart/form-data) y
-   * devuelve la URL absoluta lista para usar en `imagen_url`.
+   * Sube un archivo de imagen al backend (multipart/form-data).
+   *
+   * El backend guarda el binario en la base de datos y devuelve la ruta
+   * RELATIVA "/api/imagenes/<id>"; se guarda tal cual en `imagen_url` para
+   * que la fila no dependa del host. Al pintar se resuelve con
+   * `urlImagen()` (ver utils/imagen-url.ts).
    */
   subirArchivo(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('imagen', file, file.name);
 
     return this.http
-      .post<{ url: string }>(`${this.url}/upload`, formData)
-      .pipe(map((res) => `${environment.apiUrl.replace(/\/api$/, '')}${res.url}`));
+      .post<{ url: string; id: number }>(`${this.url}/upload`, formData)
+      .pipe(map((res) => res.url));
   }
 }

@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { GaleriaService } from '../services/galeria';
 import { cargarListaTatuadores, Tatuador } from '../employees/employees';
 
 interface ImagenGaleria {
@@ -21,6 +22,7 @@ interface ImagenGaleria {
 export class Gallery implements OnInit {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly galeriaApi = inject(GaleriaService);
 
   // Imagen seleccionada para visualización ampliada
   readonly selectedImage = signal<string | null>(null);
@@ -69,7 +71,25 @@ export class Gallery implements OnInit {
     }
   }
 
-  cargarImagenes() {
+    cargarImagenes() {
+    this.galeriaApi.obtenerTodos().subscribe({
+      next: (datos) => {
+        this.imagenes.set(
+          datos.map(d => ({
+            id: d.id,
+            src: d.imagen_url,
+            alt: d.titulo ?? 'Tatuaje',
+            empleadoId: d.empleado_id ?? 0
+          }))
+        );
+      },
+      error: (err) => {
+        console.error('No se pudo cargar la galería desde la API:', err);
+        this.cargarImagenesLocales();
+      }
+    });
+  }
+   private cargarImagenesLocales() {
     const data = localStorage.getItem('galeria');
     const guardadas: ImagenGaleria[] = data ? JSON.parse(data) : [];
     const unicas = guardadas.filter(
@@ -92,6 +112,7 @@ export class Gallery implements OnInit {
   }
 
   handleImageError(event: Event) {
+      if ((event.target as HTMLImageElement).src.includes('placeholder')) return;
     console.error('Error cargando imagen:', event);
     (event.target as HTMLImageElement).src = 'image/placeholder.jpg';
   }

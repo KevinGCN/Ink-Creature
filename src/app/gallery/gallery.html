@@ -15,9 +15,11 @@
 
         <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
 
-        <button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
+	@if (imagen.empleadoId > 0) {
+	<button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
           Conoce al tatuador
         </button>
+	}
 
         @if (esAdmin()) {
           <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>

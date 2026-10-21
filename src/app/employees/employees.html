@@ -14,7 +14,7 @@
 
   <!-- Estados de carga / error / vacío -->
   @if (cargando()) {
-    <p class="estado-vacio">Cargando tatuadores…</p>
+    <p class="estado-vacio">Cargando tatuadores...</p>
   } @else if (error()) {
     <p class="estado-vacio error-msg">{{ error() }}</p>
   } @else if (tatuadores().length === 0) {
@@ -34,6 +34,9 @@
         <div class="tarjeta-info">
           <h2>{{ nombreCompleto(t) }}</h2>
           <p class="cargo">Tatuador</p>
+          @if (t.usuarios?.rol) {
+            <p class="rol">Rol: {{ t.usuarios?.rol }}</p>
+          }
           @if (t.biografia) {
             <p class="descripcion">{{ t.biografia }}</p>
           }
@@ -47,8 +50,8 @@
           <!-- Botones de edición solo para admin -->
           @if (esAdmin()) {
             <div class="admin-btns">
-              <button class="btn-editar" (click)="abrirEditar(t)">✏️ Editar</button>
-              <button class="btn-eliminar" (click)="eliminar(t)">🗑️ Eliminar</button>
+              <button class="btn-editar" (click)="abrirEditar(t)">Editar</button>
+              <button class="btn-eliminar" (click)="eliminar(t)">Eliminar</button>
             </div>
           }
         </div>
@@ -57,20 +60,61 @@
     }
   </div>
 
+  <!-- USUARIOS SIN ASIGNAR COMO TATUADORES (solo admin) -->
+  @if (esAdmin() && usuariosSinTatuador().length > 0) {
+    <section class="pendientes">
+      <h2>Usuarios registrados sin asignar como tatuadores</h2>
+      <p class="descripcion">
+        Estas personas ya tienen cuenta en el sistema. Puedes convertirlas en
+        tatuadores creándoles su ficha y asignándoles el rol correspondiente.
+      </p>
+
+      <ul class="lista-pendientes">
+        @for (u of usuariosSinTatuador(); track u.id) {
+          <li>
+            <div class="datos">
+              <strong>{{ u.nombre }} {{ u.apellido }}</strong>
+              <span class="email">{{ u.email }}</span>
+              <span class="rol-chip">{{ u.rol }}</span>
+            </div>
+            <button class="btn-editar" (click)="abrirPromover(u)">
+              Convertir en tatuador
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
 </main>
 
-<!-- MODAL: Agregar / Editar Tatuador (solo admin) -->
+<!-- MODAL: Agregar / Editar / Promover Tatuador (solo admin) -->
 @if (mostrarModal()) {
   <div class="modal-overlay" (click)="cerrarModal()"></div>
 
   <div class="modal">
 
     <div class="modal-header">
-      <h2>{{ modoEdicion() ? 'Editar Tatuador' : 'Agregar Tatuador' }}</h2>
-      <button class="modal-close" (click)="cerrarModal()">✕</button>
+      <h2>
+        @if (modoPromocion()) {
+          Convertir en Tatuador
+        } @else if (modoEdicion()) {
+          Editar Tatuador
+        } @else {
+          Agregar Tatuador
+        }
+      </h2>
+      <button class="modal-close" (click)="cerrarModal()">×</button>
     </div>
 
     <div class="modal-body">
+
+      @if (modoPromocion()) {
+        <p class="descripcion">
+          Se creará la ficha de tatuador de
+          <strong>{{ form().nombre }} {{ form().apellido }}</strong> ({{ form().email }}).
+        </p>
+      }
 
       <label>Nombre *</label>
       <input type="text" [ngModel]="form().nombre"
@@ -82,7 +126,7 @@
              (ngModelChange)="form.set({ ...form(), apellido: $event })"
              placeholder="Apellido">
 
-      @if (!modoEdicion()) {
+      @if (!modoEdicion() && !modoPromocion()) {
         <label>Correo *</label>
         <input type="email" [ngModel]="form().email"
                (ngModelChange)="form.set({ ...form(), email: $event })"
@@ -92,6 +136,11 @@
         <input type="password" [ngModel]="form().password"
                (ngModelChange)="form.set({ ...form(), password: $event })"
                placeholder="Contraseña">
+      }
+
+      @if (modoEdicion()) {
+        <label>Correo</label>
+        <input type="email" [ngModel]="form().email" disabled>
       }
 
       <label>Especialidad *</label>
@@ -107,12 +156,22 @@
       <label>URL de la foto</label>
       <input type="url" [ngModel]="form().foto"
              (ngModelChange)="form.set({ ...form(), foto: $event })"
-             placeholder="https://…">
+             placeholder="https://...">
 
       @if (form().foto) {
         <div class="foto-preview">
           <img [src]="form().foto" alt="Preview">
         </div>
+      }
+
+      <!-- Selector de rol: solo un admin puede cambiarlo -->
+      @if (esAdmin()) {
+        <label>Rol *</label>
+        <select [value]="form().rol" (change)="seleccionarRol($event)">
+          @for (r of roles; track r) {
+            <option [value]="r">{{ r }}</option>
+          }
+        </select>
       }
 
       @if (modoEdicion()) {
@@ -132,7 +191,15 @@
     <div class="modal-footer">
       <button class="btn-cancelar" (click)="cerrarModal()" [disabled]="guardando()">Cancelar</button>
       <button class="btn-guardar" (click)="guardar()" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando…' : (modoEdicion() ? 'Guardar cambios' : 'Agregar') }}
+        @if (guardando()) {
+          Guardando...
+        } @else if (modoPromocion()) {
+          Convertir en tatuador
+        } @else if (modoEdicion()) {
+          Guardar cambios
+        } @else {
+          Agregar
+        }
       </button>
     </div>
 

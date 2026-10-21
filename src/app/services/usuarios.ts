@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Usuario } from '../models/usuario';
+import { RolUsuario, Usuario } from '../models/usuario';
 
 export interface DatosUsuarioNuevo {
   nombre: string;
@@ -53,5 +53,13 @@ export class UsuarioService {
 
   eliminarUsuario(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
+  }
+
+  /**
+   * Cambia el rol de un usuario. Solo funciona si quien llama es admin
+   * (el backend responde 403 en caso contrario).
+   */
+  cambiarRol(id: number, rol: RolUsuario): Observable<Usuario> {
+    return this.http.patch<Usuario>(`${this.url}/${id}/rol`, { rol });
   }
 }

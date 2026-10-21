@@ -1,80 +1,65 @@
 /**
- * Servicio de gestión de citas - Almacenamiento local
- * 
- * Servicio singleton (@Injectable providedIn: 'root') que gestiona
- * la creación, lectura y eliminación de citas con persistencia
- * en localStorage del navegador.
- * 
- * Arquitectura: Patron Repository
- * - La lógica de acceso a datos está encapsulada aquí
- * - Los componentes no acceden a localStorage directamente
- * 
- * Persistencia:
- * - Todas las operaciones actualizan inmediatamente el localStorage
- * - Datos serializados como JSON bajo la clave 'citas'
+ * Servicio de citas (Schedules) — consume el backend NestJS.
+ *
+ * GET    /api/citas                → todas (público)
+ * GET    /api/citas?usuario_id=    → citas de un usuario (agenda personal)
+ * POST   /api/citas                → crear (requiere JWT)
+ * PATCH  /api/citas/:id            → actualizar (requiere JWT)
+ * DELETE /api/citas/:id            → eliminar (requiere JWT)
  */
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Cita } from '../models/cita';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { Cita, NuevaCita } from '../models/cita';
+
+export type { Cita, NuevaCita };
+import { horaCorta } from '../utils/fechas';
 
 @Injectable({
-  providedIn: 'root', // Singleton global - misma instancia en toda la aplicación
+  providedIn: 'root',
 })
 export class CitaService {
-  /** Array en memoria de todas las citas */
-  private citas: Cita[] = this.cargarDesdeStorage();
+  private readonly url = `${environment.apiUrl}/citas`;
 
-  /**
-   * Carga las citas iniciales desde localStorage
-   * @returns Array de citas (vacío si no hay datos)
-   */
-  private cargarDesdeStorage(): Cita[] {
-    return JSON.parse(localStorage.getItem('citas') || '[]');
+  constructor(private http: HttpClient) {}
+
+  /** Todas las citas del sistema */
+  getCitas(): Observable<Cita[]> {
+    return this.http.get<Cita[]>(this.url).pipe(map((citas) => this.normalizar(citas)));
+  }
+
+  /** Citas de un usuario concreto (la agenda personal en Profile/Schedule) */
+  getCitasDeUsuario(usuarioId: number): Observable<Cita[]> {
+    return this.http
+      .get<Cita[]>(`${this.url}?usuario_id=${usuarioId}`)
+      .pipe(map((citas) => this.normalizar(citas)));
+  }
+
+  crearCita(cita: NuevaCita): Observable<Cita> {
+    return this.http.post<Cita>(this.url, cita).pipe(map((c) => this.normalizar([c])[0]));
+  }
+
+  actualizarCita(id: number, cambios: Partial<NuevaCita>): Observable<Cita> {
+    return this.http
+      .patch<Cita>(`${this.url}/${id}`, cambios)
+      .pipe(map((c) => this.normalizar([c])[0]));
+  }
+
+  eliminarCita(id: number): Observable<unknown> {
+    return this.http.delete(`${this.url}/${id}`);
   }
 
   /**
-   * Persiste el estado actual en localStorage
-   * Se llama después de cada mutación (crear/eliminar)
+   * Prisma devuelve `hora_inicio`/`hora_fin` como ISO completo aunque la
+   * columna sea @db.Time; aquí se normalizan a "HH:mm".
    */
-  private guardar(): void {
-    localStorage.setItem('citas', JSON.stringify(this.citas));
-  }
-
-  /**
-   * Obtiene todas las citas
-   * @returns Array de citas (copia no requerida por uso interno)
-   */
-  getCitas(): Cita[] {
-    return this.citas;
-  }
-
-  /**
-   * Crea una nueva cita y la persiste
-   * @param cita Objeto Cita a crear (sin ID - se genera externamente)
-   */
-  crearCita(cita: Cita) {
-    this.citas.push(cita);
-    this.guardar();
-  }
-
-  /**
-   * Actualiza una cita existente por su ID
-   * @param citaActualizada Cita con los datos actualizados (debe incluir ID)
-   */
-  actualizarCita(citaActualizada: Cita) {
-    const index = this.citas.findIndex(c => c.id === citaActualizada.id);
-    if (index !== -1) {
-      this.citas[index] = citaActualizada;
-      this.guardar();
-    }
-  }
-
-  /**
-   * Elimina una cita por su ID
-   * @param id Identificador único de la cita
-   */
-  eliminarCita(id: number) {
-    this.citas = this.citas.filter(c => c.id !== id);
-    this.guardar();
+  private normalizar(citas: Cita[]): Cita[] {
+    return citas.map((c) => ({
+      ...c,
+      hora_inicio: horaCorta(c.hora_inicio),
+      hora_fin: horaCorta(c.hora_fin),
+    }));
   }
 }
-

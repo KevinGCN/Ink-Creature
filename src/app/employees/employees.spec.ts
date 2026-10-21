@@ -1,19 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+
 import { Employees } from './employees';
 import { AuthService } from '../services/auth';
-import { ActivatedRoute } from '@angular/router';
 
-// Mocks
+// Mock mínimo de la sesión: Employees solo consulta esAdmin().
 const mockAuthService = {
-  obtenerUsuario: () => ({ charge: 'Tatuador' })
-};
-
-const mockActivatedRoute = {
-  snapshot: {
-    paramMap: {
-      get: (id: string) => null
-    }
-  }
+  esAdmin: () => false,
+  obtenerUsuario: () => null,
+  estaLogueado: () => false
 };
 
 describe('Employees', () => {
@@ -25,13 +22,16 @@ describe('Employees', () => {
       imports: [Employees],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(Employees);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

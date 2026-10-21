@@ -1,63 +1,74 @@
-// gallery.spec.ts - Versión corregida
+// gallery.spec.ts — adaptado a la versión Angular 21 (signals + backend).
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import { Gallery } from './gallery';
-import { CommonModule } from '@angular/common';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { FOTO_PLACEHOLDER } from '../utils/placeholder';
+import { environment } from '../../environments/environment';
+
+const API = environment.apiUrl;
 
 describe('Gallery', () => {
-  let component: any;
+  let component: Gallery;
   let fixture: ComponentFixture<Gallery>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Gallery, CommonModule]
+      imports: [Gallery],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()]
     }).compileComponents();
+
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Gallery);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    // ngOnInit dispara la carga de imágenes y de tatuadores.
+    httpMock.expectOne(`${API}/galeria`).flush([]);
+    httpMock.expectOne(`${API}/empleados`).flush([]);
+    fixture.detectChanges();
   });
+
+  afterEach(() => httpMock.verify());
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have an array of images', () => {
-    expect(component.imagenes).toBeDefined();
-    expect(Array.isArray(component.imagenes)).toBeTruthy();
-    expect(component.imagenes.length).toBe(7); // 6 base + possible custom
+  it('should expose the base images', () => {
+    expect(component.imagenes()).toBeDefined();
+    expect(Array.isArray(component.imagenes())).toBeTruthy();
+    expect(component.imagenes().length).toBe(7); // 7 imágenes base
   });
 
   it('should initialize with selectedImage as null', () => {
-    expect(component.selectedImage).toBeNull();
+    expect(component.selectedImage()).toBeNull();
   });
 
   it('should open image when openImage is called', () => {
     const testImage = 'assets/image/bendy.jpg';
     component.openImage(testImage);
-    expect(component.selectedImage).toBe(testImage);
+    expect(component.selectedImage()).toBe(testImage);
   });
 
   it('should close image when closeImage is called', () => {
     component.openImage('assets/image/bendy.jpg');
-    expect(component.selectedImage).not.toBeNull();
+    expect(component.selectedImage()).not.toBeNull();
     component.closeImage();
-    expect(component.selectedImage).toBeNull();
+    expect(component.selectedImage()).toBeNull();
   });
 
-  it('should handle image error gracefully', () => {
-    const mockEvent = {
-      target: {
-        src: 'wrong-path.jpg',
-        classList: { add: vi.fn() }  
-      }
-    } as any;
-
+  it('should fall back to the inline placeholder on image error', () => {
+    const mockEvent = { target: { src: 'wrong-path.jpg' } } as unknown as Event;
     component.handleImageError(mockEvent);
-    expect(mockEvent.target.src).toContain('placeholder.jpg');
+    expect((mockEvent.target as HTMLImageElement).src).toBe(FOTO_PLACEHOLDER);
   });
 
-  // buscar .grid-item en lugar de .card
   it('should have grid items in the template', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const gridItems = compiled.querySelectorAll('.grid-item');
@@ -65,27 +76,23 @@ describe('Gallery', () => {
   });
 
   it('should call openImage when grid item is clicked', () => {
-    const openImageSpy = vi.spyOn(component, 'openImage');  
+    const openImageSpy = vi.spyOn(component, 'openImage');
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const firstGridItem = compiled.querySelector('.grid-item');
+    const firstGridItem = compiled.querySelector('.grid-item') as HTMLElement;
     expect(firstGridItem).toBeTruthy();
 
-    if (firstGridItem) {
-      (firstGridItem as HTMLElement).click();
-      expect(openImageSpy).toHaveBeenCalled();
-    }
+    firstGridItem.click();
+    expect(openImageSpy).toHaveBeenCalled();
   });
 
-  // Pruebas del visor
   it('should not show image viewer when no image is selected', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const viewer = compiled.querySelector('.image-viewer');
-    expect(viewer).toBeNull();
+    expect(compiled.querySelector('.image-viewer')).toBeNull();
   });
 
   it('should show image viewer when an image is selected', () => {
-    component.selectedImage = 'assets/image/bendy.jpg';
+    component.selectedImage.set('assets/image/bendy.jpg');
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
@@ -97,17 +104,16 @@ describe('Gallery', () => {
   });
 
   it('should call closeImage when viewer is clicked', () => {
-    component.selectedImage = 'assets/image/DBZ.jpg';
+    component.selectedImage.set('assets/image/DBZ.jpg');
     fixture.detectChanges();
 
     const closeImageSpy = vi.spyOn(component, 'closeImage');
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const viewer = compiled.querySelector('.image-viewer');
+    const viewer = compiled.querySelector('.image-viewer') as HTMLElement;
+    expect(viewer).toBeTruthy();
 
-    if (viewer) {
-      (viewer as HTMLElement).click();
-      expect(closeImageSpy).toHaveBeenCalled();
-    }
+    viewer.click();
+    expect(closeImageSpy).toHaveBeenCalled();
   });
 });

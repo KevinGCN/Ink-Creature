@@ -4,95 +4,137 @@
     <h1>Nuestros Tatuadores</h1>
     <p>Conoce al equipo de artistas de Ink Creature</p>
 
-    <!--  Botón solo visible para CEO / Admin -->
-    <button *ngIf="esAdmin" class="btn-agregar" (click)="abrirAgregar()">
-      + Agregar Tatuador
-    </button>
+    <!-- Botón solo visible para usuarios con rol admin -->
+    @if (esAdmin()) {
+      <button class="btn-agregar" (click)="abrirAgregar()">
+        + Agregar Tatuador
+      </button>
+    }
   </div>
 
+  <!-- Estados de carga / error / vacío -->
+  @if (cargando()) {
+    <p class="estado-vacio">Cargando tatuadores…</p>
+  } @else if (error()) {
+    <p class="estado-vacio error-msg">{{ error() }}</p>
+  } @else if (tatuadores().length === 0) {
+    <p class="estado-vacio">Aún no hay tatuadores registrados.</p>
+  }
+
   <div class="catalogo">
-    <div class="tarjeta" *ngFor="let t of tatuadores">
+    @for (t of tatuadores(); track t.id) {
 
-      <div class="tarjeta-foto">
-        <img [src]="t.foto" [alt]="t.nombre">
-        <span class="badge">{{ t.especialidad }}</span>
-      </div>
+      <div class="tarjeta">
 
-      <div class="tarjeta-info">
-        <h2>{{ t.nombre }}</h2>
-        <p class="cargo">{{ t.cargo }}</p>
-        <p class="experiencia">{{ t.experiencia }} años de experiencia</p>
-        <div class="estrellas">{{ obtenerEstrellas(t.estrellas) }}</div>
-      </div>
-
-      <div class="tarjeta-footer">
-        <a [routerLink]="['/employeeCV', t.id]" class="btn-perfil">
-          Ver perfil
-        </a>
-
-        <!-- Botones de edición solo para CEO / Admin -->
-        <div *ngIf="esAdmin" class="admin-btns">
-          <button class="btn-editar" (click)="abrirEditar(t)">✏️ Editar</button>
-          <button class="btn-eliminar" (click)="eliminar(t.id)">🗑️ Eliminar</button>
+        <div class="tarjeta-foto">
+          <img [src]="fotoDe(t)" [alt]="nombreCompleto(t)">
+          <span class="badge">{{ t.especialidad || 'Tatuador' }}</span>
         </div>
-      </div>
 
-    </div>
+        <div class="tarjeta-info">
+          <h2>{{ nombreCompleto(t) }}</h2>
+          <p class="cargo">Tatuador</p>
+          @if (t.biografia) {
+            <p class="descripcion">{{ t.biografia }}</p>
+          }
+        </div>
+
+        <div class="tarjeta-footer">
+          <a [routerLink]="['/employeeCV', t.id]" class="btn-perfil">
+            Ver perfil
+          </a>
+
+          <!-- Botones de edición solo para admin -->
+          @if (esAdmin()) {
+            <div class="admin-btns">
+              <button class="btn-editar" (click)="abrirEditar(t)">✏️ Editar</button>
+              <button class="btn-eliminar" (click)="eliminar(t)">🗑️ Eliminar</button>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
   </div>
 
 </main>
 
-<!-- 
-     MODAL: Agregar / Editar Tatuador  (solo admin/CEO) -->
-<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()"></div>
+<!-- MODAL: Agregar / Editar Tatuador (solo admin) -->
+@if (mostrarModal()) {
+  <div class="modal-overlay" (click)="cerrarModal()"></div>
 
-<div class="modal" *ngIf="mostrarModal">
+  <div class="modal">
 
-  <div class="modal-header">
-    <h2>{{ modoEdicion ? 'Editar Tatuador' : 'Agregar Tatuador' }}</h2>
-    <button class="modal-close" (click)="cerrarModal()">✕</button>
-  </div>
-
-  <div class="modal-body">
-
-    <!-- Foto -->
-    <div class="foto-preview" *ngIf="fotoPreview">
-      <img [src]="fotoPreview" alt="Preview">
+    <div class="modal-header">
+      <h2>{{ modoEdicion() ? 'Editar Tatuador' : 'Agregar Tatuador' }}</h2>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
     </div>
 
-    <label>Foto del tatuador *</label>
-    <input type="file" accept="image/*" (change)="cargarFoto($event)">
+    <div class="modal-body">
 
-    <label>Nombre *</label>
-    <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre completo">
+      <label>Nombre *</label>
+      <input type="text" [ngModel]="form().nombre"
+             (ngModelChange)="form.set({ ...form(), nombre: $event })"
+             placeholder="Nombre">
 
-    <label>Cargo</label>
-    <select [(ngModel)]="form.cargo">
-      <option value="Tatuador">Tatuador</option>
-      <option value="Tatuadora">Tatuadora</option>
-    </select>
+      <label>Apellido *</label>
+      <input type="text" [ngModel]="form().apellido"
+             (ngModelChange)="form.set({ ...form(), apellido: $event })"
+             placeholder="Apellido">
 
-    <label>Especialidad *</label>
-    <input type="text" [(ngModel)]="form.especialidad" placeholder="Ej: Estilo Anime, Realismo...">
+      @if (!modoEdicion()) {
+        <label>Correo *</label>
+        <input type="email" [ngModel]="form().email"
+               (ngModelChange)="form.set({ ...form(), email: $event })"
+               placeholder="Correo electrónico">
 
-    <label>Años de experiencia</label>
-    <input type="number" [(ngModel)]="form.experiencia" min="1" max="50">
+        <label>Contraseña temporal * (mín. 8 caracteres)</label>
+        <input type="password" [ngModel]="form().password"
+               (ngModelChange)="form.set({ ...form(), password: $event })"
+               placeholder="Contraseña">
+      }
 
-    <label>Descripción</label>
-    <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Descripción del artista..."></textarea>
+      <label>Especialidad *</label>
+      <input type="text" [ngModel]="form().especialidad"
+             (ngModelChange)="form.set({ ...form(), especialidad: $event })"
+             placeholder="Ej: Estilo Anime, Realismo...">
 
-    <label>Estrellas (1–5)</label>
-    <input type="number" [(ngModel)]="form.estrellas" min="1" max="5">
+      <label>Biografía</label>
+      <textarea [ngModel]="form().biografia"
+                (ngModelChange)="form.set({ ...form(), biografia: $event })"
+                rows="3" placeholder="Descripción del artista..."></textarea>
 
-    <p class="error-msg" *ngIf="errorForm">{{ errorForm }}</p>
+      <label>URL de la foto</label>
+      <input type="url" [ngModel]="form().foto"
+             (ngModelChange)="form.set({ ...form(), foto: $event })"
+             placeholder="https://…">
+
+      @if (form().foto) {
+        <div class="foto-preview">
+          <img [src]="form().foto" alt="Preview">
+        </div>
+      }
+
+      @if (modoEdicion()) {
+        <label class="checkbox-activo">
+          <input type="checkbox" [ngModel]="form().activo"
+                 (ngModelChange)="form.set({ ...form(), activo: $event })">
+          Tatuador activo
+        </label>
+      }
+
+      @if (errorForm()) {
+        <p class="error-msg">{{ errorForm() }}</p>
+      }
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()" [disabled]="guardando()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardar()" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : (modoEdicion() ? 'Guardar cambios' : 'Agregar') }}
+      </button>
+    </div>
 
   </div>
-
-  <div class="modal-footer">
-    <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
-    <button class="btn-guardar" (click)="guardar()">
-      {{ modoEdicion ? 'Guardar cambios' : 'Agregar' }}
-    </button>
-  </div>
-
-</div>
+}

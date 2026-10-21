@@ -1,28 +1,23 @@
 /**
  * Configuración de la aplicación Angular
- * 
- * Punto de entrada de providers y configuración global.
- * Inicializa Firebase y provee los servicios esenciales
- * para toda la aplicación.
- * 
+ *
+ * Punto de entrada de providers de la app.
+ *
  * Providers:
  * 1. provideBrowserGlobalErrorListeners() - Captura errores globales
  * 2. provideRouter() - Sistema de enrutamiento
- * 3. provideFirebaseApp() - Inicialización Firebase
- * 4. provideAuth() - Servicio de autenticación Firebase
- * 
- * Integración Firebase:
- * - provideFirebaseApp inicializa la app con firebaseConfig
- * - provideAuth expone getAuth() para inyección en servicios
- * - Ambos usan factories () => para lazy-initialization
+ * 3. provideHttpClient(withInterceptors) - HttpClient con el interceptor
+ *    que adjunta el JWT del backend a cada petición.
+ *
+ * NOTA: se eliminó por completo la inicialización de Firebase
+ * (@angular/fire): la autenticación ahora la gestiona el backend
+ * NestJS vía JWT (ver services/auth.ts).
  */
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { firebaseConfig } from './config/firebase.config';
-import { provideHttpClient } from '@angular/common/http';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,13 +27,7 @@ export const appConfig: ApplicationConfig = {
     // Proveedor del sistema de enrutamiento
     provideRouter(routes),
 
-    // Inicialización Firebase (1 sola vez por app)
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-
-    // Proveedor del servicio Auth de Firebase
-    provideAuth(() => getAuth()),
-
-    // Proveedor de HttpClient para peticiones HTTP
-    provideHttpClient()
+    // HttpClient + interceptor global de autenticación (JWT Bearer)
+    provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };

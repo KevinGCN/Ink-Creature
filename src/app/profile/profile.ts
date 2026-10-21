@@ -1,10 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * Perfil de usuario — consume el backend NestJS.
+ *
+ * - Datos del usuario: estado real del AuthService (GET /api/auth/me).
+ * - Edición de perfil: PATCH /api/usuarios/:id (vía auth.actualizarPerfil).
+ * - Mis citas: GET /api/citas?usuario_id=…
+ */
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth';
-import { CitaService } from '../services/citas';
-import { Cita } from '../models/cita';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../services/auth';
+import { Cita, CitaService } from '../services/citas';
+import { Usuario } from '../models/usuario';
+import { a12h, aFechaLegible } from '../utils/fechas';
 
 @Component({
   selector: 'app-profile',
@@ -15,21 +24,20 @@ import { FormsModule } from '@angular/forms';
 })
 export class Profile implements OnInit {
 
-  usuario: any = {};
-  citas: Cita[] = [];
-  foto: string = '';
+  usuario: Usuario | null = null;
+  citas = signal<Cita[]>([]);
+  foto = '';
 
   // Control de edición
   editando = false;
 
-  // Mensaje de error para validaciones
+  // Mensajes para el usuario
   mensajeError = '';
+  mensajeExito = '';
 
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-    private citaService: CitaService
-  ) {}
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly citaService = inject(CitaService);
 
   ngOnInit() {
     this.usuario = this.auth.obtenerUsuario();
@@ -41,25 +49,57 @@ export class Profile implements OnInit {
   // CITAS
   // =========================
   cargarCitas() {
-    this.citas = this.citaService.getCitas();
+    if (!this.usuario) return;
+
+    this.citaService.getCitasDeUsuario(this.usuario.id).subscribe({
+      next: (citas) => this.citas.set(citas),
+      error: (err: HttpErrorResponse) => {
+        console.error('Error cargando citas:', err);
+        if (err.status !== 401) {
+          this.mensajeError = 'No se pudieron cargar tus citas.';
+        }
+      }
+    });
   }
 
   eliminar(id: number) {
-    this.citaService.eliminarCita(id);
-    this.cargarCitas();
+    if (!confirm('¿Eliminar esta cita?')) return;
+
+    this.citaService.eliminarCita(id).subscribe({
+      next: () => this.cargarCitas(),
+      error: (err: HttpErrorResponse) => {
+        console.error('Error eliminando cita:', err);
+        this.mensajeError =
+          err.status === 401
+            ? 'Tu sesión expiró. Cierra sesión y vuelve a entrar.'
+            : 'No se pudo eliminar la cita.';
+      }
+    });
+  }
+
+  // Helpers para el template
+  mostrarFecha(iso: string): string {
+    return aFechaLegible(iso);
+  }
+
+  mostrarHora(hora: string): string {
+    return a12h(hora);
+  }
+
+  nombreDeCita(cita: Cita): string {
+    const u = cita.empleados?.usuarios;
+    return u ? `${u.nombre} ${u.apellido}`.trim() : `Empleado #${cita.empleado_id}`;
   }
 
   // =========================
   // FOTO DE PERFIL
   // =========================
   cargarFoto() {
-    const usuario = this.auth.obtenerUsuario();
-    const uid = usuario?.uid;
-    if (uid) {
-      this.foto = localStorage.getItem('fotoPerfil_' + uid) || '';
-    } else {
-      this.foto = '';
+    if (this.usuario?.foto_perfil_url) {
+      this.foto = this.usuario.foto_perfil_url;
+      return;
     }
+    this.foto = this.usuario ? localStorage.getItem('fotoPerfil_' + this.usuario.id) || '' : '';
   }
 
   cambiarFoto(event: any) {
@@ -76,9 +116,8 @@ export class Profile implements OnInit {
 
     reader.onload = () => {
       this.foto = reader.result as string;
-      const uid = this.auth.getAuthUser()?.uid || this.usuario?.uid;
-      if (uid) {
-        localStorage.setItem('fotoPerfil_' + uid, this.foto);
+      if (this.usuario) {
+        localStorage.setItem('fotoPerfil_' + this.usuario.id, this.foto);
       }
     };
 
@@ -106,23 +145,37 @@ export class Profile implements OnInit {
   // =========================
   activarEdicion() {
     this.editando = true;
+    this.mensajeExito = '';
   }
 
   cancelarEdicion() {
     this.editando = false;
     this.usuario = this.auth.obtenerUsuario(); // restaurar datos originales
+    this.mensajeError = '';
   }
 
-  guardarCambios() {
-    // Validación básica
-    if (!this.usuario.nombre || !this.usuario.email) {
-      this.mensajeError = 'Nombre y correo son obligatorios';
+  async guardarCambios() {
+    if (!this.usuario?.nombre || !this.usuario?.apellido) {
+      this.mensajeError = 'Nombre y apellido son obligatorios';
       return;
     }
 
-    this.auth.actualizarUsuario(this.usuario);
-    this.editando = false;
-    this.mensajeError = '';
+    const ok = await this.auth.actualizarPerfil({
+      nombre: this.usuario.nombre,
+      apellido: this.usuario.apellido,
+      telefono: this.usuario.telefono ?? ''
+    });
+
+    if (ok) {
+      this.usuario = this.auth.obtenerUsuario();
+      this.editando = false;
+      this.mensajeError = '';
+      this.mensajeExito = 'Perfil actualizado correctamente';
+      setTimeout(() => (this.mensajeExito = ''), 3000);
+    } else {
+      this.mensajeError =
+        'No se pudo actualizar el perfil. Verifica tu sesión e intenta nuevamente.';
+    }
   }
 
   // =========================
@@ -135,7 +188,7 @@ export class Profile implements OnInit {
   irResenas() {
     this.router.navigate(['/']);
   }
-  
+
   editarCita(cita: Cita) {
     this.router.navigate(['/schedule'], { state: { citaEditar: cita } });
   }

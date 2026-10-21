@@ -1,22 +1,30 @@
 <div class="container">
 
   <h1>Agenda tu Cita</h1>
+
+  @if (error()) {
+    <p class="error-agenda">{{ error() }}</p>
+  }
+  @if (cargando()) {
+    <p>Cargando tatuadores…</p>
+  }
+
   <div class="content">
 
     <!-- Calendario -->
     <div class="calendar">
 
       <div class="calendar-header">
-        <select [(ngModel)]="mesActual" (change)="generarCalendario()">
-          <option *ngFor="let mes of meses; let i = index" [value]="i">
-            {{ mes }}
-          </option>
+        <select [ngModel]="mesActual()" (ngModelChange)="cambiarMes($event)">
+          @for (mes of meses; track $index) {
+            <option [ngValue]="$index">{{ mes }}</option>
+          }
         </select>
 
-        <select [(ngModel)]="anioActual" (change)="generarCalendario()">
-          <option *ngFor="let anio of anios" [value]="anio">
-            {{ anio }}
-          </option>
+        <select [ngModel]="anioActual()" (ngModelChange)="cambiarAnio($event)">
+          @for (anio of anios; track anio) {
+            <option [ngValue]="anio">{{ anio }}</option>
+          }
         </select>
       </div>
 
@@ -28,32 +36,44 @@
 
       <!-- Fechas dinámicas -->
       <div class="dates">
-        <span *ngFor="let dia of diasMes"
-          (click)="!esFechaPasada(dia) && !esDescansoEmpleado(dia) && seleccionarFecha(dia)"
-          [class.active]="fechaSeleccionada === dia" [class.disabled]="esFechaPasada(dia) || esDescansoEmpleado(dia)">
-          {{ dia }}
-        </span>
+        @for (dia of diasMes(); track dia) {
+          <span (click)="!esFechaPasada(dia) && !esDescansoEmpleado(dia) && seleccionarFecha(dia)"
+                [class.active]="fechaSeleccionada() === dia"
+                [class.disabled]="esFechaPasada(dia) || esDescansoEmpleado(dia)">
+            {{ dia }}
+          </span>
+        }
       </div>
 
     </div>
 
-    <!-- Horarios -->
-
+    <!-- Horarios disponibles (filtrados por tatuador, ocupaciones y hora actual) -->
     <div class="hours">
-      <ng-container *ngFor="let hora of horasFiltradas()">
-        <button (click)="!esHoraPasada(hora) && seleccionarHora(hora)" [class.selected]="horaSeleccionada === hora"
-          [class.disabled]="esHoraPasada(hora)">
-          {{ hora }}
+      @for (hora of horasFiltradas(); track hora) {
+        <button (click)="seleccionarHora(hora)"
+                [class.selected]="horaSeleccionada() === hora">
+          {{ mostrarHora(hora) }}
         </button>
-      </ng-container>
+      } @empty {
+        <p>
+          @if (empleadoSeleccionado() && fechaSeleccionada()) {
+            No hay horas disponibles para {{ nombreTatuadorSeleccionado() }} el día seleccionado.
+          } @else {
+            Selecciona un tatuador y una fecha para ver las horas disponibles.
+          }
+        </p>
+      }
     </div>
 
     <!-- Tatuadores -->
     <div class="artists">
-      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado.name)"
-        [class.selected]="tatuadorSeleccionado === empleado.name">
-        {{ empleado.name }}
-      </div>
+      @for (empleado of empleados(); track empleado.id) {
+        <div class="artist"
+             (click)="seleccionarEmpleado(empleado.id)"
+             [class.selected]="empleadoSeleccionado() === empleado.id">
+          {{ empleado.usuarios?.nombre }} {{ empleado.usuarios?.apellido }}
+        </div>
+      }
     </div>
 
   </div>
@@ -61,17 +81,25 @@
   <!-- Botones -->
   <div class="actions">
     <button class="cancelar" routerLink="">Cancelar</button>
-    <button class="reserve" (click)="reservar()">
-      {{ modoEdicion ? 'Actualizar Cita' : 'Reservar' }}
+    <button class="reserve" (click)="reservar()" [disabled]="reservando()">
+      {{ reservando() ? 'Guardando…' : (modoEdicion() ? 'Actualizar Cita' : 'Reservar') }}
     </button>
   </div>
 
   <hr>
 
-  <div>
-    <div *ngFor="let cita of citas">
-      <p>{{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}</p>
-    </div>
+  <!-- Mis citas -->
+  <div class="mis-citas">
+    <h3>Mis citas</h3>
+    @if (misCitas().length === 0) {
+      <p>No tienes citas registradas</p>
+    }
+    @for (cita of misCitas(); track cita.id) {
+      <p>
+        {{ mostrarFecha(cita.fecha) }} - {{ mostrarHora(cita.hora_inicio) }} -
+        {{ nombreDeCita(cita) }} <em>({{ cita.estado }})</em>
+      </p>
+    }
   </div>
 
 </div>

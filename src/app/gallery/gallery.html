@@ -74,7 +74,7 @@
               (ngModelChange)="tatuadorSeleccionado.set($event)">
         @for (t of tatuadores(); track t.id) {
           <option [ngValue]="t.id">
-            {{ t.usuarios?.nombre }} {{ t.usuarios?.apellido }} — {{ t.especialidad }}
+            {{ t.usuarios.nombre }} {{ t.usuarios.apellido }} — {{ t.especialidad }}
           </option>
         }
       </select>

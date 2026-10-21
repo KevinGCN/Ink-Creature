@@ -71,7 +71,7 @@
         <div class="artist"
              (click)="seleccionarEmpleado(empleado.id)"
              [class.selected]="empleadoSeleccionado() === empleado.id">
-          {{ empleado.usuarios?.nombre }} {{ empleado.usuarios?.apellido }}
+          {{ empleado.usuarios.nombre }} {{ empleado.usuarios.apellido }}
         </div>
       }
     </div>

@@ -10,8 +10,12 @@
  *          = https://<tu-backend>.up.railway.app/api
  *
  * Variables de entorno admitidas:
- *   - `API_URL`         -> URL base del backend (con el prefijo /api).
- *   - `GEMINI_API_KEY`  -> clave de Gemini (si no, se usa la de desarrollo).
+ *   - `API_URL` -> URL base del backend (con el prefijo /api).
+ *
+ * NOTA: aqui NO se inyecta ninguna llave de la IA. La llave de Gemini
+ * vive solo en el backend (variable `GEMINI_API_KEY` en Railway) y el
+ * frontend la consume a traves de `POST /api/ia/analyze-tattoo`. Si se
+ * metiera en este archivo, quedaria escrita en el bundle del navegador.
  *
  * Uso: se ejecuta automaticamente con `npm run build` (hook `prebuild`).
  */
@@ -21,21 +25,18 @@ import { fileURLToPath } from 'node:url';
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Clave de Gemini usada en desarrollo si no se define GEMINI_API_KEY. */
-const GEMINI_POR_DEFECTO = '***REMOVED-GEMINI-NUEVA***';
-
 const apiUrl = (process.env.API_URL || 'http://localhost:3000/api').replace(/\/+$/, '');
-const geminiApiKey = process.env.GEMINI_API_KEY || GEMINI_POR_DEFECTO;
 
 const destino = resolve(RAIZ, 'src/environments/environment.prod.ts');
 
 const contenido = `// Generado por scripts/generar-entorno.mjs - NO editar a mano.
 // Reemplaza a src/environments/environment.ts en el build de produccion
 // (ver el bloque "fileReplacements" de angular.json).
+//
+// Sin llaves: la IA se consume por proxy contra el backend.
 
 export const environment = {
   production: true,
-  geminiApiKey: '${geminiApiKey}',
   /** URL base del backend NestJS (prefijo global /api) */
   apiUrl: '${apiUrl}'
 };

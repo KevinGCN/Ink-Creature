@@ -51,8 +51,11 @@ Thumbs.db
 .github/skills/
 
 # Tokken
+# environment.ts SI se versiona: no lleva llaves, solo apiUrl
+# (http://localhost:3000/api). Ignorarlo estando trackeado solo confunde: `git add`
+# lo sigue subiendo, pero los archivos NUEVOS de esa carpeta se pierden en silencio.
+# Overrides puramente locales: nunca se suben.
 src/environments/environment.local.ts
-src/environments/environment.ts
 src/environments/environment.development.ts
 # Generado en build por scripts/generar-entorno.mjs (usa la var. API_URL)
 src/environments/environment.prod.ts

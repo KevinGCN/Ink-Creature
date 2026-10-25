@@ -217,16 +217,21 @@ export class Employees implements OnInit {
     this.modoEdicion.set(true);
     this.modoPromocion.set(false);
     this.editandoId.set(empleado.id);
+    // `empleados.usuarios` solo trae campos públicos (sin `email` ni `rol`),
+    // así que el correo y el rol reales se cruzan con el listado de usuarios
+    // que el panel ya carga con GET /api/usuarios (solo admin). Sin este cruce
+    // se guardaría `rol: 'empleado'` y un tatuador `admin` quedaría degradado.
+    const usuario = this.usuarios().find((u) => u.id === empleado.usuario_id);
     this.form.set({
-      nombre: empleado.usuarios?.nombre ?? '',
-      apellido: empleado.usuarios?.apellido ?? '',
-      email: empleado.usuarios?.email ?? '',
+      nombre: usuario?.nombre ?? empleado.usuarios?.nombre ?? '',
+      apellido: usuario?.apellido ?? empleado.usuarios?.apellido ?? '',
+      email: usuario?.email ?? '',
       password: '',
       especialidad: empleado.especialidad ?? '',
       biografia: empleado.biografia ?? '',
-      foto: empleado.usuarios?.foto_perfil_url ?? '',
+      foto: usuario?.foto_perfil_url ?? empleado.usuarios?.foto_perfil_url ?? '',
       activo: empleado.activo,
-      rol: empleado.usuarios?.rol ?? 'empleado'
+      rol: usuario?.rol ?? 'empleado'
     });
     this.limpiarFotoElegida();
     this.errorForm.set('');
@@ -484,6 +489,20 @@ export class Employees implements OnInit {
     const empleado = this.empleados().find((e) => e.id === id);
     if (!empleado) return;
 
+    // El rol solo se cambia si de verdad es distinto del que hay en la BD. El
+    // dato fiable es el de GET /api/usuarios: `empleados.usuarios` no incluye
+    // `rol` (es público), y llamar a `aplicarRol` con el valor por defecto
+    // degradaría a `empleado` a un tatuador que también sea `admin`.
+    const usuario = this.usuarios().find((u) => u.id === empleado.usuario_id);
+    if (!usuario) {
+      // Sin el listado de usuarios no se puede saber el rol actual: se prefiere
+      // no tocarlo antes que arriesgar una degradación silenciosa.
+      console.warn(
+        'No se pudo verificar el rol actual del usuario; el rol no se modificará.'
+      );
+    }
+    const rolCambio = !!usuario && usuario.rol !== f.rol;
+
     this.guardando.set(true);
     this.errorForm.set('');
 
@@ -520,11 +539,17 @@ export class Employees implements OnInit {
               .subscribe({
                 next: () => {
                   this.guardando.set(false);
-                  this.aplicarRol(empleado.usuario_id, f.rol, () => {
+                  const terminar = () => {
                     this.cerrarModal();
                     this.cargarTatuadores();
                     this.cargarUsuarios();
-                  });
+                  };
+                  if (rolCambio) {
+                    this.aplicarRol(empleado.usuario_id, f.rol, terminar);
+                  } else {
+                    // Nada que cambiar: no se hace un PATCH de rol innecesario.
+                    terminar();
+                  }
                 },
                 error: (err: HttpErrorResponse) => {
                   console.error('Error actualizando tatuador:', err);

@@ -43,6 +43,13 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Skills: la unica copia versionada vive en .agents/skills.
+# Las demas carpetas de agentes (.claude, .github) son junctions locales que
+# crea `npx skills add`; versionarlas duplicaba los mismos 45 archivos en cada
+# carpeta y cada actualizacion de una skill tocaba las 16 copias.
+.claude/skills/
+.github/skills/
+
 # Tokken
 src/environments/environment.local.ts
 src/environments/environment.ts

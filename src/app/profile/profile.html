@@ -12,16 +12,37 @@
         <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
         <label class="btn-subir-foto">
-          <input type="file" (change)="cambiarFoto($event)" accept="image/*" hidden>
-          {{ foto ? 'Cambiar foto' : 'Subir foto' }}
+          <input type="file" accept="image/jpeg,image/png,image/webp" (change)="cambiarFoto($event)" [disabled]="subiendoFoto" hidden>
+          {{ subiendoFoto ? 'Subiendo…' : (foto ? 'Cambiar foto' : 'Subir foto') }}
         </label>
+        <small class="foto-nota">La foto se guarda en el servidor (máx. 2 MB).</small>
       </div>
 
-<div class="datos">
-         <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }} {{ usuario?.apellido || usuario?.last_name || '' }}</p>
-         <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
-         <p><strong>Cargo:</strong> {{ usuario?.charge || 'Normal' }}</p>
-       </div>
+      <div class="datos">
+        @if (editando) {
+          <label><strong>Nombre:</strong></label>
+          <input type="text" [(ngModel)]="usuario!.nombre">
+
+          <label><strong>Apellido:</strong></label>
+          <input type="text" [(ngModel)]="usuario!.apellido">
+
+          <label><strong>Teléfono:</strong></label>
+          <input type="tel" [(ngModel)]="usuario!.telefono">
+        } @else {
+          <p><strong>Nombre:</strong> {{ usuario?.nombre || 'No definido' }} {{ usuario?.apellido || '' }}</p>
+          <p><strong>Email:</strong> {{ usuario?.email || 'No definido' }}</p>
+          <p><strong>Rol:</strong> {{ usuario?.rol || 'cliente' }}</p>
+        }
+
+        <p *ngIf="mensajeError" class="mensaje-error">{{ mensajeError }}</p>
+        <p *ngIf="mensajeExito" class="mensaje-exito">{{ mensajeExito }}</p>
+
+        <div *ngIf="editando" class="cita-actions">
+          <button class="editar" (click)="guardarCambios()">Guardar</button>
+          <button class="eliminar" (click)="cancelarEdicion()">Cancelar</button>
+        </div>
+        <button *ngIf="!editando" class="editar" (click)="activarEdicion()">Editar perfil</button>
+      </div>
 
    </div>
 
@@ -35,14 +56,15 @@
         </button>
       </div>
 
-      <div *ngIf="citas.length === 0" class="empty">
+      <div *ngIf="citas().length === 0" class="empty">
         No tienes citas registradas
       </div>
 
-      <div class="cita-card" *ngFor="let cita of citas">
-        <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
-        <p><strong>Hora:</strong> {{ cita.hora }}</p>
-        <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
+      <div class="cita-card" *ngFor="let cita of citas()">
+        <p><strong>Fecha:</strong> {{ mostrarFecha(cita.fecha) }}</p>
+        <p><strong>Hora:</strong> {{ mostrarHora(cita.hora_inicio) }} - {{ mostrarHora(cita.hora_fin) }}</p>
+        <p><strong>Tatuador:</strong> {{ nombreDeCita(cita) }}</p>
+        <p><strong>Estado:</strong> {{ cita.estado }}</p>
 
         <div class="cita-actions">
           <button class="editar" (click)="editarCita(cita)">

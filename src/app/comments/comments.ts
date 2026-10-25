@@ -37,7 +37,7 @@ export class Comments implements OnInit {
 
     const usuario = this.auth.obtenerUsuario();
     this.resenaService.publicarResena({
-      nombreUsuario: usuario.nombre || usuario.name || 'Usuario',
+      nombreUsuario: usuario?.nombre || 'Usuario',
       comentario: this.comentario.trim(),
       fecha: new Date().toLocaleDateString('es-CO'),
       calificacion: this.calificacion,

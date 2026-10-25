@@ -1,21 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
+/**
+ * Guard funcional (API moderna, reemplaza la clase deprecated CanActivate).
+ * Protege /schedule, /profile y /gemini-ia: sin token JWT no hay acceso.
+ */
+export const authGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
 
-  private auth = inject(AuthService);
-  private router = inject(Router);
-
-  canActivate(): boolean {
-    if (this.auth.estaLogueado()) {
-      return true;
-    } else {
-      this.router.navigate(['/']);
-      return false;
-    }
-  }
-}
+  return auth.estaLogueado() ? true : router.createUrlTree(['/']);
+};

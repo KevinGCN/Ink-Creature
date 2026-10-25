@@ -1,16 +1,34 @@
+/**
+ * Módulo Gallery — Angular 21.
+ *
+ * - Signals + control flow (@if/@for) en vez de NgModules/*ngIf/*ngFor.
+ * - Imágenes en vivo desde el backend NestJS (GET/POST/DELETE /api/galeria).
+ * - La subida de archivos usa POST /api/galeria/upload (multipart) del
+ *   backend, que guarda el archivo en la base de datos y devuelve su ruta
+ *   "/api/imagenes/<id>", que se resuelve con `urlImagen()` al pintarla.
+ * - Se muestran además las imágenes base del proyecto (assets locales),
+ *   que no se pueden eliminar desde la UI.
+ */
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
-import { cargarListaTatuadores, Tatuador } from '../employees/employees';
+import { Empleado, EmpleadoService } from '../services/empleados';
+import { GaleriaService, ImagenGaleria } from '../services/galeria';
+import { FOTO_PLACEHOLDER } from '../utils/placeholder';
+import { urlImagen } from '../utils/imagen-url';
 
-interface ImagenGaleria {
-  id?: number;
-  src: string;
-  alt: string;
-  empleadoId: number;
-}
+/** Imágenes base embebidas en el frontend (no pertenecen al backend) */
+const IMAGENES_BASE: ImagenGaleria[] = [
+  { id: -1, subido_por: 0, empleado_id: null, imagen_url: 'image/DBZ.jpg', titulo: 'Goku Y Vegeta', fecha_subida: '' },
+  { id: -2, subido_por: 0, empleado_id: null, imagen_url: 'image/ladymaria.png', titulo: 'Lady Maria', fecha_subida: '' },
+  { id: -3, subido_por: 0, empleado_id: null, imagen_url: 'image/mercy.png', titulo: 'Mercy', fecha_subida: '' },
+  { id: -4, subido_por: 0, empleado_id: null, imagen_url: 'image/rem.png', titulo: 'Rem', fecha_subida: '' },
+  { id: -5, subido_por: 0, empleado_id: null, imagen_url: 'image/kuromi.jpg', titulo: 'Kuromi', fecha_subida: '' },
+  { id: -6, subido_por: 0, empleado_id: null, imagen_url: 'image/sorodita.png', titulo: 'Sorodita', fecha_subida: '' },
+  { id: -7, subido_por: 0, empleado_id: null, imagen_url: 'image/arquemis.png', titulo: 'Arquemis', fecha_subida: '' }
+];
 
 @Component({
   selector: 'app-gallery',
@@ -21,98 +39,115 @@ interface ImagenGaleria {
 export class Gallery implements OnInit {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly galeriaService = inject(GaleriaService);
+  private readonly empleadosService = inject(EmpleadoService);
 
-  // Imagen seleccionada para visualización ampliada
+  // ── Estado reactivo ───────────────────────────────────────
+  private readonly imagenesDb = signal<ImagenGaleria[]>([]);
+  readonly imagenes = computed(() => [...IMAGENES_BASE, ...this.imagenesDb()]);
+  readonly cargando = signal(true);
+  readonly error = signal('');
+
+  /** Usuario reactivo y permisos administrativos derivados del rol */
+  readonly esAdmin = computed(() => this.auth.esAdmin());
+
+  /** Imagen seleccionada para visualización ampliada */
   readonly selectedImage = signal<string | null>(null);
 
-  // Usuario reactivo y permisos administrativos derivados
-  private readonly usuario = toSignal(this.auth.usuario$, {
-    initialValue: this.auth.obtenerUsuario()
-  });
-  readonly esAdmin = computed(() => {
-    const cargo = this.usuario()?.charge;
-    return cargo === 'CEO' || cargo === 'Admin';
-  });
+  /** Tatuadores (empleados activos) para el selector de subida */
+  readonly tatuadores = signal<Empleado[]>([]);
 
-  // Lista de tatuadores para el selector
-  readonly tatuadores = signal<Tatuador[]>([]);
-
-  // Imágenes base
-  private readonly imagenesBase: ImagenGaleria[] = [
-    { src: 'image/DBZ.jpg', alt: 'Goku Y Vegeta', empleadoId: 1 },
-    { src: 'image/ladymaria.png', alt: 'Lady Maria', empleadoId: 2 },
-    { src: 'image/mercy.png', alt: 'Mercy', empleadoId: 3 },
-    { src: 'image/rem.png', alt: 'Rem', empleadoId: 4 },
-    { src: 'image/kuromi.jpg', alt: 'Kuromi', empleadoId: 5 },
-    { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 },
-    { src: 'image/arquemis.png', alt: 'Arquemis', empleadoId: 7 }
-  ];
-  readonly imagenes = signal<ImagenGaleria[]>([]);
-
+  // ── Modal de subida ───────────────────────────────────────
   readonly mostrarModalSubida = signal(false);
   readonly archivoTemporal = signal<File | null>(null);
   readonly previewTemporal = signal('');
-  readonly tatuadorSeleccionado = signal(1);
+  readonly tatuadorSeleccionado = signal<number | null>(null);
   readonly nombreImagenTemp = signal('');
+  readonly subiendo = signal(false);
+  readonly errorSubida = signal('');
 
-  // Inicializa la galería combinando imágenes base y almacenadas
-  ngOnInit() {
+  readonly placeholder = FOTO_PLACEHOLDER;
+
+  ngOnInit(): void {
     this.cargarImagenes();
-    this.recargarTatuadores();
+    this.cargarTatuadores();
   }
 
-  private recargarTatuadores() {
-    const lista = cargarListaTatuadores();
-    this.tatuadores.set(lista);
-    if (lista.length > 0) {
-      this.tatuadorSeleccionado.set(lista[0].id);
-    }
+  cargarImagenes(): void {
+    this.cargando.set(true);
+    this.galeriaService.getGaleria().subscribe({
+      next: (imagenes) => {
+        this.imagenesDb.set(imagenes);
+        this.cargando.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error cargando galería:', err);
+        this.error.set('No se pudo conectar con el backend para cargar la galería.');
+        this.cargando.set(false);
+      }
+    });
   }
 
-  cargarImagenes() {
-    const data = localStorage.getItem('galeria');
-    const guardadas: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    const unicas = guardadas.filter(
-      img => !this.imagenesBase.some(base => base.src === img.src)
-    );
-    this.imagenes.set([...this.imagenesBase, ...unicas]);
+  private cargarTatuadores(): void {
+    this.empleadosService.getEmpleados().subscribe({
+      next: (empleados) => {
+        const activos = empleados.filter((e) => e.activo);
+        this.tatuadores.set(activos);
+        if (activos.length > 0 && this.tatuadorSeleccionado() === null) {
+          this.tatuadorSeleccionado.set(activos[0].id);
+        }
+      },
+      error: (err) => console.error('Error cargando tatuadores:', err)
+    });
   }
 
-  openImage(img: string) {
-    this.selectedImage.set(img);
+  nombreTatuador(imagen: ImagenGaleria): string {
+    const u = imagen.empleados?.usuarios;
+    return u ? `${u.nombre} ${u.apellido}`.trim() : 'Tatuador';
   }
 
-  closeImage() {
+  esImagenDeBase(imagen: ImagenGaleria): boolean {
+    return imagen.id < 0;
+  }
+
+  /**
+   * URL real de la imagen. Las guardadas en la BD son rutas relativas
+   * ("/api/imagenes/<id>") y se resuelven contra el backend; las externas
+   * (https://...) y las de los assets se usan tal cual.
+   */
+  srcImagen(imagen: ImagenGaleria): string {
+    return urlImagen(imagen.imagen_url);
+  }
+
+  openImage(src: string): void {
+    this.selectedImage.set(src);
+  }
+
+  closeImage(): void {
     this.selectedImage.set(null);
   }
 
-  verTatuador(empleadoId: number, event: Event) {
+  verTatuador(empleadoId: number | null, event: Event): void {
     event.stopPropagation();
-    this.router.navigate(['/employeeCV', empleadoId]);
+    if (empleadoId) {
+      this.router.navigate(['/employeeCV', empleadoId]);
+    }
   }
 
-  handleImageError(event: Event) {
-    console.error('Error cargando imagen:', event);
-    (event.target as HTMLImageElement).src = 'image/placeholder.jpg';
+  handleImageError(event: Event): void {
+    // Fallback inline (no depende de un archivo placeholder en disco)
+    (event.target as HTMLImageElement).src = FOTO_PLACEHOLDER;
   }
 
-  obtenerNombreTatuador(id: number): string {
-    const t = this.tatuadores().find(t => t.id === id);
-    return t ? t.nombre : 'Tatuador';
-  }
-
-  // ── Paso 1: archivo seleccionado → abrir modal
-  seleccionarArchivo(event: Event) {
+  // ── Paso 1: archivo seleccionado → abrir modal ────────────
+  seleccionarArchivo(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
     this.archivoTemporal.set(file);
     this.nombreImagenTemp.set(file.name.replace(/\.[^.]+$/, ''));
-
-    // Recargar tatuadores por si se agregaron nuevos
-    this.recargarTatuadores();
-
+    this.errorSubida.set('');
     this.previewTemporal.set(URL.createObjectURL(file));
     this.mostrarModalSubida.set(true);
 
@@ -120,52 +155,77 @@ export class Gallery implements OnInit {
     input.value = '';
   }
 
-  // ── Paso 2: confirmar con tatuador seleccionado
-  confirmarSubida() {
-    if (!this.previewTemporal()) return;
+  // ── Paso 2: confirmar → subir al backend y registrar ──────
+  confirmarSubida(): void {
+    const file = this.archivoTemporal();
+    const usuario = this.auth.obtenerUsuario();
 
-    const nuevaImagen: ImagenGaleria = {
-      id: Date.now(),
-      src: this.previewTemporal(),
-      alt: this.nombreImagenTemp() || 'Nueva imagen',
-      empleadoId: this.tatuadorSeleccionado()
-    };
+    if (!file || !usuario) return;
 
-    this.imagenes.update(lista => [...lista, nuevaImagen]);
-    this.guardarImagen(nuevaImagen);
-    this.cerrarModalSubida();
+    this.subiendo.set(true);
+    this.errorSubida.set('');
+
+    // 1) Subir el archivo a /uploads
+    this.galeriaService.subirArchivo(file).subscribe({
+      next: (url) => {
+        // 2) Registrar el registro en la galería
+        this.galeriaService
+          .crearImagen({
+            subido_por: usuario.id,
+            empleado_id: this.tatuadorSeleccionado() ?? undefined,
+            imagen_url: url,
+            titulo: this.nombreImagenTemp().trim() || undefined
+          })
+          .subscribe({
+            next: () => {
+              this.subiendo.set(false);
+              this.cerrarModalSubida();
+              this.cargarImagenes();
+            },
+            error: (err: HttpErrorResponse) => {
+              console.error('Error registrando imagen:', err);
+              this.subiendo.set(false);
+              this.errorSubida.set(this.mensajeDeError(err, 'No se pudo registrar la imagen.'));
+            }
+          });
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error subiendo imagen:', err);
+        this.subiendo.set(false);
+        this.errorSubida.set(this.mensajeDeError(err, 'No se pudo subir el archivo.'));
+      }
+    });
   }
 
-  cerrarModalSubida() {
+  cerrarModalSubida(): void {
     this.mostrarModalSubida.set(false);
     this.archivoTemporal.set(null);
     this.previewTemporal.set('');
     this.nombreImagenTemp.set('');
+    this.errorSubida.set('');
   }
 
-  guardarImagen(nuevaImagen: ImagenGaleria) {
-    const data = localStorage.getItem('galeria');
-    const existentes: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    if (!existentes.some(img => img.id === nuevaImagen.id)) {
-      existentes.push(nuevaImagen);
-      localStorage.setItem('galeria', JSON.stringify(existentes));
-    }
-  }
-
-  // Elimina una imagen almacenada, excluyendo las imágenes base
-  eliminarImagen(img: ImagenGaleria, event: Event) {
+  // ── Eliminar (solo imágenes del backend) ──────────────────
+  eliminarImagen(imagen: ImagenGaleria, event: Event): void {
     event.stopPropagation();
-    if (this.imagenesBase.some(base => base.src === img.src)) {
+
+    if (this.esImagenDeBase(imagen)) {
       alert('No puedes eliminar imágenes base.');
       return;
     }
-    this.imagenes.update(lista => lista.filter(i => i !== img));
+    if (!confirm(`¿Eliminar "${imagen.titulo || 'esta imagen'}" de la galería?`)) return;
 
-    const data = localStorage.getItem('galeria');
-    const guardadas: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    localStorage.setItem(
-      'galeria',
-      JSON.stringify(guardadas.filter(i => i.id !== img.id))
-    );
+    this.galeriaService.eliminarImagen(imagen.id).subscribe({
+      next: () => this.cargarImagenes(),
+      error: (err: HttpErrorResponse) => {
+        console.error('Error eliminando imagen:', err);
+        alert(this.mensajeDeError(err, 'No se pudo eliminar la imagen.'));
+      }
+    });
+  }
+
+  private mensajeDeError(err: HttpErrorResponse, porDefecto: string): string {
+    if (err.status === 401) return 'Tu sesión expiró. Cierra sesión y vuelve a entrar.';
+    return porDefecto;
   }
 }

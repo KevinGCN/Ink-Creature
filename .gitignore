@@ -43,6 +43,13 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Tokken
+src/environments/environment.local.ts
+src/environments/environment.ts
+src/environments/environment.development.ts
+# Generado en build por scripts/generar-entorno.mjs (usa la var. API_URL)
+src/environments/environment.prod.ts
 #env
 .env
 backend/.env
+.environtments

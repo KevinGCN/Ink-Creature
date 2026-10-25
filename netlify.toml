@@ -1,6 +1,9 @@
 [build]
 #   base = "Ink-Creature"
-    command = "ng build"
+    # `npm run build` dispara el hook `prebuild`, que genera
+    # src/environments/environment.prod.ts con la variable de entorno API_URL
+    # (la URL del backend de Railway). Ver scripts/generar-entorno.mjs.
+    command = "npm run build"
     publish = "dist/Ink-Creature/browser"
 
     [[redirects]]

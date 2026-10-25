@@ -1,103 +1,80 @@
 /**
- * Servicio de gestión de usuarios - Estado en memoria con JSON inicial
- * 
- * Servicio que combina datos iniciales desde JSON estático con estado
- * mutable en memoria. Útil para prototipado o gestión temporal sin
- * backend real.
- * 
- * Arquitectura:
- * - Carga inicial desde assets/usuarios.json
- * - Estado mutable en memoria (this.usuarios)
- * - Operaciones CRUD locales (sin persistencia)
- * 
- * Limitaciones conocidas:
- * - No persiste cambios (recarga de página pierde modificaciones)
- * - Sin validación de duplicados en creación
- * - getUsuarios() devuelve referencia directa (no inmutable)
- * 
- * Mejoras potenciales:
- * - Implementar Subject/BehaviorSubject para reactividad
- * - Añadir persistencia en localStorage
- * - Retornar copias defensivas (getUsuarios())
+ * Servicio de usuarios — consume el backend NestJS.
+ *
+ * POST   /api/usuarios       → registro (público; también lo usa el admin
+ *                               para crear la cuenta de un tatuador)
+ * GET    /api/usuarios       → listar (público)
+ * PATCH  /api/usuarios/:id   → actualizar (requiere JWT)
+ * POST   /api/usuarios/:id/foto → subir la foto de perfil; el backend la
+ *                               guarda en la base de datos y devuelve el
+ *                               usuario con `foto_perfil_url` actualizado
+ *                               (requiere JWT: el propio usuario o un admin)
+ * DELETE /api/usuarios/:id   → eliminar; cascada borra su registro empleado
+ *                              (requiere JWT)
  */
-import { HttpBackend, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Usuario } from '../models/usuario';
+import { environment } from '../../environments/environment';
+import { RolUsuario, Usuario } from '../models/usuario';
+
+export interface DatosUsuarioNuevo {
+  nombre: string;
+  apellido: string;
+  email: string;
+  password: string;
+  telefono?: string;
+  foto_perfil_url?: string;
+}
+
+export type DatosUsuarioEdicion = Partial<Omit<DatosUsuarioNuevo, 'password'>> & {
+  password?: string;
+};
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class UsuarioService {
-  /** URL del recurso JSON inicial */
-  private url = 'assets/usuarios.json';
-  
-  /** Estado en memoria de la colección de usuarios */
-  private usuarios: Usuario[] = [];
+  private readonly url = `${environment.apiUrl}/usuarios`;
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Carga inicial de usuarios desde JSON estático
-   * Suscripción interna - dispara side effect
-   */
-  cargarUsuarios() {
-    this.http.get<Usuario[]>(this.url).subscribe(data => {
-      this.usuarios = data;
-    });
+  crearUsuario(datos: DatosUsuarioNuevo): Observable<Usuario> {
+    return this.http.post<Usuario>(this.url, datos);
+  }
+
+  getUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(this.url);
+  }
+
+  getUsuario(id: number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/${id}`);
+  }
+
+  actualizarUsuario(id: number, datos: DatosUsuarioEdicion): Observable<Usuario> {
+    return this.http.patch<Usuario>(`${this.url}/${id}`, datos);
+  }
+
+  eliminarUsuario(id: number): Observable<unknown> {
+    return this.http.delete(`${this.url}/${id}`);
   }
 
   /**
-   * Retorna la colección actual de usuarios
-   * ⚠️ Retorna referencia directa, no copia defensiva
+   * Sube la foto de perfil al backend (multipart/form-data, campo "imagen").
+   * El archivo se guarda en la base de datos y el usuario vuelve con
+   * `foto_perfil_url` apuntando a "/api/imagenes/<id>".
    */
-  getUsuarios(): Usuario[] {
-    return this.usuarios;
+  subirFoto(id: number, file: File): Observable<Usuario> {
+    const formData = new FormData();
+    formData.append('imagen', file, file.name);
+    return this.http.post<Usuario>(`${this.url}/${id}/foto`, formData);
   }
 
   /**
-   * Crea un nuevo usuario en memoria
-   * @param name Nombre completo
-   * @param email Correo electrónico
-   * @param password Contraseña (texto plano)
+   * Cambia el rol de un usuario. Solo funciona si quien llama es admin
+   * (el backend responde 403 en caso contrario).
    */
-  crearUsuario(name: string, email: string, password: string) {
-    const nuevo: Usuario = {
-      id: this.generarId(),
-      name: name,
-      email: email,
-      password: password
-    };
-    this.usuarios.push(nuevo);
-  }
-
-  /**
-   * Actualiza el nombre de un usuario existente
-   * @param id Identificador del usuario
-   * @param name Nuevo nombre
-   */
-  setUsuarName(id: number, name: string): void {
-    const usuario = this.usuarios.find(u => u.id === id);
-    if (usuario) {
-      usuario.name = name;
-    }
-  }
-
-  /**
-   * Elimina un usuario por ID
-   * @param id Identificador del usuario a eliminar
-   */
-  eliminarUsuario(id: number) {
-    this.usuarios = this.usuarios.filter(u => u.id !== id);
-  }
-
-  /**
-   * Genera ID secuencial automático
-   * @returns Siguiente ID disponible (max + 1)
-   */
-  private generarId(): number {
-    if (this.usuarios.length === 0) return 1;
-    return Math.max(...this.usuarios.map(u => u.id)) + 1;
+  cambiarRol(id: number, rol: RolUsuario): Observable<Usuario> {
+    return this.http.patch<Usuario>(`${this.url}/${id}/rol`, { rol });
   }
 }

@@ -24,6 +24,15 @@
  * 1. logout() → auth.logout() → limpia estado
  * 2. Navega a home ('/')
  * 3. Cierra dropdown
+ *
+ * Vista pública vs. autenticada (junto con `MainNavbar`):
+ * - Sin sesión: aquí solo aparece el botón "Sesión", que abre el modal
+ *   `Loggin`; la navegación general la sigue aportando `MainNavbar`.
+ * - Con sesión: se cambia por el botón "⚙️ Ajustes" y su dropdown con
+ *   "Perfil" y "Cerrar sesión". `auth` es la única fuente de verdad
+ *   (`isLoggedIn$`/`usuario$`), por eso el template se guía por ese observable.
+ * - Logout: se borra el token de `localStorage` vía `AuthService`, se cierra
+ *   el dropdown y se vuelve a la home para dejar la vista pública limpia.
  * 
  * @component
  */
@@ -58,6 +67,7 @@ export class UserNavbar {
    * Abre el modal de login/registro
    */
   abrirLogin() {
+    // El modal se monta aquí mismo (`app-loggin`), no navega a /loggin.
     this.mostrarLogin = true;
   }
 
@@ -79,6 +89,7 @@ export class UserNavbar {
    * Navega a la página de perfil y cierra el dropdown
    */
   irPerfil() {
+    // Se cierra primero para que el dropdown no quede abierto sobre /profile.
     this.mostrarAjustes = false;
     this.router.navigate(['/profile']);
   }
@@ -90,8 +101,11 @@ export class UserNavbar {
    * - Navega a ruta raíz
    */
   logout() {
+    // auth.logout() borra el token; sin él el interceptor deja de autenticar
+    // y las rutas con authGuard (/schedule, /profile) dejan de ser accesibles.
     this.auth.logout();
     this.mostrarAjustes = false;
+    // Volver a la home evita quedarse en una vista que ya requiere sesión.
     this.router.navigate(['/']);
   }
 }

@@ -1,4 +1,5 @@
 <div class="overlay" (click)="cerrarModal()"></div>
+<!-- Modal de autenticación: el overlay también cierra al hacer clic fuera del panel -->
 
 <div class="login-container">
 
@@ -12,6 +13,7 @@
     <!-- LOGIN -->
     @if (!modoRegistro) {
       <h2>Iniciar sesión</h2>
+      <!-- Formulario de login: correo y contraseña enlazados con ngModel; ambos son obligatorios para el backend -->
 
       <label>Correo</label>
       <input type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico">
@@ -20,6 +22,7 @@
       <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña"
              (keyup.enter)="iniciarSesion()">
 
+      <!-- Se deshabilita mientras la petición está en curso y el error aparece debajo -->
       <button class="login-btn" (click)="iniciarSesion()" [disabled]="cargandoLogin">
         {{ cargandoLogin ? 'Iniciando...' : 'Iniciar sesión' }}
       </button>
@@ -30,6 +33,7 @@
 
       <div class="divider"><span>o</span></div>
 
+      <!-- Cambia al formulario de registro sin cerrar el modal -->
       <button class="register-btn" (click)="irARegistro()">
         Registrarse
       </button>
@@ -43,6 +47,7 @@
       </button>
 
       <h2>Crear cuenta</h2>
+      <!-- Registro: nombre, apellido, correo y contraseña (mínimo 8) son los campos que valida el backend -->
 
       <label>Nombre</label>
       <input type="text" [(ngModel)]="nombre" name="nombre">

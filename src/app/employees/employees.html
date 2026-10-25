@@ -22,11 +22,13 @@
   }
 
   <div class="catalogo">
+    <!-- Catálogo de tatuadores: una tarjeta por cada fila de `empleados` -->
     @for (t of tatuadores(); track t.id) {
 
       <div class="tarjeta">
 
         <div class="tarjeta-foto">
+          <!-- `fotoDe()` resuelve la ruta relativa del backend con urlImagen() y usa placeholder si no hay foto -->
           <img [src]="fotoDe(t)" [alt]="nombreCompleto(t)">
           <span class="badge">{{ t.especialidad || 'Tatuador' }}</span>
         </div>
@@ -43,6 +45,7 @@
         </div>
 
         <div class="tarjeta-footer">
+          <!-- Abre el CV público del tatuador en /employeeCV/:id -->
           <a [routerLink]="['/employeeCV', t.id]" class="btn-perfil">
             Ver perfil
           </a>
@@ -64,6 +67,7 @@
   @if (esAdmin()) {
     <section class="panel-pendientes" [class.abierto]="pendientesAbierto()">
 
+      <!-- La cabecera es un botón que pliega/despliega el panel; `aria-expanded` refleja el estado -->
       <button type="button" class="panel-cabecera"
               (click)="togglePendientes()"
               [attr.aria-expanded]="pendientesAbierto()">
@@ -101,6 +105,7 @@
             </p>
           } @else {
             <div class="panel-buscador">
+              <!-- Filtro local por nombre o correo sobre `usuariosPendientesFiltrados()`, no consulta al API -->
               <input type="search" class="buscador"
                      placeholder="Buscar por nombre o correo..."
                      [ngModel]="busquedaPendientes()"
@@ -113,6 +118,7 @@
             </div>
 
             <ul class="lista-pendientes">
+              <!-- Cuentas todavía sin ficha de tatuador; `@empty` cubre la búsqueda sin resultados -->
               @for (u of usuariosPendientesFiltrados(); track u.id) {
                 <li class="pendiente">
                   <span class="avatar" aria-hidden="true">{{ iniciales(u) }}</span>
@@ -122,11 +128,13 @@
                     <span class="email">{{ u.email }}</span>
                   </div>
 
+                  <!-- Chip del rol actual de la cuenta; las clases CSS cambian según admin/empleado/cliente -->
                   <span class="rol-chip"
                         [class.rol-admin]="u.rol === 'admin'"
                         [class.rol-empleado]="u.rol === 'empleado'"
                         [class.rol-cliente]="u.rol === 'cliente'">{{ u.rol }}</span>
 
+                  <!-- Abre el modal en modo promoción: crea la ficha de tatuador de esa cuenta existente -->
                   <button type="button" class="btn-promover" (click)="abrirPromover(u)">
                     Promover
                   </button>
@@ -173,6 +181,8 @@
         </p>
       }
 
+      <!-- Formulario del modal: cada campo actualiza el signal `form()` de forma inmutable
+           (form.set({ ...form(), campo })). Los campos con * son obligatorios. -->
       <label>Nombre *</label>
       <input type="text" [ngModel]="form().nombre"
              (ngModelChange)="form.set({ ...form(), nombre: $event })"
@@ -184,6 +194,7 @@
              placeholder="Apellido">
 
       @if (!modoEdicion() && !modoPromocion()) {
+        <!-- Correo y contraseña temporal solo se piden al crear una cuenta nueva (modo agregar) -->
         <label>Correo *</label>
         <input type="email" [ngModel]="form().email"
                (ngModelChange)="form.set({ ...form(), email: $event })"
@@ -211,6 +222,7 @@
                 rows="3" placeholder="Descripción del artista..."></textarea>
 
       <label>Foto del tatuador</label>
+      <!-- Input de archivo oculto + botón; la vista previa usa fotoDelFormulario() (archivo nuevo o foto guardada) -->
       <div class="foto-selector">
         <input type="file" accept="image/jpeg,image/png,image/webp"
                (change)="seleccionarFoto($event)" hidden #fotoInput>
@@ -254,6 +266,7 @@
     </div>
 
     <div class="modal-footer">
+      <!-- `guardando()` bloquea los botones y la etiqueta del botón principal cambia según el modo -->
       <button class="btn-cancelar" (click)="cerrarModal()" [disabled]="guardando()">Cancelar</button>
       <button class="btn-guardar" (click)="guardar()" [disabled]="guardando()">
         @if (guardando()) {

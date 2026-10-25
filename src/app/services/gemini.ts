@@ -15,6 +15,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class GeminiService {
+  // Prefijo del proxy interno: la ruta real (`analyze-tattoo`) se añade abajo.
   private readonly url = `${environment.apiUrl}/ia`;
 
   constructor(private http: HttpClient) {}
@@ -24,6 +25,9 @@ export class GeminiService {
    * (un JSON con complejidad, tiempo, precioMin, precioMax y justificación).
    */
   async analyzeTattoo(description: string): Promise<string> {
+    // El backend espera el campo en español (`descripcion`) y responde con un
+    // sobre `{ respuesta }`. Se devuelve el texto sin parsear: la vista decide
+    // si lo interpreta como JSON o como mensaje de error legible.
     const respuesta = await firstValueFrom(
       this.http.post<{ respuesta: string }>(`${this.url}/analyze-tattoo`, {
         descripcion: description,

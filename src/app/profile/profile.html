@@ -8,10 +8,13 @@
    <div class="profile-info">
 
       <div class="foto">
+        <!-- `foto` ya está resuelta con urlImagen() en el componente; si está vacía se usa el placeholder -->
         <img *ngIf="foto" [src]="foto">
         <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
         <label class="btn-subir-foto">
+          <!-- Input de archivo oculto: la etiqueta hace de botón. Al cambiar, sube la foto al backend
+               (POST /api/usuarios/:id/foto) y se bloquea mientras `subiendoFoto`. -->
           <input type="file" accept="image/jpeg,image/png,image/webp" (change)="cambiarFoto($event)" [disabled]="subiendoFoto" hidden>
           {{ subiendoFoto ? 'Subiendo…' : (foto ? 'Cambiar foto' : 'Subir foto') }}
         </label>
@@ -19,6 +22,8 @@
       </div>
 
       <div class="datos">
+        <!-- Modo edición: inputs enlazados con ngModel para nombre, apellido y teléfono.
+             Fuera de él se muestran los mismos datos en solo lectura. -->
         @if (editando) {
           <label><strong>Nombre:</strong></label>
           <input type="text" [(ngModel)]="usuario!.nombre">
@@ -38,6 +43,7 @@
         <p *ngIf="mensajeExito" class="mensaje-exito">{{ mensajeExito }}</p>
 
         <div *ngIf="editando" class="cita-actions">
+          <!-- Guardar valida y hace PATCH del perfil; Cancelar descarta los cambios -->
           <button class="editar" (click)="guardarCambios()">Guardar</button>
           <button class="eliminar" (click)="cancelarEdicion()">Cancelar</button>
         </div>
@@ -57,9 +63,11 @@
       </div>
 
       <div *ngIf="citas().length === 0" class="empty">
+        <!-- El usuario todavía no tiene citas agendadas -->
         No tienes citas registradas
       </div>
 
+      <!-- Una tarjeta por cita: mostrarFecha/mostrarHora formatean en la zona horaria del backend -->
       <div class="cita-card" *ngFor="let cita of citas()">
         <p><strong>Fecha:</strong> {{ mostrarFecha(cita.fecha) }}</p>
         <p><strong>Hora:</strong> {{ mostrarHora(cita.hora_inicio) }} - {{ mostrarHora(cita.hora_fin) }}</p>

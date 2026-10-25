@@ -19,6 +19,9 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LoginResponse, Usuario } from '../models/usuario';
 
+// Claves de localStorage compartidas con el interceptor y con vistas antiguas:
+// el token sobrevive a un F5 y el usuario cacheado evita parpadeos mientras
+// `GET /api/auth/me` confirma que la sesión sigue viva.
 const CLAVE_TOKEN = 'access_token';
 const CLAVE_USUARIO = 'usuario';
 
@@ -54,6 +57,9 @@ export class AuthService {
         })
       );
 
+      // Se guarda en localStorage (no solo en memoria) para que la sesión
+      // sobreviva a recargas y pestañas nuevas; no es una cookie httpOnly
+      // porque el interceptor necesita leerlo para la cabecera Authorization.
       localStorage.setItem(CLAVE_TOKEN, res.access_token);
       await this.refrescarUsuario();
       return true;
@@ -143,6 +149,10 @@ export class AuthService {
 
   // ── Internos ──────────────────────────────────────────────
 
+  /**
+   * Solo comprueba que exista un token, no su firma ni su caducidad: eso lo
+   * decide el backend en `GET /api/auth/me`, que es quien puede revocarlo.
+   */
   private hayToken(): boolean {
     return Boolean(localStorage.getItem(CLAVE_TOKEN));
   }
@@ -172,6 +182,8 @@ export class AuthService {
   }
 
   private limpiarSesion(): void {
+    // Las tres claves se borran juntas: dejar una viva produciría una sesión
+    // inconsistente (token sin usuario, o la bandera 'logueado' huérfana).
     localStorage.removeItem(CLAVE_TOKEN);
     localStorage.removeItem(CLAVE_USUARIO);
     localStorage.removeItem('logueado');

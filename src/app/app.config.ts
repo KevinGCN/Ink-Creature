@@ -19,6 +19,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 
+// Tipo propio de Angular (no una interfaz cualquiera): así el compilador
+// avisa si se registra un provider que no encaja en el arranque standalone.
 export const appConfig: ApplicationConfig = {
   providers: [
     // Manejo de errores globales no capturados

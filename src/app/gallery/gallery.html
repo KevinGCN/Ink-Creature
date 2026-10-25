@@ -4,6 +4,7 @@
   <!-- Botón subir imagen — solo admin -->
   @if (esAdmin()) {
     <div class="admin-actions">
+      <!-- Input oculto disparado con `fileInput.click()`; al elegir archivo se abre el modal de confirmación -->
       <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
       <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
     </div>
@@ -17,11 +18,18 @@
   }
 
   <div class="grid">
+    <!--
+      Cuadrícula de imágenes: cada tarjeta abre el visor ampliado al hacer clic.
+      El `src` pasa por `srcImagen()` → `urlImagen()` porque en la BD las rutas
+      se guardan relativas ("/api/imagenes/<id>") y hay que apuntarlas al backend.
+    -->
     @for (imagen of imagenes(); track imagen.id) {
       <div class="grid-item" (click)="openImage(srcImagen(imagen))">
 
+        <!-- Si la imagen falla (404, URL rota) `handleImageError()` la sustituye por el placeholder -->
         <img [src]="srcImagen(imagen)" [alt]="imagen.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
 
+        <!-- Con tatuador vinculado se ofrece ir a su CV; si no, se muestra su nombre -->
         @if (imagen.empleado_id) {
           <button class="btn-tatuador" (click)="verTatuador(imagen.empleado_id, $event)">
             Conoce al tatuador
@@ -30,6 +38,7 @@
           <span class="etiqueta-tatuador">{{ nombreTatuador(imagen) }}</span>
         }
 
+        <!-- Borrado reservado al admin y nunca sobre las imágenes base (id negativo) -->
         @if (esAdmin() && !esImagenDeBase(imagen)) {
           <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
         }
@@ -59,6 +68,7 @@
 
     <div class="modal-body">
 
+      <!-- Vista previa del archivo elegido (object URL, aún no subido al servidor) -->
       @if (previewTemporal()) {
         <div class="img-preview">
           <img [src]="previewTemporal()" alt="Preview">
@@ -70,6 +80,7 @@
              (ngModelChange)="nombreImagenTemp.set($event)" placeholder="Ej: Dragón rojo">
 
       <label>Vincular a tatuador</label>
+      <!-- Opciones cargadas desde `tatuadores()`; el valor es el id del empleado, no el nombre -->
       <select [ngModel]="tatuadorSeleccionado()"
               (ngModelChange)="tatuadorSeleccionado.set($event)">
         @for (t of tatuadores(); track t.id) {
@@ -86,6 +97,7 @@
     </div>
 
     <div class="modal-footer">
+      <!-- Mientras `subiendo()` está activo se bloquean ambos botones para evitar dobles envíos -->
       <button class="btn-cancelar" (click)="cerrarModalSubida()" [disabled]="subiendo()">Cancelar</button>
       <button class="btn-confirmar" (click)="confirmarSubida()" [disabled]="subiendo()">
         {{ subiendo() ? 'Subiendo…' : 'Subir imagen' }}

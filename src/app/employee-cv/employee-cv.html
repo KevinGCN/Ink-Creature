@@ -1,9 +1,11 @@
 @if (empleado(); as e) {
+  <!-- Perfil cargado: el alias `e` evita repetir la llamada al signal dentro del bloque -->
   <main class="cv-page">
 
     <div class="perfil">
 
       <div class="perfil-foto">
+        <!-- `foto()` ya viene resuelta con urlImagen() (ruta relativa del backend o placeholder) -->
         <img [src]="foto()" [alt]="nombreCompleto()">
       </div>
 
@@ -13,6 +15,7 @@
         <p class="cargo">Tatuador — Ink Creature</p>
 
         <div class="datos">
+          <!-- Ficha del tatuador: especialidad y mes de contratación (formateado con `date`) -->
           <div class="dato">
             <span class="etiqueta">Especialidad</span>
             <span class="valor">{{ e.especialidad || 'No definida' }}</span>
@@ -23,6 +26,7 @@
           </div>
         </div>
 
+        <!-- Biografía opcional: si el tatuador no tiene, se muestra un texto de relleno -->
         @if (e.biografia) {
           <p class="descripcion">{{ e.biografia }}</p>
         } @else {
@@ -34,7 +38,9 @@
 
   </main>
 } @else if (cargando()) {
+  <!-- Mientras carga el perfil desde el API -->
   <p style="color:white; text-align:center; padding:60px;">Cargando perfil...</p>
 } @else {
+  <!-- El empleado no existe o falló la petición: se muestra `error()` -->
   <p style="color:white; text-align:center; padding:60px;">{{ error() }}</p>
 }

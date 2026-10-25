@@ -11,10 +11,12 @@ const mockActivatedRoute = {
   }
 };
 
+// Pruebas de la ficha pública del tatuador.
 describe('EmployeeCV', () => {
   let component: EmployeeCV;
   let fixture: ComponentFixture<EmployeeCV>;
 
+  // Se sustituye ActivatedRoute por un mock porque el id solo existe en la URL real.
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EmployeeCV],
@@ -27,6 +29,7 @@ describe('EmployeeCV', () => {
     await fixture.whenStable();
   });
 
+  // Con el id simulado ('1') el componente debe montarse sin errores.
   it('should create', () => {
     expect(component).toBeTruthy();
   });

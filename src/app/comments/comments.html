@@ -7,12 +7,14 @@
     <h3 class="form-title">✍️ Publicar reseña</h3>
 
     <div *ngIf="exito" class="alerta-exito">
+    <!-- Confirmación temporal que aparece tras publicar correctamente la reseña -->
     ¡Tu reseña fue publicada exitosamente!
     </div>
 
     <div class="form-group">
       <label>Calificación</label>
       <div class="star-selector">
+        <!-- 5 estrellas: la clase `active` se aplica hasta la calificación elegida y el clic la fija -->
         <button
           *ngFor="let i of [1,2,3,4,5]"
           class="star-btn"
@@ -34,6 +36,7 @@
       </textarea>
     </div>
 
+    <!-- Publicar se bloquea mientras el comentario esté vacío o solo tenga espacios -->
     <button
       class="btn-publicar"
       (click)="publicar()"
@@ -48,11 +51,13 @@
   </div>
 
   <!-- Lista de reseñas -->
+  <!-- Estado vacío: aún no hay reseñas registradas -->
   <div *ngIf="resenas.length === 0" class="sin-resenas">
     Aún no hay reseñas. ¡Sé el primero en compartir tu experiencia!
   </div>
 
   <div class="review-card" *ngFor="let r of resenas">
+    <!-- Cada reseña: inicial del autor como avatar y estrellas calculadas con estrellas(calificacion) -->
     <div class="review-header">
       <div class="avatar">{{ r.nombreUsuario[0].toUpperCase() }}</div>
       <div class="review-meta">

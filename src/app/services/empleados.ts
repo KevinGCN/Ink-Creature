@@ -3,9 +3,12 @@
  *
  * GET    /api/empleados        → catálogo completo (público)
  * GET    /api/empleados/:id    → uno con sus datos de usuario (público)
- * POST   /api/empleados        → crear (requiere JWT)
- * PATCH  /api/empleados/:id    → actualizar (requiere JWT)
- * DELETE /api/empleados/:id    → eliminar (requiere JWT)
+ * POST   /api/empleados        → crear (solo admin)
+ * PATCH  /api/empleados/:id    → actualizar (solo admin)
+ * DELETE /api/empleados/:id    → eliminar (solo admin)
+ *
+ * Consultar es público (el catálogo se ve sin sesión); escribir exige además
+ * rol `admin`: el backend responde 403 a un cliente logueado.
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -46,7 +49,7 @@ export class EmpleadoService {
     return this.http.get<Empleado>(`${this.url}/${id}`);
   }
 
-  /** Requiere JWT: lo usa el panel de admin al convertir a alguien en tatuador. */
+  /** Requiere JWT de admin: lo usa el panel de admin al convertir a alguien en tatuador. */
   crearEmpleado(datos: DatosEmpleadoNuevo): Observable<Empleado> {
     return this.http.post<Empleado>(this.url, datos);
   }

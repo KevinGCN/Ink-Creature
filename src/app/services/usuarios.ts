@@ -3,14 +3,17 @@
  *
  * POST   /api/usuarios       → registro (público; también lo usa el admin
  *                               para crear la cuenta de un tatuador)
- * GET    /api/usuarios       → listar (público)
- * PATCH  /api/usuarios/:id   → actualizar (requiere JWT)
+ * GET    /api/usuarios       → listar (solo admin)
+ * PATCH  /api/usuarios/:id   → actualizar (JWT: el propio usuario o un admin)
  * POST   /api/usuarios/:id/foto → subir la foto de perfil; el backend la
  *                               guarda en la base de datos y devuelve el
  *                               usuario con `foto_perfil_url` actualizado
  *                               (requiere JWT: el propio usuario o un admin)
  * DELETE /api/usuarios/:id   → eliminar; cascada borra su registro empleado
- *                              (requiere JWT)
+ *                              (solo admin)
+ *
+ * Listar y borrar son exclusivos de `admin` (RolesGuard); el resto de rutas
+ * solo exige JWT, y el backend comprueba además que sea el propio usuario.
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -48,12 +51,12 @@ export class UsuarioService {
     return this.http.post<Usuario>(this.url, datos);
   }
 
-  /** El backend nunca devuelve `password_hash` en sus selects. */
+  /** El backend nunca devuelve `password_hash` en sus selects. Solo admin. */
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.url);
   }
 
-  /** Lectura puntual, útil para refrescar la ficha de otro usuario. */
+  /** Lectura puntual, útil para refrescar la ficha de otro usuario (propio o admin). */
   getUsuario(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.url}/${id}`);
   }
@@ -66,7 +69,7 @@ export class UsuarioService {
     return this.http.patch<Usuario>(`${this.url}/${id}`, datos);
   }
 
-  /** En cascada: la BD borra también la ficha de empleado y la foto. */
+  /** En cascada: la BD borra también la ficha de empleado y la foto. Solo admin. */
   eliminarUsuario(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
   }

@@ -5,8 +5,10 @@
  * - Datos en vivo desde el backend NestJS (GET/POST/PATCH/DELETE /api/empleados).
  * - La creación de un tatuador registra primero un usuario en el backend
  *   (POST /api/usuarios) y luego su vínculo empleado (POST /api/empleados).
- * - El CRUD y la gestión de roles solo están disponibles para usuarios con
- *   rol 'admin' (el backend exige JWT y, para cambiar roles, rol admin).
+ * - El CRUD de tatuadores y la gestión de roles solo están disponibles para
+ *   usuarios con rol 'admin': el backend protege empleados y el cambio de rol
+ *   con `JwtAuthGuard + RolesGuard` (403 si no eres admin) y listar usuarios
+ *   con `GET /api/usuarios` también es solo de admin.
  *
  * Concepto que hay que tener claro en toda la pantalla:
  * - Un USUARIO registrado (tabla `usuarios`) solo es una cuenta con la que se
@@ -163,7 +165,7 @@ export class Employees implements OnInit {
     });
   }
 
-  /** Carga todos los usuarios registrados (endpoint público) */
+  /** Carga todos los usuarios registrados (GET /api/usuarios, solo admin) */
   cargarUsuarios(): void {
     this.usuariosService.getUsuarios().subscribe({
       next: (usuarios) => this.usuarios.set(usuarios),

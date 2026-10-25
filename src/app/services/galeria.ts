@@ -2,11 +2,16 @@
  * Servicio de galería (Gallery) — consume el backend NestJS.
  *
  * GET    /api/galeria             → todas las imágenes (público)
- * POST   /api/galeria             → registrar imagen (requiere JWT)
- * DELETE /api/galeria/:id         → eliminar (requiere JWT)
- * POST   /api/galeria/upload      → subir archivo; el backend lo guarda en
- *                                   la base de datos (tabla `imagenes`) y
- *                                   devuelve la ruta "/api/imagenes/<id>"
+ * POST   /api/galeria             → registrar imagen (solo admin)
+ * DELETE /api/galeria/:id         → eliminar fila + binario (solo admin)
+ * POST   /api/galeria/upload      → subir archivo (solo admin); el backend lo
+ *                                   guarda en la base de datos (tabla
+ *                                   `imagenes`) y devuelve la ruta
+ *                                   "/api/imagenes/<id>"
+ *
+ * Escribir en la galería es exclusivo de `admin`: el backend lo protege con
+ * `@UseGuards(JwtAuthGuard, RolesGuard)` + `@Roles('admin')`, así que un
+ * cliente con sesión recibe 403 aunque llame a estos métodos.
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -56,19 +61,22 @@ export class GaleriaService {
   /**
    * Registra la fila DESPUÉS de subir el archivo: `/upload` ya devolvió la url
    * y aquí se guardan título/estilo. Separarlo permite corregir metadatos sin
-   * volver a enviar el binario.
+   * volver a enviar el binario. Solo admin.
    */
   crearImagen(datos: DatosImagenNueva): Observable<ImagenGaleria> {
     return this.http.post<ImagenGaleria>(this.url, datos);
   }
 
-  /** El backend borra la fila y su binario en `imagenes`, no solo el registro. */
+  /**
+   * El backend borra la fila y su binario en `imagenes`, no solo el registro.
+   * Solo admin.
+   */
   eliminarImagen(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
   }
 
   /**
-   * Sube un archivo de imagen al backend (multipart/form-data).
+   * Sube un archivo de imagen al backend (multipart/form-data). Solo admin.
    *
    * El backend guarda el binario en la base de datos y devuelve la ruta
    * RELATIVA "/api/imagenes/<id>"; se guarda tal cual en `imagen_url` para

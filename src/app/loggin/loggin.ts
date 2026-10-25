@@ -13,6 +13,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
 
+/**
+ * Modal de acceso: alterna entre iniciar sesión y crear cuenta.
+ *
+ * El componente no guarda nada por su cuenta: delega en `AuthService`, que
+ * hace `POST /api/auth/login` (o `POST /api/usuarios`), guarda el token en
+ * `localStorage['access_token']` y publica el usuario en sus signals. Aquí
+ * solo se valida el formulario, se muestra el error y se cierra el modal.
+ */
 @Component({
   selector: 'app-loggin',
   standalone: true,
@@ -46,6 +54,7 @@ export class Loggin {
   cargandoLogin = false;
   cargandoRegistro = false;
 
+  /** `AuthService` centraliza las llamadas HTTP y el almacenamiento del token */
   constructor(private auth: AuthService) {}
 
   /** Cierra el modal emitiendo el evento `cerrar` */
@@ -68,12 +77,18 @@ export class Loggin {
   /**
    * Inicia sesión con correo y contraseña contra el backend.
    * Previene doble clic con estado de carga.
+   *
+   * `auth.login` hace `POST /api/auth/login`, guarda el JWT en
+   * `localStorage['access_token']` y publica el usuario en sus signals; aquí
+   * solo se cierra el modal (el navbar reacciona a la sesión ya iniciada, sin
+   * recargar la página) o se muestra el mensaje de credenciales incorrectas.
    */
   async iniciarSesion() {
     if (this.cargandoLogin) return;
 
     this.mensajeError = '';
 
+    // Comprobaciones locales rápidas: evitan un viaje al backend inútil.
     if (!this.correo || !this.password) {
       this.mensajeError = 'Por favor, ingresa tu correo y contraseña';
       return;
@@ -87,9 +102,11 @@ export class Loggin {
     this.cargandoLogin = true;
 
     try {
+      // Devuelve true/false: los 401 se traducen a false en el servicio.
       const ok = await this.auth.login(this.correo, this.password);
 
       if (ok) {
+        // Sesión guardada: se cierra el modal y la vista se actualiza sola.
         this.cerrarModal();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
@@ -125,6 +142,7 @@ export class Loggin {
     this.cargandoRegistro = true;
 
     try {
+      // El backend crea el usuario y devuelve el token: queda logueado.
       const ok = await this.auth.registrar({
         nombre: this.nombre,
         apellido: this.apellido,
@@ -137,6 +155,7 @@ export class Loggin {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
       }
     } catch (error) {
+      // 409 = el correo ya existe (el backend lo comprueba con el índice único).
       if (error instanceof HttpErrorResponse && error.status === 409) {
         this.mensajeError = 'Este correo ya está registrado. Inicia sesión con él.';
       } else {

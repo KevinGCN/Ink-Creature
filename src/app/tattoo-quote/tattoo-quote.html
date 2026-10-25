@@ -5,6 +5,8 @@
     </h2>
 
     <div class="quote-form">
+        <!-- Formulario del cotizador: tamaño, zona, detalle y color se enlazan con ngModel;
+             sin elegir valor en los selects, `calculateQuote()` no puede estimar -->
 
         <label>Tamaño</label>
         <select [(ngModel)]="size">
@@ -33,16 +35,19 @@
         </select>
 
         <div class="checkbox-container">
+            <!-- El color es un recargo sobre el precio base -->
             <input type="checkbox" [(ngModel)]="color">
             <span>Tatuaje a color</span>
         </div>
 
+        <!-- Calcula precio y horas a partir de las selecciones del formulario -->
         <button class="quote-button" (click)="calculateQuote()">
             Calcular Cotización
         </button>
 
     </div>
 
+    <!-- El resultado solo se muestra cuando ya hay un precio calculado -->
     @if(price > 0){
 
     <div class="result-card">
@@ -52,6 +57,7 @@
         <p>
             <strong>Precio:</strong>
             <span class="result-value">
+                <!-- Formato local colombiano: separador de miles con punto -->
                 ${{ price.toLocaleString('es-CO') }}
             </span>
         </p>

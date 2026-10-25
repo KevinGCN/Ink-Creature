@@ -6,17 +6,21 @@
       <h1>Bienvenido</h1>
     </div>
     <div class="buttons">
+      <!-- Llamados a la acción: agendar (módulo de citas) y cómo llegar (información) -->
       <button class="btn-primary" routerLink="/schedule">Agendar Cita</button>
       <button class="btn-secondary" routerLink="/information">Como encontrarnos</button>
     </div>
   </section>
   <!-- Mostar Reseña/ verificar que se elimino el duplivado -->
+  <!-- Sección de reseñas: componente reutilizado también en otras pantallas -->
   <div class="comments">
     <app-comments></app-comments>
   </div>
 
+  <!-- Dos cotizadores: el formulario básico es público y el de IA exige sesión -->
   <div class="IA">
     <button routerLink="/tattoo-ia"> Obten una Cotización Rapida </button>
+    <!-- Se deshabilita sin sesión y el texto cambia según `auth.estaLogueado()` -->
     <button routerLink="/gemini-ia" [disabled]="!auth.estaLogueado()">
       {{ auth.estaLogueado() ?
          'Obten una Cotización con IA' : 'Inicia Sesión para Premium' }}

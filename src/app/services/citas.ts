@@ -21,6 +21,7 @@ import { horaCorta } from '../utils/fechas';
   providedIn: 'root',
 })
 export class CitaService {
+  // URL base única: los métodos solo añaden el id o el query string necesario.
   private readonly url = `${environment.apiUrl}/citas`;
 
   constructor(private http: HttpClient) {}
@@ -37,16 +38,22 @@ export class CitaService {
       .pipe(map((citas) => this.normalizar(citas)));
   }
 
+  /** Crea la cita y la devuelve ya normalizada para pintarla sin recargar. */
   crearCita(cita: NuevaCita): Observable<Cita> {
     return this.http.post<Cita>(this.url, cita).pipe(map((c) => this.normalizar([c])[0]));
   }
 
+  /**
+   * PATCH parcial: solo se envían los campos presentes para que el backend no
+   * borre datos que la pantalla no estaba editando.
+   */
   actualizarCita(id: number, cambios: Partial<NuevaCita>): Observable<Cita> {
     return this.http
       .patch<Cita>(`${this.url}/${id}`, cambios)
       .pipe(map((c) => this.normalizar([c])[0]));
   }
 
+  /** El backend responde sin cuerpo útil, por eso el retorno es `unknown`. */
   eliminarCita(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
   }

@@ -1,10 +1,13 @@
 <div class="layout">
+  <!-- Barra superior de sesión: muestra el botón de login o el menú de ajustes del usuario -->
   <section class="user-navbar">
     <app-user-navbar></app-user-navbar>
   </section>
   <main class="content">
+    <!-- Aquí se renderiza la página activa según la ruta (lobby, galería, citas, etc.) -->
     <router-outlet></router-outlet>
   </main>
+  <!-- Barra de navegación principal: Inicio, Galería, Citas, Tatuadores, Información -->
   <section class="main-navbar">
     <app-main-navbar></app-main-navbar>
   </section>

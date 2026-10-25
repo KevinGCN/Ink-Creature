@@ -18,6 +18,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { RolUsuario, Usuario } from '../models/usuario';
 
+// Payload de alta: la contraseña viaja solo en el transporte y el backend la
+// hashea (scrypt) antes de guardarla, así que nunca vuelve en una respuesta.
 export interface DatosUsuarioNuevo {
   nombre: string;
   apellido: string;
@@ -27,6 +29,8 @@ export interface DatosUsuarioNuevo {
   foto_perfil_url?: string;
 }
 
+// Al editar la contraseña es opcional (si no se envía, se conserva la actual) y
+// `rol` queda fuera a propósito: solo cambia por `cambiarRol`, vía admin.
 export type DatosUsuarioEdicion = Partial<Omit<DatosUsuarioNuevo, 'password'>> & {
   password?: string;
 };
@@ -39,22 +43,30 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) {}
 
+  /** Registro público; el backend hashea la contraseña antes de guardarla. */
   crearUsuario(datos: DatosUsuarioNuevo): Observable<Usuario> {
     return this.http.post<Usuario>(this.url, datos);
   }
 
+  /** El backend nunca devuelve `password_hash` en sus selects. */
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.url);
   }
 
+  /** Lectura puntual, útil para refrescar la ficha de otro usuario. */
   getUsuario(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.url}/${id}`);
   }
 
+  /**
+   * PATCH parcial: no incluye `rol` a propósito, porque un cliente podría
+   * autoascenderse; ese campo solo se toca en `cambiarRol` (ruta de admin).
+   */
   actualizarUsuario(id: number, datos: DatosUsuarioEdicion): Observable<Usuario> {
     return this.http.patch<Usuario>(`${this.url}/${id}`, datos);
   }
 
+  /** En cascada: la BD borra también la ficha de empleado y la foto. */
   eliminarUsuario(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
   }

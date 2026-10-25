@@ -20,7 +20,12 @@ export class HorarioService {
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Sin `empleadoId` trae todos los horarios (vista de administración); con él,
+   * solo la disponibilidad de ese tatuador para el selector de citas.
+   */
   getHorarios(empleadoId?: number): Observable<HorarioTrabajador[]> {
+    // El filtro se arma como query porque el backend expone ambos casos en una sola ruta.
     const query = empleadoId ? `?empleado_id=${empleadoId}` : '';
     return this.http
       .get<HorarioTrabajador[]>(`${this.url}${query}`)

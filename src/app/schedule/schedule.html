@@ -3,9 +3,11 @@
   <h1>Agenda tu Cita</h1>
 
   @if (error()) {
+    <!-- Error al cargar tatuadores u horarios desde el backend -->
     <p class="error-agenda">{{ error() }}</p>
   }
   @if (cargando()) {
+    <!-- Estado de carga inicial de la lista de tatuadores -->
     <p>Cargando tatuadores…</p>
   }
 
@@ -15,6 +17,7 @@
     <div class="calendar">
 
       <div class="calendar-header">
+        <!-- Mes y año: cambiarMes/cambiarAnio recalculan `diasMes()` y los descansos del tatuador -->
         <select [ngModel]="mesActual()" (ngModelChange)="cambiarMes($event)">
           @for (mes of meses; track $index) {
             <option [ngValue]="$index">{{ mes }}</option>
@@ -36,6 +39,7 @@
 
       <!-- Fechas dinámicas -->
       <div class="dates">
+        <!-- Cada día se deshabilita si ya pasó o si el tatuador descansa; solo los válidos son clicables -->
         @for (dia of diasMes(); track dia) {
           <span (click)="!esFechaPasada(dia) && !esDescansoEmpleado(dia) && seleccionarFecha(dia)"
                 [class.active]="fechaSeleccionada() === dia"
@@ -55,6 +59,7 @@
           {{ mostrarHora(hora) }}
         </button>
       } @empty {
+        <!-- Sin horas: el mensaje cambia según si ya hay tatuador y fecha elegidos -->
         <p>
           @if (empleadoSeleccionado() && fechaSeleccionada()) {
             No hay horas disponibles para {{ nombreTatuadorSeleccionado() }} el día seleccionado.
@@ -67,6 +72,7 @@
 
     <!-- Tatuadores -->
     <div class="artists">
+      <!-- Selección del tatuador: filtra las horas libres y sus días de descanso -->
       @for (empleado of empleados(); track empleado.id) {
         <div class="artist"
              (click)="seleccionarEmpleado(empleado.id)"
@@ -81,6 +87,7 @@
   <!-- Botones -->
   <div class="actions">
     <button class="cancelar" routerLink="">Cancelar</button>
+    <!-- `reservar()` valida fecha/hora/tatuador; se bloquea mientras guarda y cambia de texto en modo edición -->
     <button class="reserve" (click)="reservar()" [disabled]="reservando()">
       {{ reservando() ? 'Guardando…' : (modoEdicion() ? 'Actualizar Cita' : 'Reservar') }}
     </button>
@@ -92,8 +99,10 @@
   <div class="mis-citas">
     <h3>Mis citas</h3>
     @if (misCitas().length === 0) {
+      <!-- Estado vacío: el usuario no tiene ninguna cita propia -->
       <p>No tienes citas registradas</p>
     }
+    <!-- Resumen de cada cita del usuario; `nombreDeCita()` resuelve el nombre del tatuador -->
     @for (cita of misCitas(); track cita.id) {
       <p>
         {{ mostrarFecha(cita.fecha) }} - {{ mostrarHora(cita.hora_inicio) }} -

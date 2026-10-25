@@ -15,6 +15,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Usuario } from '../models/usuario';
 
+// Forma que devuelve Prisma con sus relaciones: `usuarios` es quien subió la
+// foto y `empleados.usuarios` el tatuador autor (puede no existir).
 export interface ImagenGaleria {
   id: number;
   subido_por: number;
@@ -28,6 +30,7 @@ export interface ImagenGaleria {
   empleados?: { usuarios?: Usuario } | null;
 }
 
+// Payload de `POST /api/galeria`: `imagen_url` ya viene resuelta por `/upload`.
 export interface DatosImagenNueva {
   subido_por: number;
   empleado_id?: number;
@@ -45,14 +48,21 @@ export class GaleriaService {
 
   constructor(private http: HttpClient) {}
 
+  /** Listado público; cada fila trae la ruta relativa de su imagen. */
   getGaleria(): Observable<ImagenGaleria[]> {
     return this.http.get<ImagenGaleria[]>(this.url);
   }
 
+  /**
+   * Registra la fila DESPUÉS de subir el archivo: `/upload` ya devolvió la url
+   * y aquí se guardan título/estilo. Separarlo permite corregir metadatos sin
+   * volver a enviar el binario.
+   */
   crearImagen(datos: DatosImagenNueva): Observable<ImagenGaleria> {
     return this.http.post<ImagenGaleria>(this.url, datos);
   }
 
+  /** El backend borra la fila y su binario en `imagenes`, no solo el registro. */
   eliminarImagen(id: number): Observable<unknown> {
     return this.http.delete(`${this.url}/${id}`);
   }

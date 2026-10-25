@@ -1,4 +1,6 @@
 <nav class="userbar">
+  <!-- Estado de sesión: botón de acceso o menú de ajustes.
+       Usa la sintaxis heredada *ngIf + async pipe sobre `isLoggedIn$`. -->
   <div class="usuario">
 
      <button *ngIf="!(auth.isLoggedIn$ | async)" (click)="abrirLogin()">
@@ -11,9 +13,11 @@
         ⚙️ Ajustes
       </button>
 
+      <!-- Desplegable de usuario: solo visible mientras `mostrarAjustes` sea true -->
       <div class="dropdown" *ngIf="mostrarAjustes">
 
         <button (click)="irPerfil()">
+          <!-- Navega a /profile; "Cerrar sesión" limpia el token guardado y vuelve al inicio -->
           Perfil
         </button>
 
@@ -28,6 +32,7 @@
 </nav>
 
 
+<!-- Modal de login/registro: se monta solo si `mostrarLogin` y se oculta al emitir `(cerrar)` -->
 <app-loggin 
   *ngIf="mostrarLogin" 
   (cerrar)="cerrarLogin()">

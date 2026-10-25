@@ -9,14 +9,17 @@
     </div>
 
     <div class="input-card">
+        <!-- Campo obligatorio: la descripción se envía al backend de IA al analizar -->
         <textarea [(ngModel)]="description" rows="8"
             placeholder="Ejemplo: Quiero un dragón japonés a color rodeando todo el antebrazo con flores de cerezo...">
         </textarea>
+        <!-- Llama a POST /api/ia/analyze-tattoo; se bloquea mientras `loading` y cambia el texto -->
         <button class="analyze-btn" (click)="analyzeTattoo()" [disabled]="loading">
             {{ loading ? 'Analizando...' : 'Analizar Diseño' }}
         </button>
     </div>
 
+    <!-- Resultado de la IA: solo existe cuando `analysis` tiene datos -->
     <div *ngIf="analysis">
         <div class="result-grid">
             <div class="info-card price-card">
@@ -31,6 +34,7 @@
 
             <div class="info-card price-card">
                 <h3>Precio Estimado</h3>
+                <!-- Rango mínimo/máximo que devuelve la IA, formateado en pesos colombianos -->
                 <p>
                     {{ analysis.precioMin | currency:'COP':'symbol':'1.0-0' }}
                     -
@@ -40,6 +44,7 @@
         </div>
 
         <div class="justification-card">
+            <!-- Texto explicativo generado por la IA para respaldar la estimación -->
             <h3>Justificación Profesional</h3>
             <p> {{ analysis.justificacion }} </p>
         </div>

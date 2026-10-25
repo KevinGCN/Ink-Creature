@@ -24,6 +24,18 @@ import { urlImagen } from '../utils/imagen-url';
 const FOTO_MAX_BYTES = 2 * 1024 * 1024;
 const FOTO_TIPOS = /^image\/(jpeg|png|webp)$/;
 
+/**
+ * Pantalla de perfil del usuario autenticado.
+ *
+ * Flujo:
+ * 1. `ngOnInit` toma el usuario ya restaurado por `AuthService` (que a su vez
+ *    lo valida contra `GET /api/auth/me`) y pinta sus datos.
+ * 2. Carga sus citas con `GET /api/citas?usuario_id=…` y permite editarlas
+ *    (navegando a la agenda con `state.citaEditar`) o eliminarlas.
+ * 3. La foto se sube con `POST /api/usuarios/:id/foto`; el backend la guarda
+ *    en `proyecto7.imagenes` y devuelve `foto_perfil_url` relativa, que el
+ *    template resuelve con `urlImagen()`.
+ */
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -33,8 +45,11 @@ const FOTO_TIPOS = /^image\/(jpeg|png|webp)$/;
 })
 export class Profile implements OnInit {
 
+  /** Copia local del usuario; se rellena desde el AuthService en ngOnInit */
   usuario: Usuario | null = null;
+  /** Citas del usuario, en un signal para que el template reaccione solo */
   citas = signal<Cita[]>([]);
+  /** URL final (absoluta) de la foto, ya resuelta para el `<img>` */
   foto = '';
 
   /** true mientras se sube la foto de perfil al backend */
@@ -52,16 +67,26 @@ export class Profile implements OnInit {
   private readonly citaService = inject(CitaService);
   private readonly usuarioService = inject(UsuarioService);
 
+  /**
+   * Carga la sesión que el AuthService mantiene en memoria y dispara las
+   * tres tareas de la pantalla: citas, foto y limpieza de fotos antiguas.
+   */
   ngOnInit() {
     this.usuario = this.auth.obtenerUsuario();
     this.cargarCitas();
     this.cargarFoto();
+    // Las fotos viejas en base64 viven solo en este navegador: se borran.
     this.limpiarFotosLocales();
   }
 
   // =========================
   // CITAS
   // =========================
+  /**
+   * Citas del usuario. Se filtra por `usuario.id` en el backend, así que la
+   * respuesta ya viene acotada. Un 401 no muestra error porque el
+   * interceptor ya limpia la sesión y redirige.
+   */
   cargarCitas() {
     if (!this.usuario) return;
 
@@ -76,6 +101,10 @@ export class Profile implements OnInit {
     });
   }
 
+  /**
+   * Borra una cita (DELETE /api/citas/:id) previa confirmación y recarga la
+   * lista; el backend también libera la franja horaria al eliminarla.
+   */
   eliminar(id: number) {
     if (!confirm('¿Eliminar esta cita?')) return;
 
@@ -127,21 +156,27 @@ export class Profile implements OnInit {
     input.value = ''; // permite volver a elegir el mismo archivo
     if (!file) return;
 
+    // Validación en el cliente: mismos tipos y tamaño que acepta el backend.
     if (!FOTO_TIPOS.test(file.type)) {
       this.mensajeError = 'La foto debe ser una imagen JPG, PNG o WEBP';
       return;
     }
     if (!this.validarTamanoArchivo(file, 2)) return;
 
+    // Se guarda una referencia porque `this.usuario` cambia al terminar.
     const usuario = this.usuario;
     if (!usuario) return;
 
     this.subiendoFoto = true;
     this.mensajeError = '';
 
+    // multipart/form-data con el campo `imagen`; el backend responde con el
+    // usuario actualizado (incluida la nueva `foto_perfil_url`).
     this.usuarioService.subirFoto(usuario.id, file).subscribe({
       next: (actualizado) => {
         this.subiendoFoto = false;
+        // Se propaga al AuthService para que navbar/otros componentes
+        // muestren la foto nueva sin recargar la página.
         this.auth.actualizarUsuario(actualizado);
         this.usuario = actualizado;
         this.cargarFoto();
@@ -165,6 +200,7 @@ export class Profile implements OnInit {
    */
   private limpiarFotosLocales() {
     try {
+      // Las claves seguían el patrón `fotoPerfil_<id>` con un data URL base64.
       const claves = Object.keys(localStorage).filter((k) => k.startsWith('fotoPerfil_'));
       claves.forEach((k) => localStorage.removeItem(k));
       if (claves.length) {
@@ -178,6 +214,10 @@ export class Profile implements OnInit {
   // =========================
   // VALIDACIÓN DE TAMAÑO
   // =========================
+  /**
+   * Valida el peso del archivo antes de enviarlo, para no gastar ancho de
+   * banda ni provocar un 413 del backend. Devuelve false si lo supera.
+   */
   validarTamanoArchivo(file: File, maxMB: number = 2): boolean {
     const maxBytes = maxMB * 1024 * 1024;
 
@@ -193,17 +233,27 @@ export class Profile implements OnInit {
   // =========================
   // EDICIÓN DE USUARIO
   // =========================
+  /** Pasa el formulario a modo edición (los inputs se habilitan) */
   activarEdicion() {
     this.editando = true;
     this.mensajeExito = '';
   }
 
+  /**
+   * Cancela la edición y descarta los cambios: se vuelve a leer el usuario
+   * del AuthService, que conserva la última versión confirmada por el backend.
+   */
   cancelarEdicion() {
     this.editando = false;
     this.usuario = this.auth.obtenerUsuario(); // restaurar datos originales
     this.mensajeError = '';
   }
 
+  /**
+   * Persiste los datos editados con `PATCH /api/usuarios/:id` (lo hace
+   * `AuthService.actualizarPerfil`) y refresca la copia local con la
+   * respuesta del servidor, no con lo que había en el formulario.
+   */
   async guardarCambios() {
     if (!this.usuario?.nombre || !this.usuario?.apellido) {
       this.mensajeError = 'Nombre y apellido son obligatorios';
@@ -231,14 +281,20 @@ export class Profile implements OnInit {
   // =========================
   // NAVEGACIÓN
   // =========================
+  /** Navega a la agenda para reservar una cita nueva */
   irAgenda() {
     this.router.navigate(['/schedule']);
   }
 
+  /** Las reseñas aún no tienen pantalla propia: se vuelve al inicio */
   irResenas() {
     this.router.navigate(['/']);
   }
 
+  /**
+   * Abre la agenda en modo edición pasando la cita por `state` (no por URL,
+   * porque la cita es un objeto y no debe quedar visible en el historial).
+   */
   editarCita(cita: Cita) {
     this.router.navigate(['/schedule'], { state: { citaEditar: cita } });
   }

@@ -1,8 +1,11 @@
 <!-- MAINBAR -->
+<!-- Barra lateral fija; `collapsed` la encoge a solo iconos -->
 <nav class="sidebar" [class.collapsed]="collapsed">
+    <!-- Botón hamburguesa: alterna `collapsed` para mostrar solo los iconos -->
     <button class="toggle-btn" (click)="toggleNavbar()">
         ☰
     </button>
+    <!-- Cada enlace se marca como activo solo en su ruta exacta (`routerLinkActive` + `exact`) -->
     <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <p class="icon">🏠</p>
         <p class="text">Inicio</p>

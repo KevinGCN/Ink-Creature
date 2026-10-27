@@ -61,6 +61,9 @@ src/environments/environment.development.ts
 # Generado en build por scripts/generar-entorno.mjs (usa la var. API_URL)
 src/environments/environment.prod.ts
 #env
+# `.env.*` cubre los respaldos (.env.bak-<fecha>), que llevan los mismos secretos.
 .env
+.env.*
+!.env.example
 backend/.env
 .environtments

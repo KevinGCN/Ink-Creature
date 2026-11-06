@@ -43,13 +43,27 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+# Skills: la unica copia versionada vive en .agents/skills.
+# Las demas carpetas de agentes (.claude, .github) son copias locales que crea
+# `npx skills add`; versionarlas duplicaba los mismos 45 archivos en cada
+# carpeta y cada actualizacion de una skill tocaba las 16 copias.
+# Nunca las conviertas en junctions: git borraria el destino al hacer checkout.
+.claude/skills/
+.github/skills/
+
 # Tokken
+# environment.ts SI se versiona: no lleva llaves, solo apiUrl
+# (http://localhost:3000/api). Ignorarlo estando trackeado solo confunde: `git add`
+# lo sigue subiendo, pero los archivos NUEVOS de esa carpeta se pierden en silencio.
+# Overrides puramente locales: nunca se suben.
 src/environments/environment.local.ts
-src/environments/environment.ts
 src/environments/environment.development.ts
 # Generado en build por scripts/generar-entorno.mjs (usa la var. API_URL)
 src/environments/environment.prod.ts
 #env
+# `.env.*` cubre los respaldos (.env.bak-<fecha>), que llevan los mismos secretos.
 .env
+.env.*
+!.env.example
 backend/.env
 .environtments

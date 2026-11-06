@@ -2,9 +2,15 @@
 #   base = "Ink-Creature"
     # `npm run build` dispara el hook `prebuild`, que genera
     # src/environments/environment.prod.ts con la variable de entorno API_URL
-    # (la URL del backend de Railway). Ver scripts/generar-entorno.mjs.
+    # (la URL del backend NestJS en Render). Ver scripts/generar-entorno.mjs.
     command = "npm run build"
     publish = "dist/Ink-Creature/browser"
+
+[build.environment]
+    # Backend de produccion. Se declara aqui (versionado) para que el build
+    # nunca salga apuntando a localhost aunque falte API_URL en el panel de
+    # Netlify. Si el backend cambia de host, se actualiza esta linea.
+    API_URL = "https://inkcreature-backend.onrender.com/api"
 
     [[redirects]]
     from = "/*"

@@ -1,5 +1,5 @@
 /**
- * Resultado del análisis de un tatuaje por IA (POST /api/ia/analyze-tattoo).
+ * Resultado del análisis de un tatuaje por IA (POST /ia/analyze-tattoo).
  *
  * El backend hace de proxy hacia Gemini y devuelve el JSON que responde el
  * modelo, así que esto es un contrato "blando": el texto es libre y no hay

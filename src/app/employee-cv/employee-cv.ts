@@ -1,6 +1,6 @@
 /**
  * Ficha de tatuador (EmployeeCV) — carga el empleado desde el backend
- * (GET /api/empleados/:id) en vez de la lista local de TATUADORES_BASE.
+ * (GET /empleados/:id) en vez de la lista local de TATUADORES_BASE.
  *
  * Ruta pública `/employeeCV/:id`: se llega desde el catálogo de tatuadores,
  * por eso aquí no se exige sesión para ver el perfil.
@@ -69,7 +69,7 @@ export class EmployeeCV implements OnInit {
 
   /**
    * Resuelve la URL de la foto con `urlImagen()` porque el backend guarda la
-   * ruta relativa `/api/imagenes/<id>`; sin eso la imagen no carga.
+   * ruta relativa `/imagenes/<id>`; sin eso la imagen no carga.
    */
   foto(): string {
     return urlImagen(this.empleado()?.usuarios?.foto_perfil_url) || FOTO_PLACEHOLDER;

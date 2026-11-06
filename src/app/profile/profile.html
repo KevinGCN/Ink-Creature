@@ -14,7 +14,7 @@
 
         <label class="btn-subir-foto">
           <!-- Input de archivo oculto: la etiqueta hace de botón. Al cambiar, sube la foto al backend
-               (POST /api/usuarios/:id/foto) y se bloquea mientras `subiendoFoto`. -->
+               (POST /usuarios/:id/foto) y se bloquea mientras `subiendoFoto`. -->
           <input type="file" accept="image/jpeg,image/png,image/webp" (change)="cambiarFoto($event)" [disabled]="subiendoFoto" hidden>
           {{ subiendoFoto ? 'Subiendo…' : (foto ? 'Cambiar foto' : 'Subir foto') }}
         </label>

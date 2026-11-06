@@ -47,7 +47,7 @@ export interface Cita {
 
 // `estado` es opcional aquí porque el backend aplica su valor por defecto
 // ("pendiente") cuando el formulario no lo envía.
-/** Payload de POST /api/citas */
+/** Payload de POST /citas */
 export interface NuevaCita {
   usuario_id: number;
   empleado_id: number;

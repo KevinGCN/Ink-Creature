@@ -2,19 +2,19 @@
  * Módulo Gallery — Angular 21.
  *
  * - Signals + control flow (@if/@for) en vez de NgModules/*ngIf/*ngFor.
- * - Imágenes en vivo desde el backend NestJS (GET/POST/DELETE /api/galeria).
- * - La subida de archivos usa POST /api/galeria/upload (multipart) del
+ * - Imágenes en vivo desde el backend NestJS (GET/POST/DELETE /galeria).
+ * - La subida de archivos usa POST /galeria/upload (multipart) del
  *   backend, que guarda el archivo en la base de datos y devuelve su ruta
- *   "/api/imagenes/<id>", que se resuelve con `urlImagen()` al pintarla.
+ *   "/imagenes/<id>", que se resuelve con `urlImagen()` al pintarla.
  * - Se muestran además las imágenes base del proyecto (assets locales),
  *   que no se pueden eliminar desde la UI.
  *
  * Flujo de subida (son DOS pasos, el backend no lo hace en una sola llamada):
- *   1) POST /api/galeria/upload con el campo multipart `imagen` → el backend
+ *   1) POST /galeria/upload con el campo multipart `imagen` → el backend
  *      guarda el binario en la base de datos y devuelve la url RELATIVA
- *      "/api/imagenes/<id>" (no una URL absoluta, para que las filas sigan
+ *      "/imagenes/<id>" (no una URL absoluta, para que las filas sigan
  *      siendo válidas en cualquier host).
- *   2) POST /api/galeria con esa url + título + tatuador → crea la fila de la
+ *   2) POST /galeria con esa url + título + tatuador → crea la fila de la
  *      galería que la hace aparecer en el grid.
  * La ruta relativa se resuelve al pintar con `urlImagen()`, que le antepone
  * el host del backend.
@@ -162,7 +162,7 @@ export class Gallery implements OnInit {
 
   /**
    * URL real de la imagen. Las guardadas en la BD son rutas relativas
-   * ("/api/imagenes/<id>") y se resuelven contra el backend; las externas
+   * ("/imagenes/<id>") y se resuelven contra el backend; las externas
    * (https://...) y las de los assets se usan tal cual.
    */
   srcImagen(imagen: ImagenGaleria): string {
@@ -221,8 +221,8 @@ export class Gallery implements OnInit {
   // ── Paso 2: confirmar → subir al backend y registrar ──────
   /**
    * Subida en dos llamadas encadenadas: primero el binario
-   * (POST /api/galeria/upload, campo `imagen`) y después la fila de la
-   * galería (POST /api/galeria) usando la url que devolvió la primera.
+   * (POST /galeria/upload, campo `imagen`) y después la fila de la
+   * galería (POST /galeria) usando la url que devolvió la primera.
    * Si la primera falla no se registra nada; si falla la segunda el archivo
    * queda huérfano en la BD, pero el grid no muestra entradas a medias.
    */
@@ -238,7 +238,7 @@ export class Gallery implements OnInit {
 
     // 1) Subir el archivo a /uploads
     //    (comentario histórico: hoy el backend NO escribe en disco, guarda el
-    //    binario en `proyecto7.imagenes` y devuelve "/api/imagenes/<id>")
+    //    binario en `proyecto7.imagenes` y devuelve "/imagenes/<id>")
     this.galeriaService.subirArchivo(file).subscribe({
       next: (url) => {
         // 2) Registrar el registro en la galería

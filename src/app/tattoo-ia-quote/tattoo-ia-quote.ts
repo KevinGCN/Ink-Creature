@@ -3,7 +3,7 @@
  * `authGuard` porque cada análisis consume cuota del servicio.
  *
  * El navegador nunca habla con Google: `GeminiService` hace
- * `POST /api/ia/analyze-tattoo` y el backend es el único que conoce la llave
+ * `POST /ia/analyze-tattoo` y el backend es el único que conoce la llave
  * `GEMINI_API_KEY` (variable de entorno). Así la clave no viaja al bundle ni se
  * puede copiar desde la consola del navegador.
  */

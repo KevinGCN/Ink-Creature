@@ -4,10 +4,10 @@
  * Reemplaza por completo al autenticador adicional que había en el
  * frontend (Firebase Auth + bandera de localStorage):
  *
- *  - POST /api/auth/login  → { access_token, token_type, expires_in }
- *  - GET  /api/auth/me     → usuario real de la BD (valida el token)
- *  - POST /api/usuarios    → registro
- *  - PATCH /api/usuarios/:id → actualizar perfil
+ *  - POST /auth/login  → { access_token, token_type, expires_in }
+ *  - GET  /auth/me     → usuario real de la BD (valida el token)
+ *  - POST /usuarios    → registro
+ *  - PATCH /usuarios/:id → actualizar perfil
  *
  * El JWT se guarda en localStorage ('access_token') y el interceptor
  * global lo adjunta a cada petición (ver interceptors/auth.interceptor.ts).
@@ -21,7 +21,7 @@ import { LoginResponse, Usuario } from '../models/usuario';
 
 // Claves de localStorage compartidas con el interceptor y con vistas antiguas:
 // el token sobrevive a un F5 y el usuario cacheado evita parpadeos mientras
-// `GET /api/auth/me` confirma que la sesión sigue viva.
+// `GET /auth/me` confirma que la sesión sigue viva.
 const CLAVE_TOKEN = 'access_token';
 const CLAVE_USUARIO = 'usuario';
 
@@ -118,7 +118,7 @@ export class AuthService {
   }
 
   /**
-   * Actualiza el perfil en el backend (PATCH /api/usuarios/:id)
+   * Actualiza el perfil en el backend (PATCH /usuarios/:id)
    * y sincroniza el estado local con la respuesta.
    */
   async actualizarPerfil(datos: {
@@ -151,7 +151,7 @@ export class AuthService {
 
   /**
    * Solo comprueba que exista un token, no su firma ni su caducidad: eso lo
-   * decide el backend en `GET /api/auth/me`, que es quien puede revocarlo.
+   * decide el backend en `GET /auth/me`, que es quien puede revocarlo.
    */
   private hayToken(): boolean {
     return Boolean(localStorage.getItem(CLAVE_TOKEN));
@@ -166,7 +166,7 @@ export class AuthService {
     }
   }
 
-  /** Valida el token contra GET /api/auth/me y actualiza el estado. */
+  /** Valida el token contra GET /auth/me y actualiza el estado. */
   private async refrescarUsuario(): Promise<void> {
     try {
       const usuario = await firstValueFrom(

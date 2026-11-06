@@ -2,7 +2,7 @@
  * Componente de autenticación (Login / Registro) - Modal
  *
  * Interfaz modal para iniciar sesión o registrarse contra el
- * backend NestJS (POST /api/auth/login y POST /api/usuarios).
+ * backend NestJS (POST /auth/login y POST /usuarios).
  *
  * NOTA: se eliminó el login con Google (@angular/fire): el backend
  * solo valida correo/contraseña con JWT.
@@ -17,7 +17,7 @@ import { AuthService } from '../services/auth';
  * Modal de acceso: alterna entre iniciar sesión y crear cuenta.
  *
  * El componente no guarda nada por su cuenta: delega en `AuthService`, que
- * hace `POST /api/auth/login` (o `POST /api/usuarios`), guarda el token en
+ * hace `POST /auth/login` (o `POST /usuarios`), guarda el token en
  * `localStorage['access_token']` y publica el usuario en sus signals. Aquí
  * solo se valida el formulario, se muestra el error y se cierra el modal.
  */
@@ -78,7 +78,7 @@ export class Loggin {
    * Inicia sesión con correo y contraseña contra el backend.
    * Previene doble clic con estado de carga.
    *
-   * `auth.login` hace `POST /api/auth/login`, guarda el JWT en
+   * `auth.login` hace `POST /auth/login`, guarda el JWT en
    * `localStorage['access_token']` y publica el usuario en sus signals; aquí
    * solo se cierra el modal (el navbar reacciona a la sesión ya iniciada, sin
    * recargar la página) o se muestra el mensaje de credenciales incorrectas.

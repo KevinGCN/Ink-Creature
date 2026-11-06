@@ -7,10 +7,15 @@
  * entorno `API_URL`.
  *
  * Netlify: Site configuration -> Environment variables -> `API_URL`
- *          = https://inkcreature-backend.onrender.com/api
+ *          = https://inkcreature-backend.onrender.com
  *
  * `API_URL` tambien esta declarada en `netlify.toml` ([build.environment]),
  * asi que el build de Netlify la recibe aunque falte en el panel.
+ *
+ * IMPORTANTE: el backend ya NO usa prefijo global. `API_URL` es solo el
+ * ORIGEN (esquema + host + puerto, sin "/api"); los servicios del SPA
+ * concatenan directamente "/auth/login", "/galeria", etc. Si se define con
+ * "/api" el script falla para no publicar una web con todas las rutas en 404.
  *
  * Si `API_URL` no existe se usa `API_URL_POR_DEFECTO` (el backend real de
  * produccion) y se avisa por consola: preferible un aviso ruidoso a publicar
@@ -18,11 +23,12 @@
  *
  * El script FALLA (exit 1) si la URL:
  *   - no es http/https,
+ *   - termina en "/api" (prefijo eliminado del backend),
  *   - apunta a localhost/127.0.0.1 en un build de Netlify (seria un despliegue roto).
  *
  * NOTA: aqui NO se inyecta ninguna llave de la IA. La llave de Gemini vive
  * solo en el backend (variable `GEMINI_API_KEY`) y el frontend la consume a
- * traves de `POST /api/ia/analyze-tattoo`. Si se metiera en este archivo,
+ * traves de `POST /ia/analyze-tattoo`. Si se metiera en este archivo,
  * quedaria escrita en el bundle del navegador.
  *
  * Uso: se ejecuta automaticamente con `npm run build` (hook `prebuild`).
@@ -34,7 +40,7 @@ import { fileURLToPath } from 'node:url';
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Backend NestJS de produccion (mismo que sirve https://ink-creature-v2.netlify.app). */
-const API_URL_POR_DEFECTO = 'https://inkcreature-backend.onrender.com/api';
+const API_URL_POR_DEFECTO = 'https://inkcreature-backend.onrender.com';
 
 /** Netlify define NETLIFY=true y CONTEXT durante el build. */
 const ES_BUILD_DE_NETLIFY = process.env.NETLIFY === 'true' || Boolean(process.env.CONTEXT);
@@ -62,14 +68,17 @@ function normalizarApiUrl(valor, origen) {
     );
   }
 
-  // Los servicios del SPA concatenan "/auth/login", "/galeria", etc., asi que
-  // la base debe terminar en "/api" y no llevar barra final.
-  if (!url.pathname.replace(/\/+$/, '').endsWith('/api')) {
-    url.pathname = `${url.pathname.replace(/\/+$/, '')}/api`;
+  // El backend sirve las rutas en la raiz: cualquier path sobrante (típico
+  // "/api" de la configuracion anterior) romperia todas las llamadas.
+  const ruta = url.pathname.replace(/\/+$/, '');
+  if (ruta) {
+    throw new Error(
+      `[entorno] ${origen} no debe incluir ruta ("${ruta}"): el backend sirve en la raiz. ` +
+        `Usa solo el origen, p. ej. "${url.origin}".`,
+    );
   }
-  url.pathname = url.pathname.replace(/\/+$/, '');
 
-  return url.toString().replace(/\/+$/, '');
+  return url.origin;
 }
 
 const apiUrlConfigurada = process.env.API_URL;
@@ -96,7 +105,7 @@ const contenido = `// Generado por scripts/generar-entorno.mjs - NO editar a man
 
 export const environment = {
   production: true,
-  /** URL base del backend NestJS (prefijo global /api) */
+  /** Origen del backend NestJS (las rutas cuelgan de la raiz) */
   apiUrl: '${apiUrl}'
 };
 `;

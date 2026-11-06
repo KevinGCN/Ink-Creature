@@ -2,13 +2,13 @@
  * Módulo Workers (Tatuadores) — Angular 21.
  *
  * - Signals + control flow (@if/@for) en vez de NgModules/*ngIf/*ngFor.
- * - Datos en vivo desde el backend NestJS (GET/POST/PATCH/DELETE /api/empleados).
+ * - Datos en vivo desde el backend NestJS (GET/POST/PATCH/DELETE /empleados).
  * - La creación de un tatuador registra primero un usuario en el backend
- *   (POST /api/usuarios) y luego su vínculo empleado (POST /api/empleados).
+ *   (POST /usuarios) y luego su vínculo empleado (POST /empleados).
  * - El CRUD de tatuadores y la gestión de roles solo están disponibles para
  *   usuarios con rol 'admin': el backend protege empleados y el cambio de rol
  *   con `JwtAuthGuard + RolesGuard` (403 si no eres admin) y listar usuarios
- *   con `GET /api/usuarios` también es solo de admin.
+ *   con `GET /usuarios` también es solo de admin.
  *
  * Concepto que hay que tener claro en toda la pantalla:
  * - Un USUARIO registrado (tabla `usuarios`) solo es una cuenta con la que se
@@ -18,9 +18,9 @@
  *   nivel de permiso con el que opera). "Promover a tatuador" es justamente
  *   crear la ficha y subir el rol de una cuenta que ya existía.
  * - La foto NO se captura como URL de texto: se elige un archivo y se sube
- *   como multipart (POST /api/usuarios/:id/foto). El backend guarda el binario
+ *   como multipart (POST /usuarios/:id/foto). El backend guarda el binario
  *   en la base de datos y deja en `foto_perfil_url` la ruta relativa
- *   "/api/imagenes/<id>", que se pinta con `urlImagen()`.
+ *   "/imagenes/<id>", que se pinta con `urlImagen()`.
  */
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
@@ -41,7 +41,7 @@ interface FormTatuador {
   password: string;
   especialidad: string;
   biografia: string;
-  /** Ruta de la foto ya guardada en el backend ("/api/imagenes/<id>") */
+  /** Ruta de la foto ya guardada en el backend ("/imagenes/<id>") */
   foto: string;
   activo: boolean;
   rol: RolUsuario;
@@ -165,7 +165,7 @@ export class Employees implements OnInit {
     });
   }
 
-  /** Carga todos los usuarios registrados (GET /api/usuarios, solo admin) */
+  /** Carga todos los usuarios registrados (GET /usuarios, solo admin) */
   cargarUsuarios(): void {
     this.usuariosService.getUsuarios().subscribe({
       next: (usuarios) => this.usuarios.set(usuarios),
@@ -219,7 +219,7 @@ export class Employees implements OnInit {
     this.editandoId.set(empleado.id);
     // `empleados.usuarios` solo trae campos públicos (sin `email` ni `rol`),
     // así que el correo y el rol reales se cruzan con el listado de usuarios
-    // que el panel ya carga con GET /api/usuarios (solo admin). Sin este cruce
+    // que el panel ya carga con GET /usuarios (solo admin). Sin este cruce
     // se guardaría `rol: 'empleado'` y un tatuador `admin` quedaría degradado.
     const usuario = this.usuarios().find((u) => u.id === empleado.usuario_id);
     this.form.set({
@@ -264,7 +264,7 @@ export class Employees implements OnInit {
   // ── Foto del tatuador ─────────────────────────────────────
   /**
    * Elige un archivo de imagen para la foto del tatuador. El archivo se
-   * sube al backend al guardar (POST /api/usuarios/:id/foto), que lo
+   * sube al backend al guardar (POST /usuarios/:id/foto), que lo
    * almacena en la base de datos.
    */
   seleccionarFoto(event: Event): void {
@@ -336,7 +336,7 @@ export class Employees implements OnInit {
   /**
    * El rol NO viaja con el PATCH del usuario: `UpdateUsuarioDto` lo excluye a
    * propósito para que un cliente no pueda auto-promoverse. Por eso se aplica
-   * aparte con `aplicarRol()` → PATCH /api/usuarios/:id/rol, endpoint que el
+   * aparte con `aplicarRol()` → PATCH /usuarios/:id/rol, endpoint que el
    * backend restringe a admin (403 para el resto).
    */
   seleccionarRol(event: Event): void {
@@ -389,10 +389,10 @@ export class Employees implements OnInit {
   /**
    * Alta completa de un tatuador nuevo. El backend no tiene un endpoint que
    * haga todo, así que se encadenan peticiones (si una falla, se corta):
-   *   1) POST /api/usuarios            → crea la cuenta y devuelve su id
-   *      y, si se eligió un archivo, POST /api/usuarios/:id/foto
-   *   2) POST /api/empleados           → crea la ficha que lo hace tatuador
-   *   3) PATCH /api/usuarios/:id/rol   → le asigna el rol elegido
+   *   1) POST /usuarios            → crea la cuenta y devuelve su id
+   *      y, si se eligió un archivo, POST /usuarios/:id/foto
+   *   2) POST /empleados           → crea la ficha que lo hace tatuador
+   *   3) PATCH /usuarios/:id/rol   → le asigna el rol elegido
    * El orden importa: sin usuario no hay a quién vincular ni a quién poner rol.
    */
   /** Paso 1: crear el usuario; Paso 2: vincularlo como empleado; Paso 3: rol */
@@ -490,7 +490,7 @@ export class Employees implements OnInit {
     if (!empleado) return;
 
     // El rol solo se cambia si de verdad es distinto del que hay en la BD. El
-    // dato fiable es el de GET /api/usuarios: `empleados.usuarios` no incluye
+    // dato fiable es el de GET /usuarios: `empleados.usuarios` no incluye
     // `rol` (es público), y llamar a `aplicarRol` con el valor por defecto
     // degradaría a `empleado` a un tatuador que también sea `admin`.
     const usuario = this.usuarios().find((u) => u.id === empleado.usuario_id);
@@ -508,7 +508,7 @@ export class Employees implements OnInit {
 
     // 1) Actualizar los datos del usuario (nombre, apellido).
     //    La foto NO se manda aquí: si se eligió un archivo se sube después
-    //    con POST /api/usuarios/:id/foto.
+    //    con POST /usuarios/:id/foto.
     this.usuariosService
       .actualizarUsuario(empleado.usuario_id, {
         nombre: f.nombre.trim(),

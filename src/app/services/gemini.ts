@@ -3,7 +3,7 @@
  *
  * El navegador **no** habla con Google directamente: la llave de Gemini
  * vive en el backend (`GEMINI_API_KEY`) y el frontend llama a
- * `POST /api/ia/analyze-tattoo`. Así la llave nunca llega al bundle ni
+ * `POST /ia/analyze-tattoo`. Así la llave nunca llega al bundle ni
  * al navegador (donde cualquiera podría copiarla de la consola).
  */
 import { HttpClient } from '@angular/common/http';

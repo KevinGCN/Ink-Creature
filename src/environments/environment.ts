@@ -13,8 +13,8 @@
  */
 export const environment = {
     production: false, 
-    // Se usa como prefijo de cada endpoint, así que debe incluir "/api" y no
-    // la barra final: los servicios concatenan "/auth/login", "/galeria", etc.
-    /** URL base del backend NestJS (prefijo global /api) */
-    apiUrl: 'http://localhost:3000/api'
+    // Se usa como origen de cada endpoint, así que va SIN sufijo "/api" y sin
+    // barra final: los servicios concatenan "/auth/login", "/galeria", etc.
+    /** Origen del backend NestJS (las rutas cuelgan de la raíz) */
+    apiUrl: 'http://localhost:3000'
 };

@@ -2,23 +2,25 @@
  * Resolución de URLs de imágenes.
  *
  * El backend guarda en la base de datos rutas RELATIVAS (por ejemplo
- * "/api/imagenes/12"), así la misma fila funciona sin importar el host
- * donde se despliegue la app. Este helper las convierte en URLs absolutas
- * en el momento de pintar.
+ * "/imagenes/12"), así la misma fila funciona sin importar el host donde se
+ * despliegue la app. Este helper las convierte en URLs absolutas al pintarlas.
+ *
+ * Compatibilidad: las filas creadas antes de quitar el prefijo global guardan
+ * "/api/imagenes/<id>". Aquí se normalizan a "/imagenes/<id>" para que sigan
+ * cargando sin tocar la base de datos.
  */
 import { environment } from '../../environments/environment';
 
-// Se quita el "/api" del final porque las rutas guardadas en la BD ya lo
-// incluyen: unirlas en crudo daría "/api/api/imagenes/12" (404).
-/** Origen del backend sin el sufijo "/api" (ej: http://localhost:3000) */
-export const ORIGEN_API = environment.apiUrl.replace(/\/api\/?$/, '');
+/** Origen del backend, sin barra final (ej: http://localhost:3000) */
+export const ORIGEN_API = environment.apiUrl.replace(/\/+$/, '');
 
 /**
  * Convierte la URL guardada en la BD en una URL que el navegador pueda
  * cargar:
  *  - "https://..." / "data:..." / "blob:..." → se usa tal cual.
- *  - "/api/imagenes/12" → "http://localhost:3000/api/imagenes/12".
- *  - "image/DBZ.jpg"    → ruta de los assets del propio frontend.
+ *  - "/imagenes/12"       → "http://localhost:3000/imagenes/12".
+ *  - "/api/imagenes/12"   → "http://localhost:3000/imagenes/12" (ruta antigua).
+ *  - "image/DBZ.jpg"      → ruta de los assets del propio frontend.
  */
 export function urlImagen(url?: string | null): string {
   // Un campo opcional puede llegar como undefined, null o cadena vacía
@@ -34,6 +36,9 @@ export function urlImagen(url?: string | null): string {
   // Solo las rutas que empiezan por "/" son del backend; el resto son
   // recursos del propio SPA (p. ej. "image/DBZ.jpg") y deben resolverse
   // contra la ruta actual, no contra el host del API.
-  if (valor.startsWith('/')) return `${ORIGEN_API}${valor}`;
+  if (valor.startsWith('/')) {
+    const ruta = valor.replace(/^\/api\/imagenes\//, '/imagenes/');
+    return `${ORIGEN_API}${ruta}`;
+  }
   return valor;
 }

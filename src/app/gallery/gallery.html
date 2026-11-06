@@ -21,7 +21,7 @@
     <!--
       Cuadrícula de imágenes: cada tarjeta abre el visor ampliado al hacer clic.
       El `src` pasa por `srcImagen()` → `urlImagen()` porque en la BD las rutas
-      se guardan relativas ("/api/imagenes/<id>") y hay que apuntarlas al backend.
+      se guardan relativas ("/imagenes/<id>") y hay que apuntarlas al backend.
     -->
     @for (imagen of imagenes(); track imagen.id) {
       <div class="grid-item" (click)="openImage(srcImagen(imagen))">

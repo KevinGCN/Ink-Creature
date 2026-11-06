@@ -2,8 +2,8 @@
  * Módulo Schedules (Agenda de citas) — Angular 21.
  *
  * - Signals + control flow (@if/@for) en vez de NgModules/*ngIf/*ngFor.
- * - Citas en vivo desde el backend NestJS (GET/POST/PATCH/DELETE /api/citas).
- * - La disponibilidad por tatuador viene de /api/horarios-trabajador.
+ * - Citas en vivo desde el backend NestJS (GET/POST/PATCH/DELETE /citas).
+ * - La disponibilidad por tatuador viene de /horarios-trabajador.
  * - Se corrige el bug del correo vs email: el filtro de "mis citas" ahora
  *   usa el usuario_id real del backend.
  */

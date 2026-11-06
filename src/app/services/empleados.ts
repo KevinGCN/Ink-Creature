@@ -1,11 +1,11 @@
 /**
  * Servicio de empleados (Workers) — consume el backend NestJS.
  *
- * GET    /api/empleados        → catálogo completo (público)
- * GET    /api/empleados/:id    → uno con sus datos de usuario (público)
- * POST   /api/empleados        → crear (solo admin)
- * PATCH  /api/empleados/:id    → actualizar (solo admin)
- * DELETE /api/empleados/:id    → eliminar (solo admin)
+ * GET    /empleados        → catálogo completo (público)
+ * GET    /empleados/:id    → uno con sus datos de usuario (público)
+ * POST   /empleados        → crear (solo admin)
+ * PATCH  /empleados/:id    → actualizar (solo admin)
+ * DELETE /empleados/:id    → eliminar (solo admin)
  *
  * Consultar es público (el catálogo se ve sin sesión); escribir exige además
  * rol `admin`: el backend responde 403 a un cliente logueado.

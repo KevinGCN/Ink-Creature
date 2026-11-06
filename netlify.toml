@@ -7,10 +7,11 @@
     publish = "dist/Ink-Creature/browser"
 
 [build.environment]
-    # Backend de produccion. Se declara aqui (versionado) para que el build
-    # nunca salga apuntando a localhost aunque falte API_URL en el panel de
-    # Netlify. Si el backend cambia de host, se actualiza esta linea.
-    API_URL = "https://inkcreature-backend.onrender.com/api"
+    # Origen del backend de produccion (SIN "/api": el API sirve en la raiz).
+    # Se declara aqui (versionado) para que el build nunca salga apuntando a
+    # localhost aunque falte API_URL en el panel de Netlify. Si el backend
+    # cambia de host, se actualiza esta linea.
+    API_URL = "https://inkcreature-backend.onrender.com"
 
     [[redirects]]
     from = "/*"

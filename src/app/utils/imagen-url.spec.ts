@@ -11,9 +11,15 @@ import { urlImagen, ORIGEN_API } from './imagen-url';
 // El caso crítico: las rutas relativas guardadas en la BD deben apuntar al
 // backend, no al host donde se sirve el SPA.
 describe('urlImagen', () => {
-  // Ruta relativa del backend → absoluta contra el origen del API.
+  // Ruta relativa actual del backend → absoluta contra el origen del API.
   it('resuelve la ruta del backend contra el origen del API', () => {
-    expect(urlImagen('/api/imagenes/12')).toBe(`${ORIGEN_API}/api/imagenes/12`);
+    expect(urlImagen('/imagenes/12')).toBe(`${ORIGEN_API}/imagenes/12`);
+  });
+
+  // Compatibilidad: las filas guardadas con el prefijo antiguo deben seguir
+  // cargando aunque el backend ya no sirva "/api".
+  it('normaliza la ruta antigua "/api/imagenes/<id>"', () => {
+    expect(urlImagen('/api/imagenes/12')).toBe(`${ORIGEN_API}/imagenes/12`);
   });
 
   // Una URL ya absoluta (foto subida a un CDN o pegada a mano) no se debe

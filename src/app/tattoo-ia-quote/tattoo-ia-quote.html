@@ -13,7 +13,7 @@
         <textarea [(ngModel)]="description" rows="8"
             placeholder="Ejemplo: Quiero un dragón japonés a color rodeando todo el antebrazo con flores de cerezo...">
         </textarea>
-        <!-- Llama a POST /api/ia/analyze-tattoo; se bloquea mientras `loading` y cambia el texto -->
+        <!-- Llama a POST /ia/analyze-tattoo; se bloquea mientras `loading` y cambia el texto -->
         <button class="analyze-btn" (click)="analyzeTattoo()" [disabled]="loading">
             {{ loading ? 'Analizando...' : 'Analizar Diseño' }}
         </button>

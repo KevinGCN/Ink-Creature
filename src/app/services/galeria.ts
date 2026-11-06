@@ -1,13 +1,13 @@
 /**
  * Servicio de galería (Gallery) — consume el backend NestJS.
  *
- * GET    /api/galeria             → todas las imágenes (público)
- * POST   /api/galeria             → registrar imagen (solo admin)
- * DELETE /api/galeria/:id         → eliminar fila + binario (solo admin)
- * POST   /api/galeria/upload      → subir archivo (solo admin); el backend lo
+ * GET    /galeria             → todas las imágenes (público)
+ * POST   /galeria             → registrar imagen (solo admin)
+ * DELETE /galeria/:id         → eliminar fila + binario (solo admin)
+ * POST   /galeria/upload      → subir archivo (solo admin); el backend lo
  *                                   guarda en la base de datos (tabla
  *                                   `imagenes`) y devuelve la ruta
- *                                   "/api/imagenes/<id>"
+ *                                   "/imagenes/<id>"
  *
  * Escribir en la galería es exclusivo de `admin`: el backend lo protege con
  * `@UseGuards(JwtAuthGuard, RolesGuard)` + `@Roles('admin')`, así que un
@@ -35,7 +35,7 @@ export interface ImagenGaleria {
   empleados?: { usuarios?: Usuario } | null;
 }
 
-// Payload de `POST /api/galeria`: `imagen_url` ya viene resuelta por `/upload`.
+// Payload de `POST /galeria`: `imagen_url` ya viene resuelta por `/upload`.
 export interface DatosImagenNueva {
   subido_por: number;
   empleado_id?: number;
@@ -79,7 +79,7 @@ export class GaleriaService {
    * Sube un archivo de imagen al backend (multipart/form-data). Solo admin.
    *
    * El backend guarda el binario en la base de datos y devuelve la ruta
-   * RELATIVA "/api/imagenes/<id>"; se guarda tal cual en `imagen_url` para
+   * RELATIVA "/imagenes/<id>"; se guarda tal cual en `imagen_url` para
    * que la fila no dependa del host. Al pintar se resuelve con
    * `urlImagen()` (ver utils/imagen-url.ts).
    */

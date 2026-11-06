@@ -1,12 +1,12 @@
 /**
  * Perfil de usuario — consume el backend NestJS.
  *
- * - Datos del usuario: estado real del AuthService (GET /api/auth/me).
- * - Edición de perfil: PATCH /api/usuarios/:id (vía auth.actualizarPerfil).
- * - Foto de perfil: POST /api/usuarios/:id/foto (multipart). El backend
+ * - Datos del usuario: estado real del AuthService (GET /auth/me).
+ * - Edición de perfil: PATCH /usuarios/:id (vía auth.actualizarPerfil).
+ * - Foto de perfil: POST /usuarios/:id/foto (multipart). El backend
  *   guarda el archivo en la base de datos y devuelve el usuario con
- *   `foto_perfil_url` = "/api/imagenes/<id>".
- * - Mis citas: GET /api/citas?usuario_id=…
+ *   `foto_perfil_url` = "/imagenes/<id>".
+ * - Mis citas: GET /citas?usuario_id=…
  */
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -29,10 +29,10 @@ const FOTO_TIPOS = /^image\/(jpeg|png|webp)$/;
  *
  * Flujo:
  * 1. `ngOnInit` toma el usuario ya restaurado por `AuthService` (que a su vez
- *    lo valida contra `GET /api/auth/me`) y pinta sus datos.
- * 2. Carga sus citas con `GET /api/citas?usuario_id=…` y permite editarlas
+ *    lo valida contra `GET /auth/me`) y pinta sus datos.
+ * 2. Carga sus citas con `GET /citas?usuario_id=…` y permite editarlas
  *    (navegando a la agenda con `state.citaEditar`) o eliminarlas.
- * 3. La foto se sube con `POST /api/usuarios/:id/foto`; el backend la guarda
+ * 3. La foto se sube con `POST /usuarios/:id/foto`; el backend la guarda
  *    en `proyecto7.imagenes` y devuelve `foto_perfil_url` relativa, que el
  *    template resuelve con `urlImagen()`.
  */
@@ -102,7 +102,7 @@ export class Profile implements OnInit {
   }
 
   /**
-   * Borra una cita (DELETE /api/citas/:id) previa confirmación y recarga la
+   * Borra una cita (DELETE /citas/:id) previa confirmación y recarga la
    * lista; el backend también libera la franja horaria al eliminarla.
    */
   eliminar(id: number) {
@@ -139,7 +139,7 @@ export class Profile implements OnInit {
   // =========================
   /**
    * La foto vive en el backend (tabla `imagenes`). Se resuelve la ruta
-   * relativa "/api/imagenes/<id>" contra el origen del API.
+   * relativa "/imagenes/<id>" contra el origen del API.
    */
   cargarFoto() {
     this.foto = urlImagen(this.usuario?.foto_perfil_url);
@@ -250,7 +250,7 @@ export class Profile implements OnInit {
   }
 
   /**
-   * Persiste los datos editados con `PATCH /api/usuarios/:id` (lo hace
+   * Persiste los datos editados con `PATCH /usuarios/:id` (lo hace
    * `AuthService.actualizarPerfil`) y refresca la copia local con la
    * respuesta del servidor, no con lo que había en el formulario.
    */

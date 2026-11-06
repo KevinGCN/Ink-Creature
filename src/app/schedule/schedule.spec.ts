@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 
 /**
  * Doble de prueba de `AuthService`: sin sesión, para que los tests no
- * dependan del localStorage ni de una petición real a /api/auth/me.
+ * dependan del localStorage ni de una petición real a /auth/me.
  */
 const mockAuthService = {
   esAdmin: () => false,

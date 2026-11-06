@@ -1,11 +1,11 @@
 /**
  * Servicio de citas (Schedules) — consume el backend NestJS.
  *
- * GET    /api/citas                → todas (público)
- * GET    /api/citas?usuario_id=    → citas de un usuario (agenda personal)
- * POST   /api/citas                → crear (requiere JWT)
- * PATCH  /api/citas/:id            → actualizar (requiere JWT)
- * DELETE /api/citas/:id            → eliminar (requiere JWT)
+ * GET    /citas                → todas (público)
+ * GET    /citas?usuario_id=    → citas de un usuario (agenda personal)
+ * POST   /citas                → crear (requiere JWT)
+ * PATCH  /citas/:id            → actualizar (requiere JWT)
+ * DELETE /citas/:id            → eliminar (requiere JWT)
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';

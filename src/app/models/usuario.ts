@@ -18,13 +18,13 @@ export interface Usuario {
   apellido: string;
   email: string;
   // No viene en `UpdateUsuarioDto` a propósito: un cliente que pudiera
-  // enviarlo se auto-ascendería. Solo cambia por PATCH /api/usuarios/:id/rol.
+  // enviarlo se auto-ascendería. Solo cambia por PATCH /usuarios/:id/rol.
   rol: RolUsuario;
   /** Baja lógica: desactivar conserva citas y reseñas del usuario. */
   activo: boolean;
   /** Solo dígitos o formato local; el backend no lo normaliza. */
   telefono?: string | null;
-  // Ruta relativa ("/api/imagenes/<id>") y no absoluta: así la fila sigue
+  // Ruta relativa ("/imagenes/<id>") y no absoluta: así la fila sigue
   // siendo válida en cualquier host. Hay que pasarla por `urlImagen()`.
   foto_perfil_url?: string | null;
   fecha_registro?: string;
@@ -33,7 +33,7 @@ export interface Usuario {
 
 // El backend trabaja en UTC y `expires_in` son segundos (no una fecha): así el
 // cliente no depende del reloj del servidor ni del suyo para caducar la sesión.
-/** Respuesta de POST /api/auth/login */
+/** Respuesta de POST /auth/login */
 export interface LoginResponse {
   access_token: string;
   /** Esquema que espera el header `Authorization` del backend. */

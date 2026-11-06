@@ -1,15 +1,15 @@
 /**
  * Servicio de usuarios — consume el backend NestJS.
  *
- * POST   /api/usuarios       → registro (público; también lo usa el admin
+ * POST   /usuarios       → registro (público; también lo usa el admin
  *                               para crear la cuenta de un tatuador)
- * GET    /api/usuarios       → listar (solo admin)
- * PATCH  /api/usuarios/:id   → actualizar (JWT: el propio usuario o un admin)
- * POST   /api/usuarios/:id/foto → subir la foto de perfil; el backend la
+ * GET    /usuarios       → listar (solo admin)
+ * PATCH  /usuarios/:id   → actualizar (JWT: el propio usuario o un admin)
+ * POST   /usuarios/:id/foto → subir la foto de perfil; el backend la
  *                               guarda en la base de datos y devuelve el
  *                               usuario con `foto_perfil_url` actualizado
  *                               (requiere JWT: el propio usuario o un admin)
- * DELETE /api/usuarios/:id   → eliminar; cascada borra su registro empleado
+ * DELETE /usuarios/:id   → eliminar; cascada borra su registro empleado
  *                              (solo admin)
  *
  * Listar y borrar son exclusivos de `admin` (RolesGuard); el resto de rutas
@@ -77,7 +77,7 @@ export class UsuarioService {
   /**
    * Sube la foto de perfil al backend (multipart/form-data, campo "imagen").
    * El archivo se guarda en la base de datos y el usuario vuelve con
-   * `foto_perfil_url` apuntando a "/api/imagenes/<id>".
+   * `foto_perfil_url` apuntando a "/imagenes/<id>".
    */
   subirFoto(id: number, file: File): Observable<Usuario> {
     const formData = new FormData();

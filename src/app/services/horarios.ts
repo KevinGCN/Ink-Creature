@@ -1,8 +1,8 @@
 /**
  * Servicio de horarios de trabajador — consume el backend NestJS.
  *
- * GET /api/horarios-trabajador                → todos (público)
- * GET /api/horarios-trabajador?empleado_id=   → disponibilidad de un tatuador
+ * GET /horarios-trabajador                → todos (público)
+ * GET /horarios-trabajador?empleado_id=   → disponibilidad de un tatuador
  */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';

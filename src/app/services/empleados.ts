@@ -1,37 +1,56 @@
-/**
- * Servicio de gestión de empleados - Fuente de datos HTTP
- * 
- * Servicio que obtiene la lista de empleados desde un archivo
- * JSON estático vía HTTP. Ideal para catálogos o datos maestros
- * que no cambian frecuentemente.
- * 
- * Características:
- * - Uso de HttpClient con tipado fuerte (Observable<Empleado[]>)
- * - URL relativa a assets (empaquetada con la build)
- * - Patrón de diseño: Repository sobre datos estáticos
- * 
- * Uso típico:
- *   this.empleadoService.getEmpleados().subscribe(empleados => ...)
- */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Empleado } from '../models/empleado';
+import { API_ROUTES } from '../core/api.routes';
 
+/**
+ * Forma en que el backend devuelve un empleado (`GET /empleados`).
+ * El nombre y el apellido viven en la relación `usuarios`.
+ */
+interface EmpleadoApi {
+  id: number;
+  usuario_id: number;
+  especialidad: string | null;
+  biografia: string | null;
+  fecha_contratacion: string;
+  activo: boolean;
+  usuarios: {
+    id: number;
+    nombre: string;
+    apellido: string;
+    foto_perfil_url: string | null;
+  } | null;
+}
+
+/**
+ * Catálogo de tatuadores desde el backend.
+ *
+ * `schedule` no viene en `/empleados` (los horarios tienen su propio módulo),
+ * así que queda sin definir: la agenda lo interpreta como "sin restricción".
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class EmpleadoService {
-  /** Ruta al recurso JSON (empaquetado en assets durante build) */
-  private url = 'assets/empleados.json';
-
   constructor(private http: HttpClient) {}
 
-  /**
-   * Obtiene el catálogo completo de empleados
-   * @returns Observable que emite el array de empleados
-   */
   getEmpleados(): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(this.url);
+    return this.http.get<EmpleadoApi[]>(API_ROUTES.empleados).pipe(
+      map((items) =>
+        items
+          .filter((e) => e.activo)
+          .map((e) => ({
+            id: e.id,
+            name: e.usuarios?.nombre ?? '',
+            last_name: e.usuarios?.apellido ?? '',
+            email: '',
+            password: '',
+            phone: '',
+            charge: '',
+            schedule: undefined,
+          })),
+      ),
+    );
   }
 }

@@ -22,7 +22,8 @@ import { routes } from './app.routes';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { firebaseConfig } from './config/firebase.config';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,7 +39,7 @@ export const appConfig: ApplicationConfig = {
     // Proveedor del servicio Auth de Firebase
     provideAuth(() => getAuth()),
 
-    // Proveedor de HttpClient para peticiones HTTP
-    provideHttpClient()
+    // HttpClient + JWT del backend en cada petición a la API
+    provideHttpClient(withInterceptors([authInterceptor]))
   ]
 };

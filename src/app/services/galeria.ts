@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { API_ROUTES } from '../core/api.routes';
 
 export interface GaleriaApi {
   id: number;
@@ -19,7 +19,7 @@ export interface GaleriaApi {
 })
 export class GaleriaService {
   private readonly http = inject(HttpClient);
-  private readonly url = `${environment.apiUrl}/galeria`;
+  private readonly url = API_ROUTES.galeria;
 
   obtenerTodos(): Observable<GaleriaApi[]> {
     return this.http.get<GaleriaApi[]>(this.url);

@@ -60,7 +60,7 @@ export class Schedule implements OnInit {
     private auth: AuthService,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const usuario = this.auth.obtenerUsuario();
@@ -95,10 +95,21 @@ export class Schedule implements OnInit {
     }
   }
 
-  // Genera los días según mes y año
-  generarCalendario() {
-    const dias = new Date(this.anioActual, this.mesActual + 1, 0).getDate();
-    this.diasMes = Array.from({ length: dias }, (_, i) => i + 1);
+  // =========================
+  // CALENDARIO
+  // =========================
+
+  generarCalendario(): void {
+    const dias = new Date(
+      this.anioActual,
+      this.mesActual + 1,
+      0
+    ).getDate();
+
+    this.diasMes = Array.from(
+      { length: dias },
+      (_, i) => i + 1
+    );
   }
 
   cargarEmpleados(): void {
@@ -141,29 +152,42 @@ export class Schedule implements OnInit {
   }
 
   // =========================
-  // VALIDACIÓN DE FECHA
+  // VALIDACIÓN DE FECHAS
   // =========================
+
   esFechaPasada(dia: number): boolean {
     const hoy = new Date();
 
-    const fechaSeleccion = new Date(this.anioActual, this.mesActual, dia);
+    const fechaSeleccion = new Date(
+      this.anioActual,
+      this.mesActual,
+      dia
+    );
 
-    // Comparar solo fecha (sin horas)
     hoy.setHours(0, 0, 0, 0);
     fechaSeleccion.setHours(0, 0, 0, 0);
 
     return fechaSeleccion < hoy;
   }
+
   // Verifica si el empleado trabaja en el día y hora seleccionados
   estaEnHorarioEmpleado(hora: string): boolean {
-    if (!this.tatuadorSeleccionado) return true;
+    if (!this.tatuadorSeleccionado) {
+      return true;
+    }
 
     const empleado = this.buscarEmpleadoSeleccionado();
     if (!empleado?.schedule) return true;
 
-    // Verificar si el empleado trabaja el día seleccionado
-    const nombreDia = this.obtenerNombreDia(this.fechaSeleccionada, this.mesActual, this.anioActual);
-    if (!empleado.schedule.days.includes(nombreDia)) return false;
+    const nombreDia = this.obtenerNombreDia(
+      this.fechaSeleccionada,
+      this.mesActual,
+      this.anioActual
+    );
+
+    if (!empleado.schedule.days.includes(nombreDia)) {
+      return false;
+    }
 
     const horaNum = this.horaATiempo(hora);
     const startNum = this.horaATiempo(empleado.schedule.start);
@@ -172,43 +196,72 @@ export class Schedule implements OnInit {
     return horaNum >= startNum && horaNum <= endNum;
   }
 
-  // Verifica si el empleado seleccionado descansa en un día dado
+  // Verifica si el empleado descansa ese día
   esDescansoEmpleado(dia: number): boolean {
-    if (!this.tatuadorSeleccionado) return false;
+    if (!this.tatuadorSeleccionado) {
+      return false;
+    }
 
     const empleado = this.buscarEmpleadoSeleccionado();
     if (!empleado?.schedule) return false;
 
-    const nombreDia = this.obtenerNombreDia(dia, this.mesActual, this.anioActual);
+    const nombreDia = this.obtenerNombreDia(
+      dia,
+      this.mesActual,
+      this.anioActual
+    );
+
     return !empleado.schedule.days.includes(nombreDia);
   }
 
-  // Convierte una fecha a nombre de día en español
-  private obtenerNombreDia(dia: number, mes: number, anio: number): string {
-    const nombres = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  // Convierte una fecha a nombre de día
+  private obtenerNombreDia(
+    dia: number,
+    mes: number,
+    anio: number
+  ): string {
+    const nombres = [
+      'Domingo',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado'
+    ];
+
     const fecha = new Date(anio, mes, dia);
+
     return nombres[fecha.getDay()];
   }
 
-  // Convierte hora "8:00 AM" a objeto {hora, minuto} en formato 24h
+  // Convierte una hora a formato numérico
   private horaATiempo(hora: string): number {
-    // Manejar formato "8:00 AM" o "08:00"
     if (hora.includes('AM') || hora.includes('PM')) {
       const [parte, periodo] = hora.split(' ');
+
       let [h, m] = parte.split(':').map(Number);
-      if (periodo === 'PM' && h !== 12) h += 12;
-      if (periodo === 'AM' && h === 12) h = 0;
-      return h + m / 60;
-    } else {
-      // Formato 24h "08:00"
-      const [h, m] = hora.split(':').map(Number);
+
+      if (periodo === 'PM' && h !== 12) {
+        h += 12;
+      }
+
+      if (periodo === 'AM' && h === 12) {
+        h = 0;
+      }
+
       return h + m / 60;
     }
+
+    const [h, m] = hora.split(':').map(Number);
+
+    return h + m / 60;
   }
 
-  //aqui vamos a validar que la hora no sea pasada, pero solo si la fecha seleccionada es el día actual//
+  // Verifica si una hora ya pasó cuando la fecha es hoy
   esHoraPasada(hora: string): boolean {
     const hoy = new Date();
+
     const esHoy =
       this.fechaSeleccionada === hoy.getDate() &&
       this.mesActual === hoy.getMonth() &&
@@ -219,12 +272,14 @@ export class Schedule implements OnInit {
     }
 
     const [horaParte, minutoParte, periodo] = hora.split(/[: ]/);
+
     let horaNumero = parseInt(horaParte);
     const minutoNumero = parseInt(minutoParte);
 
     if (periodo === 'PM' && horaNumero !== 12) {
       horaNumero += 12;
     }
+
     if (periodo === 'AM' && horaNumero === 12) {
       horaNumero = 0;
     }
@@ -232,10 +287,17 @@ export class Schedule implements OnInit {
     const horaActual = hoy.getHours();
     const minutoActual = hoy.getMinutes();
 
-    return horaNumero < horaActual || (horaNumero === horaActual && minutoNumero <= minutoActual);
+    return (
+      horaNumero < horaActual ||
+      (horaNumero === horaActual && minutoNumero <= minutoActual)
+    );
   }
 
-  seleccionarFecha(dia: number) {
+  // =========================
+  // SELECCIÓN
+  // =========================
+
+  seleccionarFecha(dia: number): void {
     if (this.esFechaPasada(dia)) {
       alert('No puedes seleccionar fechas pasadas');
       return;
@@ -249,7 +311,7 @@ export class Schedule implements OnInit {
     this.fechaSeleccionada = dia;
   }
 
-  seleccionarHora(hora: string) {
+  seleccionarHora(hora: string): void {
     this.horaSeleccionada = hora;
   }
 
@@ -273,21 +335,41 @@ export class Schedule implements OnInit {
     );
   }
 
-  // Filtra horas según el horario y días del empleado seleccionado
+  // =========================
+  // HORARIOS
+  // =========================
+
   horasFiltradas(): string[] {
-    if (!this.tatuadorSeleccionado) return this.horasDisponibles;
+    if (!this.tatuadorSeleccionado) {
+      return this.horasDisponibles;
+    }
 
     const empleado = this.buscarEmpleadoSeleccionado();
     if (!empleado?.schedule) return this.horasDisponibles;
 
-    // Verificar si el empleado trabaja el día seleccionado
-    const nombreDia = this.obtenerNombreDia(this.fechaSeleccionada, this.mesActual, this.anioActual);
-    if (!empleado.schedule.days.includes(nombreDia)) return [];
+    if (!empleado?.schedule) {
+      return this.horasDisponibles;
+    }
+
+    const nombreDia = this.obtenerNombreDia(
+      this.fechaSeleccionada,
+      this.mesActual,
+      this.anioActual
+    );
+
+    if (!empleado.schedule.days.includes(nombreDia)) {
+      return [];
+    }
 
     return this.horasDisponibles.filter(hora => {
       const horaNum = this.horaATiempo(hora);
-      const startNum = this.horaATiempo(empleado.schedule!.start);
-      const endNum = this.horaATiempo(empleado.schedule!.end);
+      const startNum = this.horaATiempo(
+        empleado.schedule!.start
+      );
+      const endNum = this.horaATiempo(
+        empleado.schedule!.end
+      );
+
       return horaNum >= startNum && horaNum <= endNum;
     });
   }
@@ -298,7 +380,11 @@ export class Schedule implements OnInit {
       return;
     }
 
-    if (!this.fechaSeleccionada || !this.horaSeleccionada || !this.tatuadorSeleccionado) {
+    if (
+      !this.fechaSeleccionada ||
+      !this.horaSeleccionada ||
+      !this.tatuadorSeleccionado
+    ) {
       alert('Faltan datos');
       return;
     }
@@ -311,7 +397,10 @@ export class Schedule implements OnInit {
 
     // Validar que la hora esté dentro del horario del empleado
     if (!this.estaEnHorarioEmpleado(this.horaSeleccionada)) {
-      alert('La hora seleccionada está fuera del horario de ' + this.tatuadorSeleccionado);
+      alert(
+        'La hora seleccionada está fuera del horario de ' +
+        this.tatuadorSeleccionado
+      );
       return;
     }
 
@@ -322,26 +411,42 @@ export class Schedule implements OnInit {
 
     // Validar hora si es el día actual
     const hoy = new Date();
+
     const esHoy =
       this.fechaSeleccionada === hoy.getDate() &&
       this.mesActual === hoy.getMonth() &&
       this.anioActual === hoy.getFullYear();
 
     if (esHoy) {
-      const [hora, minuto] = this.horaSeleccionada.split(/[: ]/);
+      const [hora, minuto] =
+        this.horaSeleccionada.split(/[: ]/);
+
       let horaNumero = parseInt(hora);
 
-      if (this.horaSeleccionada.includes('PM') && horaNumero !== 12) {
+      if (
+        this.horaSeleccionada.includes('PM') &&
+        horaNumero !== 12
+      ) {
         horaNumero += 12;
       }
-      if (this.horaSeleccionada.includes('AM') && horaNumero === 12) {
+
+      if (
+        this.horaSeleccionada.includes('AM') &&
+        horaNumero === 12
+      ) {
         horaNumero = 0;
       }
 
       const horaActual = hoy.getHours();
       const minutoActual = hoy.getMinutes();
 
-      if (horaNumero < horaActual || (horaNumero === horaActual && parseInt(minuto) <= minutoActual)) {
+      if (
+        horaNumero < horaActual ||
+        (
+          horaNumero === horaActual &&
+          parseInt(minuto) <= minutoActual
+        )
+      ) {
         alert('No puedes seleccionar una hora pasada');
         return;
       }

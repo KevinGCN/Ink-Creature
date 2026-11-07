@@ -55,9 +55,12 @@ export class AuthService {
   private auth = inject(Auth);
   private http = inject(HttpClient);
   private router = inject(Router);
+
   private usuarioActual: User | null = null;
-  public isLoggedIn$ = new BehaviorSubject<boolean>(false);
+
   public usuario$ = new BehaviorSubject<any>(this.obtenerUsuario());
+
+  public isLoggedIn$ = new BehaviorSubject<boolean>(this.estaLogueado());
 
   constructor() {
     // Solo guardamos el usuario de Firebase para `getAuthUser()`. La sesión
@@ -106,8 +109,9 @@ export class AuthService {
 
     localStorage.setItem('usuario', JSON.stringify(usuario));
     localStorage.setItem('logueado', 'true');
-    this.isLoggedIn$.next(true);
+
     this.usuario$.next(usuario);
+    this.isLoggedIn$.next(true);
   }
 
   private limpiarSesion() {
@@ -156,7 +160,11 @@ export class AuthService {
         return true;
       })
       .catch((error) => {
-        console.error('Error Google login:', error);
+        console.error(
+          'Error Google login:',
+          error
+        );
+
         return false;
       });
   }
@@ -193,7 +201,11 @@ export class AuthService {
     return sendPasswordResetEmail(this.auth, correo)
       .then(() => true)
       .catch((error) => {
-        console.error('Error recuperación:', error);
+        console.error(
+          'Error recuperación:',
+          error
+        );
+
         return false;
       });
   }
@@ -213,11 +225,18 @@ export class AuthService {
   }
 
   obtenerUsuario(): any {
-    return JSON.parse(localStorage.getItem('usuario') || '{}');
+    return JSON.parse(
+      localStorage.getItem('usuario') || '{}'
+    );
   }
 
   actualizarUsuario(usuario: any) {
-    localStorage.setItem('usuario', JSON.stringify(usuario));
+    localStorage.setItem(
+      'usuario',
+      JSON.stringify(usuario)
+    );
+
+    this.usuario$.next(usuario);
   }
 
   private idSesion(): number | null {

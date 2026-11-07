@@ -26,7 +26,7 @@ export class Employees implements OnInit {
   cargando = false;
   mensaje = '';
 
-  // ── Estado del modal ──────────────────────────────────────
+  // Estado del modal
   mostrarModal = false;
   modoEdicion = false;
   editando: Empleado | null = null;
@@ -74,7 +74,7 @@ export class Employees implements OnInit {
     (event.target as HTMLImageElement).src = 'image/tatuador.png';
   }
 
-  // ── Modal: Agregar ────────────────────────────────────────
+  // Modal: Agregar
   abrirAgregar() {
     this.modoEdicion = false;
     this.editando = null;
@@ -130,14 +130,16 @@ export class Employees implements OnInit {
     this.fotoFile = file;
 
     const reader = new FileReader();
+
     reader.onload = () => {
       this.fotoPreview = reader.result as string;
     };
+
     reader.readAsDataURL(file);
     input.value = '';
   }
 
-  // ── Guardar (add o edit) ──────────────────────────────────
+  // Guardar agregar o editar
   guardar() {
     this.errorForm = '';
 
@@ -196,9 +198,15 @@ export class Employees implements OnInit {
     });
   }
 
-  // ── Eliminar ──────────────────────────────────────────────
+  // Eliminar
   eliminar(id: number) {
-    if (!confirm('¿Estás seguro de que quieres eliminar este tatuador?')) return;
+    if (
+      !confirm(
+        '¿Estás seguro de que quieres eliminar este tatuador?'
+      )
+    ) {
+      return;
+    }
 
     this.empleadoService.eliminar(id).subscribe({
       next: () => this.cargarTatuadores(),
@@ -211,3 +219,4 @@ export class Employees implements OnInit {
     });
   }
 }
+

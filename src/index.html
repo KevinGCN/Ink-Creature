@@ -9,5 +9,86 @@
 </head>
 <body>
   <app-root></app-root>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       Tawk.to – Configuración del chat con soporte automático
+       ═══════════════════════════════════════════════════════════ -->
+  <script type="text/javascript">
+    // ── Datos de contacto de soporte ──────────────────────────
+    var SOPORTE_INFO = {
+      whatsapp     : '+57 317 388 4278',
+      whatsapp_url : 'https://wa.me/573173884278',
+      instagram    : '@emersonmo.3',
+      instagram_url: 'https://www.instagram.com/emersonmo.3'
+    };
+
+    // Palabras clave que indican que el usuario necesita soporte
+    var KEYWORDS_SOPORTE = [
+      'ayuda', 'soporte', 'soporte técnico', 'contacto',
+      'teléfono', 'telefono', 'número', 'numero',
+      'whatsapp', 'llamar', 'comunicar', 'hablar',
+      'problema', 'error', 'falla', 'no funciona',
+      'no puedo', 'cómo', 'como', 'dónde', 'donde',
+      'información', 'informacion'
+    ];
+
+    // ── Inicialización de la API de Tawk.to ───────────────────
+    var Tawk_API  = Tawk_API  || {};
+    var Tawk_LoadStart = new Date();
+
+    /**
+     * Pre-identifica al visitante como "Visitante" para que Tawk.to
+     * NO muestre el formulario pre-chat que pide nombre, correo o teléfono.
+     * El usuario puede escribir directamente sin ingresar datos personales.
+     */
+    Tawk_API.visitor = {
+      name : 'Visitante'
+    };
+
+    /**
+     * Se ejecuta cuando el widget termina de cargar.
+     * Envía al agente los datos de contacto como atributos del visitante.
+     */
+    Tawk_API.onLoad = function () {
+      Tawk_API.setAttributes({
+        'soporte-whatsapp' : SOPORTE_INFO.whatsapp,
+        'soporte-instagram': SOPORTE_INFO.instagram
+      }, function (error) {
+        if (error) console.warn('[Tawk] setAttributes error:', error);
+      });
+    };
+
+    /**
+     * Se ejecuta cada vez que el VISITANTE envía un mensaje.
+     * Si detecta palabras clave de soporte, maximiza el chat
+     * para que el agente lo atienda de inmediato.
+     * La respuesta automática con los datos de contacto se configura
+     * en el panel de Tawk.to → Automatización → Triggers (ver README).
+     */
+    Tawk_API.onChatMessageVisitor = function (message) {
+      var texto    = (message.message || '').toLowerCase();
+      var esSoporte = KEYWORDS_SOPORTE.some(function (kw) {
+        return texto.includes(kw);
+      });
+      if (esSoporte) {
+        Tawk_API.maximize();
+      }
+    };
+
+    // ── Carga del script de Tawk.to ───────────────────────────
+    // IMPORTANTE: el id 'tawk-script' evita que TawkService lo cargue dos veces.
+    (function () {
+      if (document.getElementById('tawk-script')) return; // guard extra
+      var s1 = document.createElement('script');
+      var s0 = document.getElementsByTagName('script')[0];
+      s1.id      = 'tawk-script';   // ← clave para evitar doble carga desde app.ts
+      s1.async   = true;
+      s1.src     = 'https://embed.tawk.to/6a18cdd53f9e9f1c33fcdc10/1jpoe82od';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+  <!-- ══════════════════════════════════════════════════════════ -->
 </body>
 </html>

@@ -130,19 +130,6 @@ export class Loggin {
       return;
     }
 
-    // Verificar si el correo ya existe en empleados.json (cuenta registrada local)
-    try {
-      const res = await fetch('assets/empleados.json');
-      const empleados: any[] = await res.json();
-      const empleadoExiste = empleados.some(e => e.email === this.correo);
-      if (empleadoExiste) {
-        this.mensajeError = 'Ya tienes una cuenta registrada con este correo. Inicia sesión.';
-        return;
-      }
-    } catch (error) {
-      console.error('Error al verificar empleados:', error);
-      // Continuamos de todos modos, por si el JSON no está disponible
-    }
     this.cargandoRegistro = true;
 
     try {
@@ -158,9 +145,10 @@ export class Loggin {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
       }
     } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        // El correo ya existe en Firebase (probablemente cuenta de Google)
-        this.mensajeError = 'Este correo ya está vinculado a una cuenta de Google. Inicia sesión con Google.';
+      if (error?.status === 409) {
+        this.mensajeError = 'Ya existe una cuenta con este correo. Inicia sesión.';
+      } else if (error?.status === 400) {
+        this.mensajeError = 'Revisa los datos: la contraseña debe tener al menos 8 caracteres.';
       } else {
         this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
         console.error('Registro error:', error);

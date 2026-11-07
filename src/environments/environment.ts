@@ -1,4 +1,5 @@
 export const environment = {
-    production: false, 
-    geminiApiKey: 'AQ.Ab8RN6Jr1UIYoHuEoveYuw1YRb9ijlrEXVLhGK4aqpUnfa8e9A'
+    production: false,
+    // Backend desplegado en Render. Ya NO lleva el prefijo /api.
+    apiUrl: 'https://inkcreature-backend.onrender.com'
 };

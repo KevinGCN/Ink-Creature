@@ -1,18 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TattooIaQuote } from './tattoo-ia-quote';
+import { TattooAiQuoteComponent } from './tattoo-ia-quote';
+import { GeminiService } from '../services/gemini';
 
 describe('TattooIaQuote', () => {
-  let component: TattooIaQuote;
-  let fixture: ComponentFixture<TattooIaQuote>;
+  let component: TattooAiQuoteComponent;
+  let fixture: ComponentFixture<TattooAiQuoteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TattooIaQuote]
-    })
-    .compileComponents();
+      imports: [TattooAiQuoteComponent],
+      providers: [
+        { provide: GeminiService, useValue: { analyzeTattoo: async () => '{}' } },
+      ],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(TattooIaQuote);
+    fixture = TestBed.createComponent(TattooAiQuoteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -46,7 +46,8 @@ No incluye:
 - [x] Quitar la clave de Gemini del frontend.
 - [x] Build del frontend sin errores.
 - [ ] `GEMINI_API_KEY` configurada en Render.
-- [ ] Citas contra `/citas`.
+- [x] Citas contra `/citas`.
+- [x] Edición de perfil y foto contra `/usuarios`.
 - [ ] Deploy del frontend en Netlify.
 - [ ] Agregar la URL del frontend a `FRONTEND_URL` en Render.
 
@@ -60,8 +61,8 @@ No incluye:
 - [x] Servicios públicos conectados.
 - [x] Migrar tatuadores, fotos, galería y horarios a la base.
 - [x] Conectar Employees, CV, galería y calendario al backend.
-- [ ] Probar login desde el navegador desplegado.
-- [ ] Conectar citas.
+- [x] Probar login desde el navegador desplegado.
+- [x] Conectar citas y perfil.
 - [ ] Desplegar frontend.
 
 ## Estado
@@ -90,15 +91,13 @@ por el deploy del frontend y por la migración de citas.
   - `/tmp/opencode/employees-ok.png` (9 tarjetas).
   - `/tmp/opencode/gallery-ok.png` (10 imágenes).
   - `/tmp/opencode/cv-ok.png` (perfil de Emilia Soplano).
-- Frontend: `npm run build` OK (bundle 588 kB).
+- Frontend: `npm run build` OK (bundle 604.51 kB).
+- Citas y perfil: build OK, 11 pruebas OK y E2E contra Render OK
+  (crear, listar, 409 duplicado, editar, borrar cita; editar perfil y foto).
 
 ## Pendiente
 
 - Configurar `GEMINI_API_KEY` en Render.
-- Migrar `CitaService` a `/citas` (convertir fecha `dd/mm/yyyy` a ISO y hora
-  12h a 24h).
 - Publicar la rama del frontend y agregar la URL de Netlify a `FRONTEND_URL`.
-- Conectar la edición de perfil y la subida de foto de perfil al backend
-  (`PATCH /usuarios/:id` y `POST /usuarios/:id/foto`); hoy solo se guarda en
-  localStorage.
-- Probar login por correo y con Google en el navegador desplegado.
+- Arreglar los specs viejos que no declaran proveedores de `Auth`,
+  `HttpClient` o `Router`.

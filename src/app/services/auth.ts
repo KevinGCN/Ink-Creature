@@ -10,7 +10,14 @@ import {
   sendPasswordResetEmail,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  firstValueFrom,
+  map,
+  tap,
+  throwError,
+} from 'rxjs';
 import { API_ROUTES, urlDeImagen } from '../core/api.routes';
 
 interface SesionApi {
@@ -28,6 +35,14 @@ interface PerfilApi {
   foto_perfil_url: string | null;
   rol: 'cliente' | 'empleado' | 'admin';
   activo: boolean;
+}
+
+/** Campos que el usuario puede editar desde su perfil. */
+export interface DatosPerfil {
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  telefono?: string;
 }
 
 const TOKEN_KEY = 'token';
@@ -203,6 +218,51 @@ export class AuthService {
 
   actualizarUsuario(usuario: any) {
     localStorage.setItem('usuario', JSON.stringify(usuario));
+  }
+
+  private idSesion(): number | null {
+    const usuario = this.obtenerUsuario();
+    return usuario?.id ?? usuario?.uid ?? null;
+  }
+
+  /**
+   * Guarda nombre, apellido, email y teléfono en `PATCH /usuarios/:id`.
+   * Al responder, se refresca el usuario de `localStorage` con los datos
+   * reales del backend (no con lo que escribió el formulario).
+   */
+  actualizarPerfil(datos: DatosPerfil): Observable<any> {
+    const id = this.idSesion();
+    if (!id) {
+      return throwError(() => new Error('No hay una sesión activa'));
+    }
+
+    return this.http
+      .patch<PerfilApi>(`${API_ROUTES.usuarios}/${id}`, datos)
+      .pipe(
+        tap((perfil) => this.guardarSesion(perfil)),
+        map(() => this.obtenerUsuario()),
+      );
+  }
+
+  /**
+   * Sube la foto de perfil a `POST /usuarios/:id/foto` (campo `imagen`).
+   * El backend devuelve la ruta guardada y aquí se refresca la sesión local.
+   */
+  subirFotoPerfil(archivo: File): Observable<any> {
+    const id = this.idSesion();
+    if (!id) {
+      return throwError(() => new Error('No hay una sesión activa'));
+    }
+
+    const formData = new FormData();
+    formData.append('imagen', archivo);
+
+    return this.http
+      .post<PerfilApi>(`${API_ROUTES.usuarios}/${id}/foto`, formData)
+      .pipe(
+        tap((perfil) => this.guardarSesion(perfil)),
+        map(() => this.obtenerUsuario()),
+      );
   }
 
   getAuthUser(): User | null {

@@ -50,9 +50,9 @@
 
     <!-- Tatuadores -->
     <div class="artists">
-      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado.name)"
-        [class.selected]="tatuadorSeleccionado === empleado.name">
-        {{ empleado.name }}
+      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado)"
+        [class.selected]="empleadoSeleccionadoId === empleado.id">
+        {{ nombreEmpleado(empleado) }}
       </div>
     </div>
 
@@ -61,8 +61,8 @@
   <!-- Botones -->
   <div class="actions">
     <button class="cancelar" routerLink="">Cancelar</button>
-    <button class="reserve" (click)="reservar()">
-      {{ modoEdicion ? 'Actualizar Cita' : 'Reservar' }}
+    <button class="reserve" (click)="reservar()" [disabled]="reservando">
+      {{ reservando ? 'Guardando…' : (modoEdicion ? 'Actualizar Cita' : 'Reservar') }}
     </button>
   </div>
 

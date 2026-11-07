@@ -49,8 +49,21 @@ No incluye:
 
 ## Estado
 
-Implementado y verificado en local contra el backend de Render. Falta commit,
-push y deploy del frontend.
+Implementado y verificado en local contra el backend de Render. Integrado con
+`dev-emerson` en la rama local `integracion-frontend` (commit `83a9c29`).
+Falta push y deploy del frontend.
+
+## Integración con dev-emerson
+
+- `git merge dev-emerson` resuelto conservando la versión conectada al backend
+  en `auth`, `empleados`, `employees`, `schedule` y `app.config`.
+- Se descartó el CRUD contra `http://localhost:3000` y el almacenamiento de
+  tatuadores en `localStorage` que traía `dev-emerson`.
+- Se conservó `isLoggedIn$` (lo usa `user-navbar`) y el login JWT.
+- El interceptor canónico es `core/auth.interceptor.ts` (lee `token`).
+  `interceptors/auth.interceptor.ts` queda sin usar.
+- El botón “Ayudante” del lobby abría `/chat`, una ruta inexistente; ahora abre
+  el widget real de Tawk.to.
 
 ## Evidencias
 
@@ -76,10 +89,17 @@ push y deploy del frontend.
 - La suite completa sigue con fallos previos en specs de componentes que no
   declaran proveedores de `Auth`, `HttpClient` o `Router`; no son de citas ni
   de perfil.
+- Merge con `dev-emerson`: `npm run build` OK (`606.00 kB`), pruebas dirigidas
+  de citas/auth/agenda/perfil OK (`4 archivos`, `11 pruebas`).
+- Suite completa tras el merge: `11 archivos` OK y `10 archivos` con fallos de
+  inyección de dependencias en specs viejos (`21 pruebas`); ningún fallo nuevo
+  de citas, perfil, auth, agenda, chat o Tawk.
 
 ## Pendiente
 
-- Commit y push de la rama `integracion-frontend`.
+- Push de la rama `integracion-frontend` y PR hacia `dev-emerson`.
 - Deploy del frontend y prueba del flujo real en Netlify.
 - Arreglar los specs viejos que aún no declaran proveedores.
 - `GEMINI_API_KEY` sigue pendiente en Render (no afecta citas ni perfil).
+- Decidir si se elimina `src/app/interceptors/auth.interceptor.ts` (duplicado
+  sin uso) en un commit aparte.

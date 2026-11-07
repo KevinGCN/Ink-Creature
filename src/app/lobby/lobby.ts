@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { Comments } from "../comments/comments";
 import { AuthService } from '../services/auth';
+import { TawkService } from '../services/tawk';
 
 @Component({
   selector: 'app-lobby',
@@ -19,5 +20,13 @@ import { AuthService } from '../services/auth';
 
 export class Lobby {
   // `auth` se expone para que la plantilla decida qué mostrar según haya sesión.
-  constructor(public auth: AuthService) {}
+  constructor(
+    public auth: AuthService,
+    private readonly tawk: TawkService
+  ) {}
+
+  /** Abre el widget de soporte de Tawk.to. */
+  irChat() {
+    this.tawk.abrirChat();
+  }
 }

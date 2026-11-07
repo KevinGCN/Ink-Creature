@@ -5,10 +5,11 @@
  * `router-outlet` como punto de inserción de las vistas, de modo que la
  * navegación no vuelva a montar la cabecera en cada cambio de ruta.
  */
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UserNavbar } from "./navbar/user-navbar/user-navbar";
 import { MainNavbar } from "./navbar/main-navbar/main-navbar";
+import { TawkService } from './services/tawk';
 
 // Se declara standalone para que el componente sea autocontenido y se pueda
 // importar directamente (este proyecto no usa NgModules en ningún punto).
@@ -19,9 +20,16 @@ import { MainNavbar } from "./navbar/main-navbar/main-navbar";
   standalone: true,
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   // Se usa una señal (y no una propiedad plana) para que, si algún día se
   // pinta en la plantilla, un cambio de título dispare la detección de
   // cambios sin depender de Zone en modo "zoneless".
   protected readonly title = signal('Ink-Creature');
+
+  constructor(private readonly tawk: TawkService) {}
+
+  // Carga el widget de soporte una sola vez al arrancar la aplicación.
+  ngOnInit() {
+    this.tawk.loadChat();
+  }
 }

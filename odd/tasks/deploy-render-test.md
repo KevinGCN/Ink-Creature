@@ -4,11 +4,26 @@
 
 - Probar el backend de la rama `dev-emerson` desplegado en Render.
 - Conectar el frontend a ese backend.
+- Migrar al backend los datos que vivían en el frontend: tatuadores,
+  fotos de perfil, galería y horarios.
 - Probar todo desde el navegador, sin tocar `main`.
 
 No incluye:
 - Subir nada a `main`.
 - Crear un módulo de reseñas en el backend.
+- Cambiar el esquema de la base de datos.
+
+## Decisiones
+
+- Sin columnas nuevas: `cargo` se muestra como "Tatuador", la experiencia se
+  calcula desde `fecha_contratacion` y se quitaron las estrellas de la vista.
+- Kevin Cobo (`kgcobo@gmail.com`) y Emerson Mosquera (`emerson.prueba@gmail.com`)
+  ya existían: se reutilizaron sus fichas y solo se les agregaron horarios.
+- Se crearon 6 tatuadores nuevos (Emilia, Gabe, Juan David, Valentina,
+  Sebastián y Leonardo) y Andrés Patiño (`jpatino@gmail.com`).
+- Las cuentas de prueba creadas usan la contraseña `12345678`.
+- `assets/empleados.json` y `assets/usuarios.json` se conservan por pedido del
+  usuario. `usuarios.json` (100 usuarios demo) no se migró.
 
 ## Requisitos
 
@@ -22,15 +37,16 @@ No incluye:
 - [x] Login por correo contra el backend.
 - [x] Login con Google contra `/auth/google`.
 - [x] Interceptor que agrega `Authorization: Bearer`.
-- [x] Galería contra `/galeria`.
-- [x] Empleados contra `/empleados`.
+- [x] Galería contra `/galeria` (lectura, subida y borrado).
+- [x] Empleados contra `/empleados` (lectura, alta, edición y borrado).
+- [x] CV del tatuador contra `/empleados/:id`.
+- [x] Horarios contra `/horarios-trabajador`.
 - [x] IA contra `/ia/analyze-tattoo`.
 - [x] Usuarios contra `/usuarios`.
 - [x] Quitar la clave de Gemini del frontend.
 - [x] Build del frontend sin errores.
 - [ ] `GEMINI_API_KEY` configurada en Render.
 - [ ] Citas contra `/citas`.
-- [ ] Borrar `assets/empleados.json` y `assets/usuarios.json` (contraseñas en texto plano).
 - [ ] Deploy del frontend en Netlify.
 - [ ] Agregar la URL del frontend a `FRONTEND_URL` en Render.
 
@@ -42,28 +58,47 @@ No incluye:
 - [x] Endpoint `/auth/google` y redeploy.
 - [x] Login dual en el frontend.
 - [x] Servicios públicos conectados.
-- [ ] Probar login desde el navegador.
+- [x] Migrar tatuadores, fotos, galería y horarios a la base.
+- [x] Conectar Employees, CV, galería y calendario al backend.
+- [ ] Probar login desde el navegador desplegado.
 - [ ] Conectar citas.
 - [ ] Desplegar frontend.
 
 ## Estado
 
-En curso. Bloqueado por `GEMINI_API_KEY` en Render y por la migración de citas.
+Datos migrados y frontend conectado. Bloqueado por `GEMINI_API_KEY` en Render,
+por el deploy del frontend y por la migración de citas.
 
 ## Evidencias
 
-- Backend local: `200 /empleados`, `404 /api/empleados`.
 - Render: `200 /empleados`, `404 /api/empleados`.
 - Render: `400 POST /auth/google {}`, `401` con token falso.
 - Render: `200 POST /auth/login` con `emerson.prueba@gmail.com`.
 - Render: `200 GET /galeria`.
 - Render: `503 POST /ia/analyze-tattoo` → falta `GEMINI_API_KEY`.
-- Frontend: `npm run build` OK (bundle 589 kB, antes 880 kB).
+- Base: `usuarios=15`, `empleados=9`, `imagenes=16`, `galeria=10`,
+  `horarios_trabajador=21`.
+- `/empleados` devuelve los 9 tatuadores activos con especialidad, biografía,
+  foto y fecha de contratación.
+- `/horarios-trabajador` devuelve 21 franjas (3 empleados × 7 días).
+- `/galeria` devuelve 10 filas; las 7 nuevas apuntan a `/imagenes/15..21`.
+- Login de `jpatino@gmail.com` / `12345678`: `201` con JWT (hash scrypt correcto).
+- E2E contra Render: crear usuario, subir foto, crear ficha, editar usuario y
+  ficha, subir imagen de galería, crear fila, borrar fila, ficha y usuario.
+  Todo en `200/201`; limpieza sin residuos.
+- Capturas reales con Firefox headless:
+  - `/tmp/opencode/employees-ok.png` (9 tarjetas).
+  - `/tmp/opencode/gallery-ok.png` (10 imágenes).
+  - `/tmp/opencode/cv-ok.png` (perfil de Emilia Soplano).
+- Frontend: `npm run build` OK (bundle 588 kB).
 
 ## Pendiente
 
 - Configurar `GEMINI_API_KEY` en Render.
-- Migrar `CitaService` a `/citas` (requiere convertir fecha `dd/mm/yyyy` a ISO y hora 12h a 24h).
-- Borrar los JSON con contraseñas del bundle.
-- Probar login por correo y con Google en el navegador.
-- Publicar la rama del frontend y ajustar CORS.
+- Migrar `CitaService` a `/citas` (convertir fecha `dd/mm/yyyy` a ISO y hora
+  12h a 24h).
+- Publicar la rama del frontend y agregar la URL de Netlify a `FRONTEND_URL`.
+- Conectar la edición de perfil y la subida de foto de perfil al backend
+  (`PATCH /usuarios/:id` y `POST /usuarios/:id/foto`); hoy solo se guarda en
+  localStorage.
+- Probar login por correo y con Google en el navegador desplegado.

@@ -62,7 +62,7 @@
       <label>Vincular a tatuador</label>
       <select [(ngModel)]="tatuadorSeleccionado">
         @for (t of tatuadores(); track t.id) {
-          <option [ngValue]="t.id">{{ t.nombre }} — {{ t.especialidad }}</option>
+          <option [ngValue]="t.id">{{ t.name }} {{ t.last_name }} — {{ t.especialidad }}</option>
         }
       </select>
 

@@ -14,6 +14,15 @@ export interface GaleriaApi {
   fecha_subida: string;
 }
 
+export interface CrearGaleriaDto {
+  subido_por: number;
+  empleado_id?: number;
+  imagen_url: string;
+  titulo?: string;
+  descripcion?: string;
+  estilo?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,5 +32,24 @@ export class GaleriaService {
 
   obtenerTodos(): Observable<GaleriaApi[]> {
     return this.http.get<GaleriaApi[]>(this.url);
+  }
+
+  /** Primer paso: guarda el binario en `imagenes` y devuelve su URL. */
+  subirImagen(archivo: File): Observable<{ url: string; id: number }> {
+    const formData = new FormData();
+    formData.append('imagen', archivo);
+    return this.http.post<{ url: string; id: number }>(
+      `${this.url}/upload`,
+      formData,
+    );
+  }
+
+  /** Segundo paso: registra la fila de la galería con los metadatos. */
+  crear(dto: CrearGaleriaDto): Observable<GaleriaApi> {
+    return this.http.post<GaleriaApi>(this.url, dto);
+  }
+
+  eliminar(id: number): Observable<unknown> {
+    return this.http.delete(`${this.url}/${id}`);
   }
 }

@@ -56,7 +56,10 @@ export class Profile implements OnInit {
     const usuario = this.auth.obtenerUsuario();
     const uid = usuario?.uid;
     if (uid) {
-      this.foto = localStorage.getItem('fotoPerfil_' + uid) || '';
+      this.foto =
+        localStorage.getItem('fotoPerfil_' + uid) ||
+        usuario?.foto_perfil_url ||
+        '';
     } else {
       this.foto = '';
     }

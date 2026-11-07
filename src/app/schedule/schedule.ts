@@ -64,7 +64,7 @@ export class Schedule implements OnInit {
     this.generarCalendario();
 
     const usuario = this.auth.obtenerUsuario();
-    this.correoUsuario = usuario?.correo || '';
+    this.correoUsuario = usuario?.email || usuario?.correo || '';
 
     // Verificar si viene una cita para editar
     const state = this.router.getCurrentNavigation()?.extras?.state || history.state;

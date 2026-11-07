@@ -2,9 +2,12 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 import { AuthService } from '../services/auth';
 import { GaleriaService } from '../services/galeria';
-import { cargarListaTatuadores, Tatuador } from '../employees/employees';
+import { EmpleadoService } from '../services/empleados';
+import { Empleado } from '../models/empleado';
+import { urlDeImagen } from '../core/api.routes';
 
 interface ImagenGaleria {
   id?: number;
@@ -23,6 +26,7 @@ export class Gallery implements OnInit {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly galeriaApi = inject(GaleriaService);
+  private readonly empleadoService = inject(EmpleadoService);
 
   // Imagen seleccionada para visualización ampliada
   readonly selectedImage = signal<string | null>(null);
@@ -32,52 +36,46 @@ export class Gallery implements OnInit {
     initialValue: this.auth.obtenerUsuario()
   });
   readonly esAdmin = computed(() => {
-    const cargo = this.usuario()?.charge;
-    return cargo === 'CEO' || cargo === 'Admin';
+    const u = this.usuario();
+    return u?.rol === 'admin' || u?.charge === 'CEO' || u?.charge === 'Admin';
   });
 
-  // Lista de tatuadores para el selector
-  readonly tatuadores = signal<Tatuador[]>([]);
-
-  // Imágenes base
-  private readonly imagenesBase: ImagenGaleria[] = [
-    { src: 'image/DBZ.jpg', alt: 'Goku Y Vegeta', empleadoId: 1 },
-    { src: 'image/ladymaria.png', alt: 'Lady Maria', empleadoId: 2 },
-    { src: 'image/mercy.png', alt: 'Mercy', empleadoId: 3 },
-    { src: 'image/rem.png', alt: 'Rem', empleadoId: 4 },
-    { src: 'image/kuromi.jpg', alt: 'Kuromi', empleadoId: 5 },
-    { src: 'image/sorodita.png', alt: 'Sorodita', empleadoId: 6 },
-    { src: 'image/arquemis.png', alt: 'Arquemis', empleadoId: 7 }
-  ];
+  // Lista de tatuadores para el selector (viene del backend)
+  readonly tatuadores = signal<Empleado[]>([]);
   readonly imagenes = signal<ImagenGaleria[]>([]);
 
   readonly mostrarModalSubida = signal(false);
   readonly archivoTemporal = signal<File | null>(null);
   readonly previewTemporal = signal('');
-  readonly tatuadorSeleccionado = signal(1);
+  readonly tatuadorSeleccionado = signal<number | null>(null);
   readonly nombreImagenTemp = signal('');
 
-  // Inicializa la galería combinando imágenes base y almacenadas
   ngOnInit() {
     this.cargarImagenes();
     this.recargarTatuadores();
   }
 
   private recargarTatuadores() {
-    const lista = cargarListaTatuadores();
-    this.tatuadores.set(lista);
-    if (lista.length > 0) {
-      this.tatuadorSeleccionado.set(lista[0].id);
-    }
+    this.empleadoService.getEmpleados().subscribe({
+      next: (lista) => {
+        this.tatuadores.set(lista);
+
+        const actual = this.tatuadorSeleccionado();
+        if (actual === null || !lista.some((t) => t.id === actual)) {
+          this.tatuadorSeleccionado.set(lista[0]?.id ?? null);
+        }
+      },
+      error: (err) => console.error('No se pudo cargar los tatuadores:', err),
+    });
   }
 
-    cargarImagenes() {
+  cargarImagenes() {
     this.galeriaApi.obtenerTodos().subscribe({
       next: (datos) => {
         this.imagenes.set(
           datos.map(d => ({
             id: d.id,
-            src: d.imagen_url,
+            src: urlDeImagen(d.imagen_url),
             alt: d.titulo ?? 'Tatuaje',
             empleadoId: d.empleado_id ?? 0
           }))
@@ -85,17 +83,9 @@ export class Gallery implements OnInit {
       },
       error: (err) => {
         console.error('No se pudo cargar la galería desde la API:', err);
-        this.cargarImagenesLocales();
+        this.imagenes.set([]);
       }
     });
-  }
-   private cargarImagenesLocales() {
-    const data = localStorage.getItem('galeria');
-    const guardadas: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    const unicas = guardadas.filter(
-      img => !this.imagenesBase.some(base => base.src === img.src)
-    );
-    this.imagenes.set([...this.imagenesBase, ...unicas]);
   }
 
   openImage(img: string) {
@@ -112,14 +102,15 @@ export class Gallery implements OnInit {
   }
 
   handleImageError(event: Event) {
-      if ((event.target as HTMLImageElement).src.includes('placeholder')) return;
+    const img = event.target as HTMLImageElement;
+    if (img.src.includes('tatuador.png')) return;
     console.error('Error cargando imagen:', event);
-    (event.target as HTMLImageElement).src = 'image/placeholder.jpg';
+    img.src = 'image/tatuador.png';
   }
 
   obtenerNombreTatuador(id: number): string {
     const t = this.tatuadores().find(t => t.id === id);
-    return t ? t.nombre : 'Tatuador';
+    return t ? `${t.name} ${t.last_name}`.trim() : 'Tatuador';
   }
 
   // ── Paso 1: archivo seleccionado → abrir modal
@@ -127,6 +118,12 @@ export class Gallery implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen supera 5 MB.');
+      input.value = '';
+      return;
+    }
 
     this.archivoTemporal.set(file);
     this.nombreImagenTemp.set(file.name.replace(/\.[^.]+$/, ''));
@@ -143,18 +140,37 @@ export class Gallery implements OnInit {
 
   // ── Paso 2: confirmar con tatuador seleccionado
   confirmarSubida() {
-    if (!this.previewTemporal()) return;
+    const archivo = this.archivoTemporal();
+    const usuario = this.auth.obtenerUsuario();
+    if (!archivo || !usuario?.id) return;
 
-    const nuevaImagen: ImagenGaleria = {
-      id: Date.now(),
-      src: this.previewTemporal(),
-      alt: this.nombreImagenTemp() || 'Nueva imagen',
-      empleadoId: this.tatuadorSeleccionado()
-    };
+    const empleadoId = this.tatuadorSeleccionado() ?? undefined;
+    const tatuador = this.tatuadores().find((t) => t.id === empleadoId);
+    const titulo = this.nombreImagenTemp().trim() || archivo.name;
 
-    this.imagenes.update(lista => [...lista, nuevaImagen]);
-    this.guardarImagen(nuevaImagen);
-    this.cerrarModalSubida();
+    this.galeriaApi
+      .subirImagen(archivo)
+      .pipe(
+        switchMap((subida) =>
+          this.galeriaApi.crear({
+            subido_por: usuario.id,
+            empleado_id: empleadoId,
+            imagen_url: subida.url,
+            titulo,
+            estilo: tatuador?.especialidad,
+          }),
+        ),
+      )
+      .subscribe({
+        next: () => {
+          this.cargarImagenes();
+          this.cerrarModalSubida();
+        },
+        error: (err) => {
+          console.error('No se pudo subir la imagen:', err);
+          alert('No se pudo subir la imagen. Revisa tu sesión e intenta de nuevo.');
+        },
+      });
   }
 
   cerrarModalSubida() {
@@ -164,29 +180,18 @@ export class Gallery implements OnInit {
     this.nombreImagenTemp.set('');
   }
 
-  guardarImagen(nuevaImagen: ImagenGaleria) {
-    const data = localStorage.getItem('galeria');
-    const existentes: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    if (!existentes.some(img => img.id === nuevaImagen.id)) {
-      existentes.push(nuevaImagen);
-      localStorage.setItem('galeria', JSON.stringify(existentes));
-    }
-  }
-
-  // Elimina una imagen almacenada, excluyendo las imágenes base
   eliminarImagen(img: ImagenGaleria, event: Event) {
     event.stopPropagation();
-    if (this.imagenesBase.some(base => base.src === img.src)) {
-      alert('No puedes eliminar imágenes base.');
-      return;
-    }
-    this.imagenes.update(lista => lista.filter(i => i !== img));
+    if (img.id == null) return;
+    if (!confirm('¿Eliminar esta imagen de la galería?')) return;
 
-    const data = localStorage.getItem('galeria');
-    const guardadas: ImagenGaleria[] = data ? JSON.parse(data) : [];
-    localStorage.setItem(
-      'galeria',
-      JSON.stringify(guardadas.filter(i => i.id !== img.id))
-    );
+    this.galeriaApi.eliminar(img.id).subscribe({
+      next: () => {
+        this.imagenes.update((lista) => lista.filter((i) => i.id !== img.id));
+      },
+      error: (err) => {
+        console.error('No se pudo eliminar la imagen:', err);
+      },
+    });
   }
 }

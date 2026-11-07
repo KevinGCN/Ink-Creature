@@ -3,96 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { EmpleadoService } from '../services/empleados';
+import { Empleado } from '../models/empleado';
 
-export interface Tatuador {
-  id: number;
-  nombre: string;
-  cargo: string;
-  especialidad: string;
-  experiencia: number;
-  descripcion: string;
-  foto: string;
-  estrellas: number;
-}
-
-export const TATUADORES_BASE: Tatuador[] = [
-  {
-    id: 1,
-    nombre: 'Emilia Soplano',
-    cargo: 'Tatuador',
-    especialidad: 'Estilo Anime',
-    experiencia: 5,
-    descripcion: 'Tatuadora especializada en anime y Dragon Ball: líneas que parecen Kamehamehas y color digno de una esfera del dragón.',
-    foto: 'image/Emilia Soplano.jpg',
-    estrellas: 5
-  },
-  {
-    id: 2,
-    nombre: 'Gabe Fernandez',
-    cargo: 'Tatuador',
-    especialidad: 'Realismo y Fantasía Oscura',
-    experiencia: 4,
-    descripcion: 'Tatuador especializado en estilo Souls: cinismo, armaduras rotas y fuegos fatuos con la misma elegancia oscura de morir una y otra vez.',
-    foto: 'image/Gabe Fernandez.jpg',
-    estrellas: 5
-  },
-  {
-    id: 3,
-    nombre: 'Juan David Vernadez',
-    cargo: 'Tatuador',
-    especialidad: 'Arte Fantástico y de videojuegos',
-    experiencia: 4,
-    descripcion: 'Soy bueno dandole caracteristicas unicas a los personajes.',
-    foto: 'image/Juan David Vernadez.webp',
-    estrellas: 4
-  },
-  {
-    id: 4,
-    nombre: 'Valentina Ríos',
-    cargo: 'Tatuadora',
-    especialidad: 'Minimalismo',
-    experiencia: 3,
-    descripcion: 'Tatuadora de mundos fantasticos: personajes memorables, magia arcana y KasuGOD > Basuro.',
-    foto: 'image/Valentina Ríos.jpg',
-    estrellas: 5
-  },
-  {
-    id: 5,
-    nombre: 'Sebastián Morales',
-    cargo: 'Tatuador',
-    especialidad: 'Chivi',
-    experiencia: 6,
-    descripcion: 'Soy experto en hacer arte lindo y adorable.',
-    foto: 'image/Sebastián Morales.jpg',
-    estrellas: 4
-  },
-  {
-    id: 6,
-    nombre: 'Leonardo Taza',
-    cargo: 'Tatuador',
-    especialidad: 'Warhammer 40k',
-    experiencia: 3,
-    descripcion: 'Quieres el tatuaje de una monja de batalla con lanzallamas? Pues si la respuesta es si, yo soy tu hombre.',
-    foto: 'image/Leonardo Taza.png',
-    estrellas: 5
-  }
-];
-
-/** Carga la lista combinada de tatuadores (base + personalizados - eliminados) */
-export function cargarListaTatuadores(): Tatuador[] {
-  const custom: Tatuador[] = JSON.parse(localStorage.getItem('tatuadores_custom') || '[]');
-  const deleted: number[] = JSON.parse(localStorage.getItem('tatuadores_deleted') || '[]');
-
-  const merged = [...TATUADORES_BASE];
-  custom.forEach((c: Tatuador) => {
-    const idx = merged.findIndex(t => t.id === c.id);
-    if (idx >= 0) merged[idx] = c;
-    else merged.push(c);
-  });
-
-  return merged.filter(t => !deleted.includes(t.id));
-}
-
+/**
+ * Catálogo de tatuadores.
+ *
+ * Los datos viven en el backend (`/empleados` + `/usuarios` + `/horarios-trabajador`).
+ * El alta crea primero el usuario, luego la ficha de empleado; la edición toca
+ * ambas tablas y el borrado solo quita la ficha del catálogo.
+ */
 @Component({
   selector: 'app-employees',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -101,60 +21,91 @@ export function cargarListaTatuadores(): Tatuador[] {
   styleUrl: './employees.css',
 })
 export class Employees implements OnInit {
-
-  tatuadores: Tatuador[] = [];
+  tatuadores: Empleado[] = [];
   esAdmin = false;
+  cargando = false;
+  mensaje = '';
 
   // ── Estado del modal ──────────────────────────────────────
   mostrarModal = false;
   modoEdicion = false;
-  editandoId: number | null = null;
+  editando: Empleado | null = null;
 
   // ── Formulario ────────────────────────────────────────────
-  form: Partial<Tatuador> = {};
+  form = {
+    nombre: '',
+    apellido: '',
+    email: '',
+    password: '',
+    especialidad: '',
+    descripcion: '',
+  };
+  fotoFile: File | null = null;
   fotoPreview = '';
   errorForm = '';
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    private empleadoService: EmpleadoService,
+  ) {}
 
   ngOnInit() {
-    const usuario = this.auth.obtenerUsuario();
-    this.esAdmin = usuario?.charge === 'CEO' || usuario?.charge === 'Admin';
+    this.esAdmin = this.auth.esAdmin();
     this.cargarTatuadores();
   }
 
   cargarTatuadores() {
-    this.tatuadores = cargarListaTatuadores();
+    this.cargando = true;
+    this.mensaje = '';
+    this.empleadoService.getEmpleados().subscribe({
+      next: (lista) => {
+        this.tatuadores = lista;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('No se pudo cargar el catálogo:', err);
+        this.mensaje = 'No se pudo cargar el catálogo desde el servidor.';
+        this.cargando = false;
+      },
+    });
   }
 
-  obtenerEstrellas(cantidad: number): string {
-    return '★'.repeat(cantidad) + '☆'.repeat(5 - cantidad);
+  usarFotoPorDefecto(event: Event) {
+    (event.target as HTMLImageElement).src = 'image/tatuador.png';
   }
 
   // ── Modal: Agregar ────────────────────────────────────────
   abrirAgregar() {
     this.modoEdicion = false;
-    this.editandoId = null;
+    this.editando = null;
     this.form = {
       nombre: '',
-      cargo: 'Tatuador',
+      apellido: '',
+      email: '',
+      password: '',
       especialidad: '',
-      experiencia: 1,
       descripcion: '',
-      foto: '',
-      estrellas: 5
     };
+    this.fotoFile = null;
     this.fotoPreview = '';
     this.errorForm = '';
     this.mostrarModal = true;
   }
 
   // ── Modal: Editar ─────────────────────────────────────────
-  abrirEditar(t: Tatuador) {
+  abrirEditar(t: Empleado) {
     this.modoEdicion = true;
-    this.editandoId = t.id;
-    this.form = { ...t };
-    this.fotoPreview = t.foto;
+    this.editando = t;
+    this.form = {
+      nombre: t.name,
+      apellido: t.last_name,
+      email: '',
+      password: '',
+      especialidad: t.especialidad,
+      descripcion: t.descripcion,
+    };
+    this.fotoFile = null;
+    this.fotoPreview = t.foto === 'image/tatuador.png' ? '' : t.foto;
     this.errorForm = '';
     this.mostrarModal = true;
   }
@@ -164,85 +115,99 @@ export class Employees implements OnInit {
   }
 
   // ── Foto del tatuador en formulario ───────────────────────
-  cargarFoto(event: any) {
-    const file = event.target.files[0];
+  cargarFoto(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.errorForm = 'La foto supera 5 MB.';
+      input.value = '';
+      return;
+    }
+
+    this.errorForm = '';
+    this.fotoFile = file;
+
     const reader = new FileReader();
     reader.onload = () => {
       this.fotoPreview = reader.result as string;
-      this.form.foto = reader.result as string;
     };
     reader.readAsDataURL(file);
+    input.value = '';
   }
 
   // ── Guardar (add o edit) ──────────────────────────────────
   guardar() {
     this.errorForm = '';
-    if (!this.form.nombre?.trim()) {
+
+    if (!this.form.nombre.trim()) {
       this.errorForm = 'El nombre es obligatorio.';
       return;
     }
-    if (!this.form.especialidad?.trim()) {
+    if (!this.form.apellido.trim()) {
+      this.errorForm = 'El apellido es obligatorio.';
+      return;
+    }
+    if (!this.form.especialidad.trim()) {
       this.errorForm = 'La especialidad es obligatoria.';
       return;
     }
-    if (!this.form.foto) {
-      this.errorForm = 'Debes subir una foto.';
-      return;
+    if (!this.modoEdicion) {
+      if (!this.form.email.trim()) {
+        this.errorForm = 'El correo es obligatorio.';
+        return;
+      }
+      if (this.form.password.length < 8) {
+        this.errorForm = 'La contraseña debe tener al menos 8 caracteres.';
+        return;
+      }
     }
 
-    const custom: Tatuador[] = JSON.parse(localStorage.getItem('tatuadores_custom') || '[]');
+    const datos = {
+      nombre: this.form.nombre.trim(),
+      apellido: this.form.apellido.trim(),
+      email: this.form.email.trim(),
+      password: this.form.password,
+      especialidad: this.form.especialidad.trim(),
+      biografia: this.form.descripcion.trim(),
+    };
 
-    if (this.modoEdicion && this.editandoId !== null) {
-      // Editar existente
-      const idx = custom.findIndex(t => t.id === this.editandoId);
-      const updated: Tatuador = {
-        id: this.editandoId,
-        nombre: this.form.nombre!,
-        cargo: this.form.cargo || 'Tatuador',
-        especialidad: this.form.especialidad!,
-        experiencia: this.form.experiencia || 1,
-        descripcion: this.form.descripcion || '',
-        foto: this.form.foto!,
-        estrellas: this.form.estrellas || 5
-      };
-      if (idx >= 0) custom[idx] = updated;
-      else custom.push(updated);
-    } else {
-      // Agregar nuevo
-      const todos = cargarListaTatuadores();
-      const maxId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) : 0;
-      const nuevo: Tatuador = {
-        id: maxId + 1,
-        nombre: this.form.nombre!,
-        cargo: this.form.cargo || 'Tatuador',
-        especialidad: this.form.especialidad!,
-        experiencia: this.form.experiencia || 1,
-        descripcion: this.form.descripcion || '',
-        foto: this.form.foto!,
-        estrellas: this.form.estrellas || 5
-      };
-      custom.push(nuevo);
-    }
+    const peticion =
+      this.modoEdicion && this.editando
+        ? this.empleadoService.actualizar(this.editando, datos, this.fotoFile ?? undefined)
+        : this.empleadoService.crear(datos, this.fotoFile ?? undefined);
 
-    localStorage.setItem('tatuadores_custom', JSON.stringify(custom));
-    this.cargarTatuadores();
-    this.cerrarModal();
+    peticion.subscribe({
+      next: () => {
+        this.cargarTatuadores();
+        this.cerrarModal();
+      },
+      error: (err) => {
+        if (err?.status === 409) {
+          this.errorForm = 'Ya existe una cuenta con ese correo.';
+        } else if (err?.status === 400) {
+          this.errorForm = 'Revisa los datos: la contraseña debe tener 8 caracteres o más.';
+        } else {
+          this.errorForm = 'No se pudo guardar. Intenta de nuevo.';
+        }
+        console.error('Error guardando tatuador:', err);
+      },
+    });
   }
 
   // ── Eliminar ──────────────────────────────────────────────
   eliminar(id: number) {
     if (!confirm('¿Estás seguro de que quieres eliminar este tatuador?')) return;
 
-    const deleted: number[] = JSON.parse(localStorage.getItem('tatuadores_deleted') || '[]');
-    if (!deleted.includes(id)) deleted.push(id);
-    localStorage.setItem('tatuadores_deleted', JSON.stringify(deleted));
-
-    // Remover también de custom si está allí
-    const custom: Tatuador[] = JSON.parse(localStorage.getItem('tatuadores_custom') || '[]');
-    const filtered = custom.filter(t => t.id !== id);
-    localStorage.setItem('tatuadores_custom', JSON.stringify(filtered));
-
-    this.cargarTatuadores();
+    this.empleadoService.eliminar(id).subscribe({
+      next: () => this.cargarTatuadores(),
+      error: (err) => {
+        console.error('No se pudo eliminar el tatuador:', err);
+        this.mensaje =
+          err?.error?.message ||
+          'No se pudo eliminar el tatuador. Intenta de nuevo.';
+      },
+    });
   }
 }

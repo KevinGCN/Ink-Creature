@@ -3,14 +3,13 @@
   <div class="perfil">
 
     <div class="perfil-foto">
-      <img [src]="empleado.foto" [alt]="empleado.nombre">
+      <img [src]="empleado.foto" [alt]="empleado.name" (error)="usarFotoPorDefecto($event)">
     </div>
 
     <div class="perfil-info">
       <span class="badge">{{ empleado.especialidad }}</span>
-      <h1>{{ empleado.nombre }}</h1>
-      <p class="cargo">{{ empleado.cargo }}</p>
-      <div class="estrellas">{{ obtenerEstrellas(empleado.estrellas) }}</div>
+      <h1>{{ empleado.name }} {{ empleado.last_name }}</h1>
+      <p class="cargo">{{ empleado.charge }}</p>
 
       <div class="datos">
         <div class="dato">

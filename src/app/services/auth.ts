@@ -11,7 +11,7 @@ import {
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { API_ROUTES } from '../core/api.routes';
+import { API_ROUTES, urlDeImagen } from '../core/api.routes';
 
 interface SesionApi {
   access_token: string;
@@ -77,8 +77,8 @@ export class AuthService {
       apellido: perfil.apellido,
       email: perfil.email,
       telefono: perfil.telefono ?? '',
-      photoURL: perfil.foto_perfil_url ?? '',
-      foto_perfil_url: perfil.foto_perfil_url,
+      photoURL: urlDeImagen(perfil.foto_perfil_url),
+      foto_perfil_url: urlDeImagen(perfil.foto_perfil_url),
       rol: perfil.rol,
       // Compatibilidad con componentes existentes que leen `charge`.
       charge:

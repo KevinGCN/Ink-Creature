@@ -10,19 +10,21 @@
     </button>
   </div>
 
+  <p *ngIf="cargando" class="cargando">Cargando tatuadores...</p>
+  <p *ngIf="mensaje" class="error-msg">{{ mensaje }}</p>
+
   <div class="catalogo">
     <div class="tarjeta" *ngFor="let t of tatuadores">
 
       <div class="tarjeta-foto">
-        <img [src]="t.foto" [alt]="t.nombre">
+        <img [src]="t.foto" [alt]="t.name" (error)="usarFotoPorDefecto($event)">
         <span class="badge">{{ t.especialidad }}</span>
       </div>
 
       <div class="tarjeta-info">
-        <h2>{{ t.nombre }}</h2>
-        <p class="cargo">{{ t.cargo }}</p>
+        <h2>{{ t.name }} {{ t.last_name }}</h2>
+        <p class="cargo">{{ t.charge }}</p>
         <p class="experiencia">{{ t.experiencia }} años de experiencia</p>
-        <div class="estrellas">{{ obtenerEstrellas(t.estrellas) }}</div>
       </div>
 
       <div class="tarjeta-footer">
@@ -60,29 +62,28 @@
       <img [src]="fotoPreview" alt="Preview">
     </div>
 
-    <label>Foto del tatuador *</label>
+    <label>Foto del tatuador</label>
     <input type="file" accept="image/*" (change)="cargarFoto($event)">
 
     <label>Nombre *</label>
-    <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre completo">
+    <input type="text" [(ngModel)]="form.nombre" placeholder="Nombre">
 
-    <label>Cargo</label>
-    <select [(ngModel)]="form.cargo">
-      <option value="Tatuador">Tatuador</option>
-      <option value="Tatuadora">Tatuadora</option>
-    </select>
+    <label>Apellido *</label>
+    <input type="text" [(ngModel)]="form.apellido" placeholder="Apellido">
+
+    <ng-container *ngIf="!modoEdicion">
+      <label>Correo *</label>
+      <input type="email" [(ngModel)]="form.email" placeholder="correo@ejemplo.com">
+
+      <label>Contraseña * (mínimo 8 caracteres)</label>
+      <input type="password" [(ngModel)]="form.password" placeholder="••••••••">
+    </ng-container>
 
     <label>Especialidad *</label>
     <input type="text" [(ngModel)]="form.especialidad" placeholder="Ej: Estilo Anime, Realismo...">
 
-    <label>Años de experiencia</label>
-    <input type="number" [(ngModel)]="form.experiencia" min="1" max="50">
-
     <label>Descripción</label>
     <textarea [(ngModel)]="form.descripcion" rows="3" placeholder="Descripción del artista..."></textarea>
-
-    <label>Estrellas (1–5)</label>
-    <input type="number" [(ngModel)]="form.estrellas" min="1" max="5">
 
     <p class="error-msg" *ngIf="errorForm">{{ errorForm }}</p>
 

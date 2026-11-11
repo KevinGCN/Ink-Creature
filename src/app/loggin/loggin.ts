@@ -10,9 +10,10 @@
  * - Login: previene doble clic con estado de carga
  * - Mensajes de error específicos por tipo de cuenta existente
  */
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 
 @Component({
@@ -41,12 +42,18 @@ export class Loggin {
   /** Mensaje de error general mostrado bajo los botones */
   mensajeError = '';
 
+  /** Mensaje de éxito mostrado bajo los botones */
+  mensajeExito = '';
+
   /** Estado de carga de los botones */
   cargandoLogin = false;
   cargandoRegistro = false;
   cargandoGoogle = false;
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    @Optional() private router: Router
+  ) {}
 
   /**
    * Cierra el modal emitiendo el evento `cerrar`
@@ -60,6 +67,8 @@ export class Loggin {
    */
   irARegistro() {
     this.modoRegistro = true;
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   /**
@@ -67,6 +76,21 @@ export class Loggin {
    */
   irALogin() {
     this.modoRegistro = false;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+  }
+
+  /**
+   * Navega al inicio solo cuando el componente se usa como página (/loggin).
+   * Dentro de user-navbar (modal) el padre cierra el modal con el evento `cerrar`.
+   */
+  private irAlInicioSiEsRutaLoggin() {
+    if (!this.router) return;
+    const ruta = this.router.url.split('?')[0].split('#')[0];
+    if (ruta === '/loggin') {
+      // Deja ver el mensaje de éxito antes de salir del formulario.
+      setTimeout(() => this.router.navigate(['/']), 900);
+    }
   }
 
   /**
@@ -78,6 +102,7 @@ export class Loggin {
     if (this.cargandoLogin) return;
     
     this.mensajeError = '';
+    this.mensajeExito = '';
 
     if (!this.correo || !this.password) {
       this.mensajeError = 'Por favor, ingresa tu correo y contraseña';
@@ -95,8 +120,9 @@ export class Loggin {
       const ok = await this.auth.login(this.correo, this.password);
 
       if (ok) {
+        this.mensajeExito = 'Sesión iniciada correctamente.';
         this.cerrarModal();
-        window.location.reload();
+        this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
       }
@@ -117,6 +143,7 @@ export class Loggin {
   async registrarse() {
     if (this.cargandoRegistro) return;
     this.mensajeError = '';
+    this.mensajeExito = '';
     if (!this.nombre || !this.correo || !this.password) {
       this.mensajeError = 'Por favor, completa todos los campos para registrarte';
       return;
@@ -139,8 +166,9 @@ export class Loggin {
         password: this.password,
       });
       if (ok) {
+        this.mensajeExito = 'Cuenta creada correctamente.';
         this.cerrarModal();
-        window.location.reload();
+        this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
       }
@@ -164,13 +192,15 @@ export class Loggin {
    */
   async loginConGoogle() {
     this.mensajeError = '';
+    this.mensajeExito = '';
     this.cargandoGoogle = true;
 
     try {
       const ok = await this.auth.loginConGoogle();
       if (ok) {
+        this.mensajeExito = 'Sesión iniciada correctamente.';
         this.cerrarModal();
-        window.location.reload();
+        this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
       }

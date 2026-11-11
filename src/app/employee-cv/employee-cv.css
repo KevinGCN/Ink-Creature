@@ -93,7 +93,7 @@
 
 .etiqueta {
   font-size: 11px;
-  color: #8E8899;
+  color: #5E596B;
   text-transform: uppercase;
 }
 
@@ -109,8 +109,21 @@
 }
 
 .sin-desc {
-  color: #999;
+  color: #6B6578;
   font-style: italic;
+}
+
+/* Estado de carga: visible sobre el fondo claro y con un h1 real */
+.cv-cargando {
+  padding: 60px 20px;
+  text-align: center;
+  color: #5E596B;
+}
+
+.cv-cargando h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 @media (max-width: 680px) {

@@ -1,4 +1,4 @@
-<main class="cv-page" *ngIf="empleado; else cargando">
+<div class="cv-page" *ngIf="empleado; else cargando">
 
   <div class="perfil">
 
@@ -28,8 +28,10 @@
     </div>
   </div>
 
-</main>
+</div>
 
 <ng-template #cargando>
-  <p style="color:white; text-align:center; padding:60px;">Cargando perfil...</p>
+  <div class="cv-cargando">
+    <h1>Cargando perfil...</h1>
+  </div>
 </ng-template>

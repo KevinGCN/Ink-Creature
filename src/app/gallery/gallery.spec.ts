@@ -1,10 +1,17 @@
 // gallery.spec.ts — adaptado a la versión de señales + backend de esta rama
 // (misma estructura que la referencia de main: providers reales + HTTP de pruebas).
+//
+// Incluye:
+//  - La suite original de esta rama (subida, borrado, toasts, modal propio).
+//  - Los tests del rediseño "explorador con detalle" (artboard main
+//    design/ink-galeria/03): auto-selección, panel de detalle, chips de
+//    estilo, búsqueda y ficha del tatuador.
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
@@ -27,6 +34,25 @@ const filas = [
   { id: 1, subido_por: 1, empleado_id: null, imagen_url: '/imagenes/1', titulo: 'Serpiente lineal', estilo: 'Fine line', fecha_subida: '' },
   { id: 2, subido_por: 1, empleado_id: null, imagen_url: '/imagenes/2', titulo: 'Luna reversa', estilo: 'Blackwork', fecha_subida: '' }
 ];
+
+// Pieza atribuida a un tatuador con su ficha completa (lo que el backend
+// devuelve con `empleados: { include: { usuarios: usuarioSeguro } }`).
+const filaConTatuador = {
+  id: 3,
+  subido_por: 2,
+  empleado_id: 5,
+  imagen_url: '/imagenes/3',
+  titulo: 'Dragón neotrad',
+  estilo: 'Neotradicional',
+  fecha_subida: '',
+  empleados: {
+    id: 5,
+    especialidad: 'Neotradicional / Color',
+    biografia: 'Llevo 8 años tatuando dragones y criaturas mitológicas.',
+    activo: true,
+    usuarios: { id: 9, nombre: 'Ana', apellido: 'Gómez', foto_perfil_url: '/imagenes/50' }
+  }
+};
 
 // Se monta el componente y se resuelven las dos peticiones que dispara ngOnInit
 // (galería y tatuadores) para que no queden requests pendientes.
@@ -110,16 +136,17 @@ describe('Gallery', () => {
     expect(gridItems.length).toBeGreaterThan(0);
   });
 
-  // El clic en una tarjeta abre el visor con la url de esa pieza.
-  it('should call openImage when grid item is clicked', () => {
-    const openImageSpy = vi.spyOn(component, 'openImage');
-
+  // El clic en una tarjeta selecciona esa pieza en el panel de detalle
+  // (rediseño: la tarjeta ya no abre el visor; el panel sí puede ampliar).
+  it('should select the piece when grid item is clicked', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const firstGridItem = compiled.querySelector('.grid-item');
     expect(firstGridItem).toBeTruthy();
 
     (firstGridItem as HTMLElement).click();
-    expect(openImageSpy).toHaveBeenCalled();
+    expect(component.seleccionada()?.titulo).toBe('Serpiente lineal');
+    // La tarjeta ya no abre el visor directamente.
+    expect(component.selectedImage()).toBeNull();
   });
 
   // Sin selección no debe existir el nodo del visor (@if de la plantilla).
@@ -154,6 +181,132 @@ describe('Gallery', () => {
 
     viewer.click();
     expect(closeImageSpy).toHaveBeenCalled();
+  });
+});
+
+/**
+ * Explorador con detalle (artboard design/ink-galeria/03-explorador-detalle):
+ * grilla + panel de detalle fijo, filtros por estilo, búsqueda y ficha del
+ * tatuador.
+ */
+describe('Gallery — explorador con detalle', () => {
+  let component: Gallery;
+  let fixture: ComponentFixture<Gallery>;
+  let httpMock: HttpTestingController;
+
+  beforeEach(async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [Gallery],
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
+
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture = TestBed.createComponent(Gallery);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    httpMock.expectOne(`${API}/galeria`).flush(filas);
+    httpMock.match((req) => req.method === 'GET').forEach((req) => req.flush([]));
+    fixture.detectChanges();
+  });
+
+  afterEach(() => httpMock.verify());
+
+  // Al cargar, la primera pieza queda seleccionada en el panel de detalle.
+  it('should auto-select the first piece after loading', () => {
+    expect(component.seleccionada()?.titulo).toBe('Serpiente lineal');
+  });
+
+  // El panel de detalle muestra título y estilo de la pieza seleccionada.
+  it('should show the detail panel with the selected piece title and author', () => {
+    component.seleccionada.set(filas[0] as never);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const detalle = compiled.querySelector('.detalle');
+    expect(detalle?.textContent).toContain('Serpiente lineal');
+    expect(detalle?.textContent).toContain('Fine line');
+  });
+
+  // El chip de estilo filtra la grilla y el contador refleja el recorte.
+  it('should filter the grid when a estilo chip is pressed', () => {
+    component.estiloFiltro.set('Blackwork');
+    fixture.detectChanges();
+
+    expect(component.filtradas().map((i) => i.titulo)).toEqual(['Luna reversa']);
+  });
+
+  // La búsqueda cubre título y autor.
+  it('should filter by search text on title', () => {
+    component.busqueda.set('serpiente');
+    expect(component.filtradas().map((i) => i.titulo)).toEqual(['Serpiente lineal']);
+  });
+
+  // El visor ampliado se abre desde el panel de detalle, no desde la grilla.
+  it('should open the enlarged viewer from the detail panel', () => {
+    component.seleccionada.set(filas[0] as never);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    (compiled.querySelector('.detalle-imagen') as HTMLElement).click();
+    expect(component.selectedImage()).not.toBeNull();
+  });
+
+  // El panel de detalle muestra la ficha del tatuador: foto, nombre,
+  // especialidad, biografía y acceso a su CV. La pieza va en la forma
+  // mapeada de la UI (`empleadoId`), conservando la ficha `empleados`
+  // tal como la manda el backend.
+  it('should show the worker profile in the detail panel when the piece has a tatuador', () => {
+    component.seleccionada.set({
+      id: 3,
+      src: `${API}/imagenes/3`,
+      alt: 'Dragón neotrad',
+      titulo: 'Dragón neotrad',
+      estilo: 'Neotradicional',
+      descripcion: null,
+      empleadoId: 5,
+      empleados: filaConTatuador.empleados
+    } as never);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const ficha = compiled.querySelector('.detalle-tatuador');
+    expect(ficha).toBeTruthy();
+    expect(ficha?.textContent).toContain('Ana Gómez');
+    expect(ficha?.textContent).toContain('Neotradicional / Color');
+    expect(ficha?.textContent).toContain('Llevo 8 años tatuando dragones');
+
+    // La foto del trabajador se resuelve contra el backend
+    const foto = ficha?.querySelector('img')?.getAttribute('src');
+    expect(foto).toBe(`${API}/imagenes/50`);
+
+    // El enlace al CV del tatuador sigue presente
+    expect(ficha?.querySelector('.detalle-autor')).toBeTruthy();
+  });
+
+  // Sin tatuador vinculado no aparece la ficha (solo el autor plano):
+  // degrada con elegancia cuando el backend no manda la relación.
+  it('should not show the worker profile when the piece has no tatuador', () => {
+    component.seleccionada.set(filas[0] as never);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.detalle-tatuador')).toBeNull();
+  });
+
+  // El CTA del panel lleva a la agenda.
+  it('should navigate to /schedule when pedir cita is clicked', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.pedirCita();
+    expect(navigateSpy).toHaveBeenCalledWith(['/schedule']);
   });
 });
 

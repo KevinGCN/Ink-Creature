@@ -1,0 +1,72 @@
+<div class="quote-container">
+
+    <h2 class="quote-title">
+        Cotizador de Tatuajes
+    </h2>
+
+    <div class="quote-form">
+
+        <label>Tamaño</label>
+        <select [(ngModel)]="size">
+            <option value="">Seleccione</option>
+            <option value="small">Pequeño</option>
+            <option value="medium">Mediano</option>
+            <option value="large">Grande</option>
+        </select>
+
+        <label>Zona</label>
+        <select [(ngModel)]="area">
+            <option value="">Seleccione</option>
+            <option value="arm">Brazo</option>
+            <option value="forearm">Antebrazo</option>
+            <option value="leg">Pierna</option>
+            <option value="chest">Pecho</option>
+            <option value="back">Espalda</option>
+        </select>
+
+        <label>Detalle</label>
+        <select [(ngModel)]="detail">
+            <option value="">Seleccione</option>
+            <option value="low">Bajo</option>
+            <option value="medium">Medio</option>
+            <option value="high">Alto</option>
+        </select>
+
+        <div class="checkbox-container">
+            <input type="checkbox" [(ngModel)]="color">
+            <span>Tatuaje a color</span>
+        </div>
+
+        <button class="quote-button" (click)="calculateQuote()">
+            Calcular Cotización
+        </button>
+
+    </div>
+
+    @if(price > 0){
+
+    <div class="result-card">
+
+        <h3>Resultado de la Cotización</h3>
+
+        <p>
+            <strong>Precio:</strong>
+            <span class="result-value">
+                ${{ price.toLocaleString('es-CO') }}
+            </span>
+        </p>
+
+        <p>
+            <strong>Tiempo estimado:</strong>
+            <span class="result-value">
+                {{ hours }} horas
+            </span>
+        </p>
+
+        <p>{{ recommendation }}</p>
+
+    </div>
+
+    }
+
+</div>

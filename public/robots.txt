@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ink-creature-v2.netlify.app/sitemap.xml

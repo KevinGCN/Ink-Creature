@@ -5,12 +5,15 @@
  * - Iniciar sesión con correo/contraseña o Google
  * - Registrarse creando una cuenta nueva
  * 
- * @component
- * @fires cerrar - Evento emitido al cerrar el modal (cerrarModal)
+ * Validaciones:
+ * - Registro: verifica correo duplicado en empleados.json
+ * - Login: previene doble clic con estado de carga
+ * - Mensajes de error específicos por tipo de cuenta existente
  */
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 
 @Component({
@@ -39,10 +42,18 @@ export class Loggin {
   /** Mensaje de error general mostrado bajo los botones */
   mensajeError = '';
 
-  /** Estado de carga del botón "Iniciar con Google" */
+  /** Mensaje de éxito mostrado bajo los botones */
+  mensajeExito = '';
+
+  /** Estado de carga de los botones */
+  cargandoLogin = false;
+  cargandoRegistro = false;
   cargandoGoogle = false;
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    @Optional() private router: Router
+  ) {}
 
   /**
    * Cierra el modal emitiendo el evento `cerrar`
@@ -56,6 +67,8 @@ export class Loggin {
    */
   irARegistro() {
     this.modoRegistro = true;
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   /**
@@ -63,14 +76,33 @@ export class Loggin {
    */
   irALogin() {
     this.modoRegistro = false;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+  }
+
+  /**
+   * Navega al inicio solo cuando el componente se usa como página (/loggin).
+   * Dentro de user-navbar (modal) el padre cierra el modal con el evento `cerrar`.
+   */
+  private irAlInicioSiEsRutaLoggin() {
+    if (!this.router) return;
+    const ruta = this.router.url.split('?')[0].split('#')[0];
+    if (ruta === '/loggin') {
+      // Deja ver el mensaje de éxito antes de salir del formulario.
+      setTimeout(() => this.router.navigate(['/']), 900);
+    }
   }
 
   /**
    * Inicia sesión con correo y contraseña.
    * Valida campos vacíos y formato de correo antes de enviar.
+   * Previene doble clic con estado de carga.
    */
   async iniciarSesion() {
+    if (this.cargandoLogin) return;
+    
     this.mensajeError = '';
+    this.mensajeExito = '';
 
     if (!this.correo || !this.password) {
       this.mensajeError = 'Por favor, ingresa tu correo y contraseña';
@@ -82,13 +114,22 @@ export class Loggin {
       return;
     }
 
-    const ok = await this.auth.login(this.correo, this.password);
+    this.cargandoLogin = true;
 
-    if (ok) {
-      alert('¡Inicio de sesión exitoso!');
-      this.cerrarModal();
-    } else {
-      this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+    try {
+      const ok = await this.auth.login(this.correo, this.password);
+
+      if (ok) {
+        this.mensajeExito = 'Sesión iniciada correctamente.';
+        this.cerrarModal();
+        this.irAlInicioSiEsRutaLoggin();
+      } else {
+        this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+      }
+    } catch (error: any) {
+      this.mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+    } finally {
+      this.cargandoLogin = false;
     }
   }
 
@@ -97,31 +138,52 @@ export class Loggin {
    * - Todos los campos completos
    * - Formato de correo válido
    * - Contraseña mínima de 8 caracteres
+   * - Verifica si el correo ya existe (en empleados.json o Firebase)
    */
-  registrarse() {
+  async registrarse() {
+    if (this.cargandoRegistro) return;
     this.mensajeError = '';
-
+    this.mensajeExito = '';
     if (!this.nombre || !this.correo || !this.password) {
       this.mensajeError = 'Por favor, completa todos los campos para registrarte';
       return;
     }
-
     if (!this.correo.includes('@')) {
       this.mensajeError = 'Por favor, ingresa un correo electrónico válido';
       return;
     }
-
     if (this.password.length < 8) {
       this.mensajeError = 'La contraseña debe tener al menos 8 caracteres para mayor seguridad';
       return;
     }
 
-    this.auth.registrar({
-      nombre: this.nombre,
-      correo: this.correo,
-      password: this.password,
-   
-    });
+    this.cargandoRegistro = true;
+
+    try {
+      const ok = await this.auth.registrar({
+        nombre: this.nombre,
+        correo: this.correo,
+        password: this.password,
+      });
+      if (ok) {
+        this.mensajeExito = 'Cuenta creada correctamente.';
+        this.cerrarModal();
+        this.irAlInicioSiEsRutaLoggin();
+      } else {
+        this.mensajeError = 'Error al registrar. Intenta nuevamente.';
+      }
+    } catch (error: any) {
+      if (error?.status === 409) {
+        this.mensajeError = 'Ya existe una cuenta con este correo. Inicia sesión.';
+      } else if (error?.status === 400) {
+        this.mensajeError = 'Revisa los datos: la contraseña debe tener al menos 8 caracteres.';
+      } else {
+        this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
+        console.error('Registro error:', error);
+      }
+    } finally {
+      this.cargandoRegistro = false;
+    }
   }
 
   /**
@@ -130,13 +192,15 @@ export class Loggin {
    */
   async loginConGoogle() {
     this.mensajeError = '';
+    this.mensajeExito = '';
     this.cargandoGoogle = true;
 
     try {
       const ok = await this.auth.loginConGoogle();
       if (ok) {
-        alert('¡Inicio de sesión con Google exitoso!');
+        this.mensajeExito = 'Sesión iniciada correctamente.';
         this.cerrarModal();
+        this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
       }

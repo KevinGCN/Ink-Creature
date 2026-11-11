@@ -1,6 +1,7 @@
 <div class="container">
 
   <h1>Agenda tu Cita</h1>
+
   <div class="content">
 
     <!-- Calendario -->
@@ -28,8 +29,10 @@
 
       <!-- Fechas dinámicas -->
       <div class="dates">
-        <span *ngFor="let dia of diasMes" (click)="!esFechaPasada(dia) && seleccionarFecha(dia)"
-          [class.active]="fechaSeleccionada === dia" [class.disabled]="esFechaPasada(dia)">
+        <span *ngFor="let dia of diasMes"
+          (click)="!esFechaPasada(dia) && !esDescansoEmpleado(dia) && seleccionarFecha(dia)"
+          [class.active]="fechaSeleccionada === dia"
+          [class.disabled]="esFechaPasada(dia) || esDescansoEmpleado(dia)">
           {{ dia }}
         </span>
       </div>
@@ -38,33 +41,33 @@
 
     <!-- Horarios -->
     <div class="hours">
-      <button (click)="seleccionarHora('8:00 AM')" [class.selected]="horaSeleccionada === '8:00 AM'">8:00 AM</button>
-      <button (click)="seleccionarHora('8:30 AM')" [class.selected]="horaSeleccionada === '8:30 AM'">8:30 AM</button>
-      <button (click)="seleccionarHora('9:00 AM')" [class.selected]="horaSeleccionada === '9:00 AM'">9:00 AM</button>
-      <button (click)="seleccionarHora('9:30 AM')" [class.selected]="horaSeleccionada === '9:30 AM'">9:30 AM</button>
-      <button (click)="seleccionarHora('10:00 AM')" [class.selected]="horaSeleccionada === '10:00 AM'">10:00 AM</button>
-      <button (click)="seleccionarHora('2:00 PM')" [class.selected]="horaSeleccionada === '2:00 PM'">2:00 PM</button>
-      <button (click)="seleccionarHora('2:30 PM')" [class.selected]="horaSeleccionada === '2:30 PM'">2:30 PM</button>
-      <button (click)="seleccionarHora('3:00 PM')" [class.selected]="horaSeleccionada === '3:00 PM'">3:00 PM</button>
+      <ng-container *ngFor="let hora of horasFiltradas()">
+        <button
+          (click)="!esHoraPasada(hora) && seleccionarHora(hora)"
+          [class.selected]="horaSeleccionada === hora"
+          [class.disabled]="esHoraPasada(hora)">
+          {{ hora }}
+        </button>
+      </ng-container>
     </div>
 
     <!-- Tatuadores -->
     <div class="artists">
-      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado.name)"
-        [class.selected]="tatuadorSeleccionado === empleado.name">
-        {{ empleado.name }}
+      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado)"
+        [class.selected]="empleadoSeleccionadoId === empleado.id">
+        {{ nombreEmpleado(empleado) }}
       </div>
     </div>
 
   </div>
 
-   <!-- Botones -->
-   <div class="actions">
-     <button class="cancelar" routerLink="">Cancelar</button>
-     <button class="reserve" (click)="reservar()">
-       {{ modoEdicion ? 'Actualizar Cita' : 'Reservar' }}
-     </button>
-   </div>
+  <!-- Botones -->
+  <div class="actions">
+    <button class="cancelar" routerLink="">Cancelar</button>
+    <button class="reserve" (click)="reservar()" [disabled]="reservando">
+      {{ reservando ? 'Guardando…' : (modoEdicion ? 'Actualizar Cita' : 'Reservar') }}
+    </button>
+  </div>
 
   <hr>
 

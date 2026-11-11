@@ -1,15 +1,30 @@
+export interface Schedule {
+  start: string;
+  end: string;
+  days: string[];
+}
+
 /**
- * Modelo de empleado / tatuador.
+ * Empleado tal como lo usa el frontend.
  *
- * Los datos viven en la colección `empleados` de Firestore.
- * Este modelo contiene únicamente campos de presentación y rol:
- * nunca contraseñas, que pertenecen exclusivamente a Firebase Auth.
+ * `id` es `empleados.id` (no el id del usuario): es el que usan las rutas
+ * `/employeeCV/:id` y `galeria.empleado_id`.
+ *
+ * No contiene contraseñas: la autenticación pertenece exclusivamente a
+ * Firebase Auth / al backend.
  */
 export interface Empleado {
-  id: string;
+  id: number;
+  usuarioId: number;
   name: string;
   last_name: string;
   email: string;
-  phone?: string;
+  phone: string;
   charge: string;
+  especialidad: string;
+  descripcion: string;
+  foto: string;
+  experiencia: number;
+  schedule?: Schedule;
+  activo: boolean;
 }

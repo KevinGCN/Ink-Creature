@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
     if (this.auth.estaLogueado()) {
       return true;
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/'], { queryParams: { acceso: 'restringido' } });
       return false;
     }
   }

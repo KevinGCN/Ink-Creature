@@ -1,80 +1,112 @@
-/**
- * Servicio de gestión de citas - Almacenamiento local
- * 
- * Servicio singleton (@Injectable providedIn: 'root') que gestiona
- * la creación, lectura y eliminación de citas con persistencia
- * en localStorage del navegador.
- * 
- * Arquitectura: Patron Repository
- * - La lógica de acceso a datos está encapsulada aquí
- * - Los componentes no acceden a localStorage directamente
- * 
- * Persistencia:
- * - Todas las operaciones actualizan inmediatamente el localStorage
- * - Datos serializados como JSON bajo la clave 'citas'
- */
-import { Injectable } from '@angular/core';
-import { Cita } from '../models/cita';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { API_ROUTES } from '../core/api.routes';
+import { Cita, EstadoCita } from '../models/cita';
 
-@Injectable({
-  providedIn: 'root', // Singleton global - misma instancia en toda la aplicación
-})
-export class CitaService {
-  /** Array en memoria de todas las citas */
-  private citas: Cita[] = this.cargarDesdeStorage();
-
-  /**
-   * Carga las citas iniciales desde localStorage
-   * @returns Array de citas (vacío si no hay datos)
-   */
-  private cargarDesdeStorage(): Cita[] {
-    return JSON.parse(localStorage.getItem('citas') || '[]');
-  }
-
-  /**
-   * Persiste el estado actual en localStorage
-   * Se llama después de cada mutación (crear/eliminar)
-   */
-  private guardar(): void {
-    localStorage.setItem('citas', JSON.stringify(this.citas));
-  }
-
-  /**
-   * Obtiene todas las citas
-   * @returns Array de citas (copia no requerida por uso interno)
-   */
-  getCitas(): Cita[] {
-    return this.citas;
-  }
-
-  /**
-   * Crea una nueva cita y la persiste
-   * @param cita Objeto Cita a crear (sin ID - se genera externamente)
-   */
-  crearCita(cita: Cita) {
-    this.citas.push(cita);
-    this.guardar();
-  }
-
-  /**
-   * Actualiza una cita existente por su ID
-   * @param citaActualizada Cita con los datos actualizados (debe incluir ID)
-   */
-  actualizarCita(citaActualizada: Cita) {
-    const index = this.citas.findIndex(c => c.id === citaActualizada.id);
-    if (index !== -1) {
-      this.citas[index] = citaActualizada;
-      this.guardar();
-    }
-  }
-
-  /**
-   * Elimina una cita por su ID
-   * @param id Identificador único de la cita
-   */
-  eliminarCita(id: number) {
-    this.citas = this.citas.filter(c => c.id !== id);
-    this.guardar();
-  }
+interface CitaApi {
+  id: number;
+  usuario_id: number;
+  empleado_id: number;
+  fecha: string;
+  hora_inicio: string;
+  hora_fin: string;
+  estado: EstadoCita;
+  notas: string | null;
+  empleados: {
+    id: number;
+    usuarios: {
+      id: number;
+      nombre: string;
+      apellido: string;
+    } | null;
+  } | null;
 }
 
+export interface CrearCitaDto {
+  usuario_id: number;
+  empleado_id: number;
+  fecha: string;
+  hora_inicio: string;
+  hora_fin: string;
+  estado?: EstadoCita;
+  notas?: string;
+}
+
+export type ActualizarCitaDto = Partial<CrearCitaDto>;
+
+/** "1970-01-01T14:00:00.000Z" o "14:00:00" → "14:00". */
+function aHHMM(valor: string): string {
+  return valor.includes('T') ? valor.slice(11, 16) : valor.slice(0, 5);
+}
+
+/** "14:00" → "2:00 PM". */
+function a12h(hhmm: string): string {
+  const [h, m] = hhmm.split(':').map(Number);
+  const periodo = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, '0')} ${periodo}`;
+}
+
+/**
+ * Citas contra `/citas`.
+ *
+ * El backend devuelve fechas y horas como ISO; aquí se convierten a los
+ * formatos que ya usan la agenda y “Mis citas” (`dd/mm/yyyy` y `7:00 AM`).
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class CitaService {
+  private readonly http = inject(HttpClient);
+
+  obtenerCitas(usuarioId?: number): Observable<Cita[]> {
+    let params = new HttpParams();
+    if (usuarioId) {
+      params = params.set('usuario_id', String(usuarioId));
+    }
+
+    return this.http
+      .get<CitaApi[]>(API_ROUTES.citas, { params })
+      .pipe(map((citas) => citas.map((c) => this.mapear(c))));
+  }
+
+  crear(dto: CrearCitaDto): Observable<Cita> {
+    return this.http
+      .post<CitaApi>(API_ROUTES.citas, dto)
+      .pipe(map((c) => this.mapear(c)));
+  }
+
+  actualizar(id: number, dto: ActualizarCitaDto): Observable<Cita> {
+    return this.http
+      .patch<CitaApi>(`${API_ROUTES.citas}/${id}`, dto)
+      .pipe(map((c) => this.mapear(c)));
+  }
+
+  eliminar(id: number): Observable<unknown> {
+    return this.http.delete(`${API_ROUTES.citas}/${id}`);
+  }
+
+  private mapear(c: CitaApi): Cita {
+    const fechaISO = c.fecha.slice(0, 10);
+    const [anio, mes, dia] = fechaISO.split('-');
+    const horaInicio = aHHMM(c.hora_inicio);
+    const horaFin = aHHMM(c.hora_fin);
+    const nombre = c.empleados?.usuarios?.nombre ?? '';
+    const apellido = c.empleados?.usuarios?.apellido ?? '';
+
+    return {
+      id: c.id,
+      fecha: `${dia}/${mes}/${anio}`,
+      hora: a12h(horaInicio),
+      tatuador: `${nombre} ${apellido}`.trim() || 'Tatuador',
+      fechaISO,
+      horaInicio,
+      horaFin,
+      empleadoId: c.empleado_id,
+      usuarioId: c.usuario_id,
+      estado: c.estado,
+      notas: c.notas ?? undefined,
+    };
+  }
+}

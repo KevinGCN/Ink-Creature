@@ -1,0 +1,97 @@
+/* Contenedor principal */
+.quote-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Título */
+.quote-title {
+  text-align: center;
+  color: #111111;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Formulario */
+.quote-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Labels */
+.quote-form label {
+  font-weight: 600;
+  color: #444444;
+}
+
+/* Selects */
+.quote-form select {
+  padding: 12px;
+  border: 1px solid #D9D9D9;
+  border-radius: 10px;
+  background-color: #F5F5F5;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.quote-form select:focus {
+  outline: none;
+  border-color: #111111;
+  background-color: #ffffff;
+}
+
+/* Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #444444;
+}
+
+/* Botón */
+.quote-button {
+  background-color: #111111;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.quote-button:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+/* Resultado */
+.result-card {
+  margin-top: 30px;
+  padding: 25px;
+  background-color: #F5F5F5;
+  border-left: 5px solid #111111;
+  border-radius: 12px;
+}
+
+.result-card h3 {
+  color: #111111;
+  margin-bottom: 15px;
+}
+
+.result-card p {
+  color: #444444;
+  margin: 10px 0;
+}
+
+/* Valores destacados */
+.result-value {
+  font-weight: 700;
+  color: #111111;
+}

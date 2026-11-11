@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { cargarListaTatuadores, Tatuador } from '../employees/employees';
+import { EmpleadoService } from '../services/empleados';
+import { Empleado } from '../models/empleado';
 
 @Component({
   selector: 'app-employee-cv',
@@ -12,18 +13,24 @@ import { cargarListaTatuadores, Tatuador } from '../employees/employees';
 })
 export class EmployeeCV implements OnInit {
 
-  empleado: Tatuador | null = null;
+  empleado: Empleado | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private empleadoService: EmpleadoService,
+  ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    // Lee la lista unificada (base + personalizados del localStorage)
-    const todos = cargarListaTatuadores();
-    this.empleado = todos.find(e => e.id === id) || null;
+
+    // El id de la URL es `empleados.id`, el mismo que usa la galería.
+    this.empleadoService.getEmpleado(id).subscribe({
+      next: (empleado) => (this.empleado = empleado ?? null),
+      error: (err) => console.error('No se pudo cargar el perfil:', err),
+    });
   }
 
-  obtenerEstrellas(cantidad: number): string {
-    return '★'.repeat(cantidad) + '☆'.repeat(5 - cantidad);
+  usarFotoPorDefecto(event: Event) {
+    (event.target as HTMLImageElement).src = 'image/tatuador.png';
   }
 }

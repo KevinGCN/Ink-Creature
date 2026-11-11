@@ -4,24 +4,65 @@
      <h2>Mi Perfil</h2>
    </div>
 
+   <p *ngIf="mensajeError" class="mensaje error">{{ mensajeError }}</p>
+   <p *ngIf="mensajeExito" class="mensaje exito">{{ mensajeExito }}</p>
+
    <!-- INFO USUARIO -->
    <div class="profile-info">
 
       <div class="foto">
-        <img *ngIf="foto" [src]="foto">
+        <img *ngIf="foto" [src]="foto" alt="Foto de perfil">
         <div *ngIf="!foto" class="placeholder">Sin foto</div>
 
-        <label class="btn-subir-foto">
-          <input type="file" (change)="cambiarFoto($event)" accept="image/*" hidden>
-          {{ foto ? 'Cambiar foto' : 'Subir foto' }}
+        <label class="btn-subir-foto" [class.disabled]="subiendoFoto">
+          <input type="file" (change)="cambiarFoto($event)" accept="image/*" hidden [disabled]="subiendoFoto">
+          {{ subiendoFoto ? 'Subiendo…' : (foto ? 'Cambiar foto' : 'Subir foto') }}
         </label>
       </div>
 
-<div class="datos">
-         <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }} {{ usuario?.apellido || usuario?.last_name || '' }}</p>
-         <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
-         <p><strong>Cargo:</strong> {{ usuario?.charge || 'Normal' }}</p>
-       </div>
+      <div class="datos">
+        <ng-container *ngIf="!editando">
+          <p><strong>Nombre:</strong> {{ usuario?.nombre || usuario?.name || 'No definido' }} {{ usuario?.apellido || usuario?.last_name || '' }}</p>
+          <p><strong>Email:</strong> {{ usuario?.email || usuario?.correo || 'No definido' }}</p>
+          <p><strong>Teléfono:</strong> {{ usuario?.telefono || 'No definido' }}</p>
+          <p><strong>Cargo:</strong> {{ usuario?.charge || 'Normal' }}</p>
+
+          <button class="btn-editar-perfil" (click)="activarEdicion()">
+            Editar perfil
+          </button>
+        </ng-container>
+
+        <form *ngIf="editando" class="form-perfil" (ngSubmit)="guardarCambios()">
+          <label>
+            Nombre
+            <input type="text" name="nombre" [(ngModel)]="formulario.nombre" required>
+          </label>
+
+          <label>
+            Apellido
+            <input type="text" name="apellido" [(ngModel)]="formulario.apellido" required>
+          </label>
+
+          <label>
+            Correo
+            <input type="email" name="email" [(ngModel)]="formulario.email" required>
+          </label>
+
+          <label>
+            Teléfono
+            <input type="tel" name="telefono" [(ngModel)]="formulario.telefono">
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" [disabled]="guardando">
+              {{ guardando ? 'Guardando…' : 'Guardar' }}
+            </button>
+            <button type="button" class="cancelar" (click)="cancelarEdicion()" [disabled]="guardando">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
 
    </div>
 
@@ -43,6 +84,7 @@
         <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
         <p><strong>Hora:</strong> {{ cita.hora }}</p>
         <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
+        <p><strong>Estado:</strong> {{ cita.estado }}</p>
 
         <div class="cita-actions">
           <button class="editar" (click)="editarCita(cita)">

@@ -10,17 +10,20 @@
  * 2. provideRouter() - Sistema de enrutamiento
  * 3. provideFirebaseApp() - Inicialización Firebase
  * 4. provideAuth() - Servicio de autenticación Firebase
- * 
+ * 5. provideFirestore() - Base de datos Firestore
+ *
  * Integración Firebase:
  * - provideFirebaseApp inicializa la app con firebaseConfig
  * - provideAuth expone getAuth() para inyección en servicios
- * - Ambos usan factories () => para lazy-initialization
+ * - provideFirestore expone getFirestore() para inyección en servicios
+ * - Todos usan factories () => para lazy-initialization
  */
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { firebaseConfig } from './config/firebase.config';
 
 export const appConfig: ApplicationConfig = {
@@ -35,6 +38,9 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
 
     // Proveedor del servicio Auth de Firebase
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+
+    // Proveedor de Firestore (empleados y roles)
+    provideFirestore(() => getFirestore())
   ]
 };

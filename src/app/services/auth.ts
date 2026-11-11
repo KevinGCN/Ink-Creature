@@ -12,7 +12,9 @@ import {
   sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { EmpleadoService } from './empleados';
+import { Empleado } from '../models/empleado';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,7 @@ export class AuthService {
 
   private auth = inject(Auth);
   private router = inject(Router);
+  private empleadoService = inject(EmpleadoService);
   private usuarioActual: User | null = null;
   public isLoggedIn$ = new BehaviorSubject<boolean>(false);
 
@@ -32,8 +35,13 @@ export class AuthService {
       if (user) {
         this.usuarioActual = user;
         // Preservar datos existentes en localStorage (ya incluyen el charge si login ya los guardó)
-        const prevData = JSON.parse(localStorage.getItem('usuario') || '{}');
-        
+        let prevData: any = {};
+        try {
+          prevData = JSON.parse(localStorage.getItem('usuario') || '{}');
+        } catch {
+          prevData = {};
+        }
+
         if (!prevData.uid) {
           // Solo actualizar si no hay datos previos (flujo normal sin login previo)
           const userData = {
@@ -69,12 +77,11 @@ export class AuthService {
     }
   }
 
-  /** Busca el empleado en assets/empleados.json por email y retorna el objeto completo */
-  private async obtenerEmpleadoPorEmail(email: string): Promise<any> {
+  /** Busca el empleado en Firestore por email y retorna el objeto completo */
+  private async obtenerEmpleadoPorEmail(email: string): Promise<Empleado | null> {
+    if (!email) return null;
     try {
-      const res = await fetch('assets/empleados.json');
-      const empleados: any[] = await res.json();
-      return empleados.find(e => e.email === email);
+      return await firstValueFrom(this.empleadoService.getEmpleadoPorEmail(email));
     } catch {
       return null;
     }
@@ -113,7 +120,10 @@ export class AuthService {
         this.actualizarEstadoLocal(userData);
         return true;
       })
-      .catch(() => false);
+      .catch((error) => {
+        console.error('[AuthService] Error de login:', error);
+        return false;
+      });
   }
 
   loginConGoogle(): Promise<boolean> {
@@ -148,17 +158,32 @@ export class AuthService {
       });
   }
 
-  logout() {
-    signOut(this.auth);
-    this.router.navigate(['/']);
+  async logout(): Promise<void> {
+    try {
+      await signOut(this.auth);
+    } catch (error) {
+      console.error('[AuthService] Error al cerrar sesión:', error);
+    } finally {
+      this.actualizarEstadoLocal(null);
+      await this.router.navigate(['/']);
+    }
   }
 
   estaLogueado(): boolean {
     return localStorage.getItem('logueado') === 'true';
   }
 
+  /**
+   * Lee el usuario persistido en localStorage.
+   * Una entrada corrupta se descarta en lugar de lanzar una excepción.
+   */
   obtenerUsuario(): any {
-    return JSON.parse(localStorage.getItem('usuario') || '{}');
+    try {
+      return JSON.parse(localStorage.getItem('usuario') || '{}');
+    } catch {
+      localStorage.removeItem('usuario');
+      return {};
+    }
   }
 
   actualizarUsuario(usuario: any) {

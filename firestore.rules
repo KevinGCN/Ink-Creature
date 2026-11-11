@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Reglas de seguridad de Cloud Firestore para Ink-Creature.
+//
+// Objetivo: el rol (charge) de un usuario NUNCA puede ser escrito desde el
+// cliente. Solo un administrador existente puede modificar empleados, y
+// ningún cliente puede escribir su propio campo `charge`.
+//
+// Para aplicar:  firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helpers ------------------------------------------------------------
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Lee el documento del empleado correspondiente al usuario autenticado.
+    function empleadoActual() {
+      return get(/databases/$(database)/documents/empleados/$(request.auth.uid)).data;
+    }
+
+    function rolActual() {
+      return signedIn() ? empleadoActual().charge : '';
+    }
+
+    function esAdmin() {
+      return signedIn() && rolActual() in ['Admin', 'CEO'];
+    }
+
+    // Empleados ----------------------------------------------------------
+    match /empleados/{empleadoId} {
+      // Cualquiera puede leer el catálogo: nombre y rol son información
+      // pública de presentación. No hay contraseñas en esta colección.
+      allow read: if true;
+
+      // Un usuario solo puede crear su propio documento si NO se asigna
+      // un rol privilegiado. Así nadie puede registrarse como Admin/CEO.
+      allow create: if signedIn()
+                    && request.auth.uid == empleadoId
+                    && request.resource.data.charge == 'Normal'
+                    && !('password' in request.resource.data);
+
+      // Solo un administrador puede actualizar o eliminar empleados.
+      allow update, delete: if esAdmin();
+    }
+
+    // Citas --------------------------------------------------------------
+    match /citas/{citaId} {
+      allow read: if signedIn()
+                  && (resource.data.ownerUid == request.auth.uid || esAdmin());
+
+      allow create: if signedIn()
+                    && request.resource.data.ownerUid == request.auth.uid;
+
+      allow update, delete: if signedIn()
+                            && (resource.data.ownerUid == request.auth.uid || esAdmin());
+    }
+
+    // Reseñas ------------------------------------------------------------
+    match /resenas/{resenaId} {
+      allow read: if true;
+      allow create: if signedIn()
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.calificacion is number
+                    && request.resource.data.calificacion >= 1
+                    && request.resource.data.calificacion <= 5;
+      allow update, delete: if signedIn()
+                            && (resource.data.ownerUid == request.auth.uid || esAdmin());
+    }
+
+    // Todo lo demás queda cerrado por defecto.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

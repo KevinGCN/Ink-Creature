@@ -15,17 +15,17 @@
       
       <!-- Botón Google ARRIBA -->
       <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-       <img src="/image/google.webp" alt="Google" width="20" height="20">
+       <img src="/image/google.webp" alt="" width="20" height="20">
         {{ cargandoGoogle ? 'Iniciando...' : 'Google' }}
       </button>
 
       <div class="divider"><span>o</span></div>
 
-      <label>Correo</label>
-      <input type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico">
+      <label for="login-correo">Correo</label>
+      <input id="login-correo" type="email" [(ngModel)]="correo" name="correo" placeholder="Correo electrónico" required autocomplete="email">
 
-      <label>Contraseña</label>
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
+      <label for="login-password">Contraseña</label>
+      <input id="login-password" type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required autocomplete="current-password">
 
        <button class="login-btn" (click)="iniciarSesion()" [disabled]="cargandoLogin">
          {{ cargandoLogin ? 'Iniciando...' : 'Iniciar sesión' }}
@@ -47,14 +47,14 @@
 
       <h2>Crear cuenta</h2>
 
-      <label>Nombre</label>
-      <input type="text" [(ngModel)]="nombre" name="nombre">
+      <label for="registro-nombre">Nombre</label>
+      <input id="registro-nombre" type="text" [(ngModel)]="nombre" name="nombre" required minlength="2" autocomplete="name">
 
-      <label>Correo</label>
-      <input type="email" [(ngModel)]="correo" name="correo">
+      <label for="registro-correo">Correo</label>
+      <input id="registro-correo" type="email" [(ngModel)]="correo" name="correo" required autocomplete="email">
 
-      <label>Contraseña</label>
-      <input type="password" [(ngModel)]="password" name="password">
+      <label for="registro-password">Contraseña</label>
+      <input id="registro-password" type="password" [(ngModel)]="password" name="password" required minlength="8" autocomplete="new-password">
 
        <button class="register-btn" (click)="registrarse()" [disabled]="cargandoRegistro">
          {{ cargandoRegistro ? 'Registrando...' : 'Registrarse' }}
@@ -64,10 +64,13 @@
 
       <!-- Botón Google ABAJO -->
       <button (click)="loginConGoogle()" [disabled]="cargandoGoogle" class="google-btn">
-        <img src="/image/google.webp" alt="Google" width="20" height="20">
+        <img src="/image/google.webp" alt="" width="20" height="20">
         {{ cargandoGoogle ? 'Iniciando...' : ' Google' }}
       </button>
     </div>
+
+    <p class="success-msg" *ngIf="mensajeExito" role="status">{{ mensajeExito }}</p>
+    <p class="error-msg" *ngIf="mensajeError" role="alert">{{ mensajeError }}</p>
 
   </div>
 </div>

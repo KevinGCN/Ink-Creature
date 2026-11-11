@@ -180,3 +180,63 @@
     background: rgba(80, 80, 80, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* Aviso de acceso restringido (lo muestra el AuthGuard al redirigir) */
+.aviso-acceso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff4e5;
+  color: #7a3e00;
+  border: 1px solid #f5c26b;
+  font-size: 14px;
+}
+
+.aviso-acceso a {
+  color: #5E596B;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Ajustes para móvil (360px) */
+@media (max-width: 600px) {
+  .actions h1 {
+    font-size: clamp(24px, 7.5vw, 42px);
+    letter-spacing: 1px;
+  }
+
+  .banner {
+    height: auto;
+    min-height: 220px;
+  }
+
+  .IA {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .IA button {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .chat-float {
+    width: auto;
+    height: 48px;
+    min-width: 48px;
+    padding: 0 14px;
+    border-radius: 24px;
+    font-size: 13px;
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .main-content {
+    padding-bottom: 90px;
+  }
+}

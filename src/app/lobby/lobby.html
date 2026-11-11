@@ -1,5 +1,13 @@
 <!-- CONTENIDO PRINCIPAL -->
-<main class="main-content">
+<div class="main-content">
+  <!-- Aviso de acceso restringido -->
+  @if (mensajeAcceso) {
+    <div class="aviso-acceso" role="status">
+      {{ mensajeAcceso }}
+      <a routerLink="/loggin">Iniciar sesión</a>
+    </div>
+  }
+
   <!-- Banner -->
   <section class="banner">
     <div class="actions">
@@ -25,7 +33,7 @@
          'Obten una Cotización con IA' : 'Inicia Sesión para Premium' }}
     </button>
   </div>
-</main>
+</div>
 
 <!-- BOTÓN FLOTANTE -->
 <button class="chat-float" (click)="irChat()">

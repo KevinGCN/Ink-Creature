@@ -236,7 +236,7 @@ button:nth-of-type(2):hover {
 /* ---------------------------------------------------------------------------
    MENSAJE DE ERROR GENERAL (bajo los botones)
    --------------------------------------------------------------------------*/
-p {
+p.error-msg {
   text-align: center;
   font-size: 14px;
   margin: 12px 0 8px;
@@ -245,6 +245,20 @@ p {
   background: #fef2f2;
   color: #dc2626;
   border: 1px solid #fecaca;
+}
+
+/* ---------------------------------------------------------------------------
+   MENSAJE DE ÉXITO GENERAL (bajo los botones)
+   --------------------------------------------------------------------------*/
+p.success-msg {
+  text-align: center;
+  font-size: 14px;
+  margin: 12px 0 8px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 /* ---------------------------------------------------------------------------

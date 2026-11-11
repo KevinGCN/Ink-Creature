@@ -7,3 +7,11 @@
     from = "/*"
     to = "/index.html"
     status = 200
+
+# Contexto de la rama de integración.
+# Netlify lo aplica a los deploy previews / branch deploys de esta rama.
+# Para que sea la rama de producción hay que seleccionarla en:
+# Site configuration → Build & deploy → Continuous deployment → Branches.
+[context.integracion-frontend]
+    command = "ng build"
+    publish = "dist/Ink-Creature/browser"

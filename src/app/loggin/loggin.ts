@@ -12,6 +12,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
+import { NotificacionesService } from '../services/notificaciones';
 
 /**
  * Modal de acceso: alterna entre iniciar sesión y crear cuenta.
@@ -55,7 +56,11 @@ export class Loggin {
   cargandoRegistro = false;
 
   /** `AuthService` centraliza las llamadas HTTP y el almacenamiento del token */
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    // Avisos del proyecto (toasts propios; no se usan alert() nativos ni aquí)
+    private notificaciones: NotificacionesService,
+  ) {}
 
   /** Cierra el modal emitiendo el evento `cerrar` */
   cerrarModal() {
@@ -107,12 +112,15 @@ export class Loggin {
 
       if (ok) {
         // Sesión guardada: se cierra el modal y la vista se actualiza sola.
+        this.notificaciones.exito('¡Bienvenido de nuevo! Iniciaste sesión correctamente.');
         this.cerrarModal();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch {
       this.mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+      this.notificaciones.error(this.mensajeError);
     } finally {
       this.cargandoLogin = false;
     }
@@ -150,16 +158,20 @@ export class Loggin {
         password: this.password,
       });
       if (ok) {
+        this.notificaciones.exito('¡Cuenta creada con éxito! Ya estás dentro.');
         this.cerrarModal();
       } else {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error) {
       // 409 = el correo ya existe (el backend lo comprueba con el índice único).
       if (error instanceof HttpErrorResponse && error.status === 409) {
         this.mensajeError = 'Este correo ya está registrado. Inicia sesión con él.';
+        this.notificaciones.aviso(this.mensajeError);
       } else {
         this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
         console.error('Registro error:', error);
       }
     } finally {

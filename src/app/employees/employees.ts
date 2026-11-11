@@ -32,6 +32,8 @@ import { UsuarioService } from '../services/usuarios';
 import { RolUsuario, Usuario } from '../models/usuario';
 import { FOTO_PLACEHOLDER } from '../utils/placeholder';
 import { urlImagen } from '../utils/imagen-url';
+import { NotificacionesService } from '../services/notificaciones';
+import { ConfirmacionService } from '../services/confirmacion';
 
 /** Datos del formulario del modal (agregar/editar/promover) */
 interface FormTatuador {
@@ -66,6 +68,9 @@ export class Employees implements OnInit {
   private readonly empleadosService = inject(EmpleadoService);
   /** Cuentas de usuario: crear, editar, cambiar rol y subir la foto */
   private readonly usuariosService = inject(UsuarioService);
+  // Avisos y confirmación con el proyecto propio (toasts + modal; sin nativos)
+  private readonly notificaciones = inject(NotificacionesService);
+  private readonly confirmacion = inject(ConfirmacionService);
 
   /** Estado reactivo */
   /** Fichas de la tabla `empleados` (activos e inactivos) */
@@ -651,11 +656,17 @@ export class Employees implements OnInit {
   /**
    * Elimina al tatuador borrando su cuenta de usuario: el backend arrastra la
    * ficha de `empleados` en cascada. Si el empleado tiene citas u horarios, la
-   * FK lo impide y el backend responde con error (se avisa en el alert).
+   * FK lo impide y el backend responde con error (se avisa con un toast).
    */
-  eliminar(empleado: Empleado): void {
+  async eliminar(empleado: Empleado): Promise<void> {
     const nombre = this.nombreCompleto(empleado);
-    if (!confirm(`¿Estás seguro de que quieres eliminar a ${nombre}?`)) {
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar tatuador',
+      mensaje: `¿Estás seguro de que quieres eliminar a ${nombre}?`,
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) {
       return;
     }
 
@@ -667,7 +678,7 @@ export class Employees implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error eliminando tatuador:', err);
-        alert(
+        this.notificaciones.error(
           this.mensajeDeError(
             err,
             'No se pudo eliminar al tatuador. Si tiene citas u horarios registrados, bórralos primero.'

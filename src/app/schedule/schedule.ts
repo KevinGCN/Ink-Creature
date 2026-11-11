@@ -16,6 +16,7 @@ import { Cita, CitaService } from '../services/citas';
 import { Empleado, EmpleadoService } from '../services/empleados';
 import { HorarioService } from '../services/horarios';
 import { HorarioTrabajador } from '../models/empleado';
+import { NotificacionesService } from '../services/notificaciones';
 import {
   NOMBRES_DIA,
   a12h,
@@ -56,6 +57,8 @@ export class Schedule implements OnInit {
   private readonly horarioService = inject(HorarioService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  // Avisos del proyecto (toasts propios; no se usan alert() nativos del navegador)
+  private readonly notificaciones = inject(NotificacionesService);
 
   // ── Datos del backend ─────────────────────────────────────
   /** Catálogo de tatuadores activos (se descartan los inactivos al cargar) */
@@ -349,11 +352,11 @@ export class Schedule implements OnInit {
    */
   seleccionarFecha(dia: number): void {
     if (this.esFechaPasada(dia)) {
-      alert('No puedes seleccionar fechas pasadas');
+      this.notificaciones.aviso('No puedes seleccionar fechas pasadas');
       return;
     }
     if (this.esDescansoEmpleado(dia)) {
-      alert(`${this.nombreTatuadorSeleccionado() || 'El tatuador'} descansa ese día`);
+      this.notificaciones.aviso(`${this.nombreTatuadorSeleccionado() || 'El tatuador'} descansa ese día`);
       return;
     }
     this.fechaSeleccionada.set(dia);
@@ -386,7 +389,7 @@ export class Schedule implements OnInit {
   reservar(): void {
     const usuario = this.auth.obtenerUsuario();
     if (!usuario) {
-      alert('Debes iniciar sesión antes de reservar');
+      this.notificaciones.aviso('Debes iniciar sesión antes de reservar');
       return;
     }
 
@@ -396,20 +399,20 @@ export class Schedule implements OnInit {
 
     // Validaciones de entrada antes de tocar la red.
     if (!dia || !hora || !empleadoId) {
-      alert('Faltan datos: selecciona tatuador, fecha y hora');
+      this.notificaciones.aviso('Faltan datos: selecciona tatuador, fecha y hora');
       return;
     }
     // La hora debe caer dentro de algún rango de trabajo del tatuador.
     if (!this.estaEnHorarioEmpleado(hora)) {
-      alert(`La hora seleccionada está fuera del horario de ${this.nombreTatuadorSeleccionado()}`);
+      this.notificaciones.aviso(`La hora seleccionada está fuera del horario de ${this.nombreTatuadorSeleccionado()}`);
       return;
     }
     if (this.esFechaPasada(dia)) {
-      alert('No puedes reservar en fechas pasadas');
+      this.notificaciones.aviso('No puedes reservar en fechas pasadas');
       return;
     }
     if (this.horaOcupada(hora)) {
-      alert('Ese horario ya está ocupado');
+      this.notificaciones.aviso('Ese horario ya está ocupado');
       return;
     }
 
@@ -437,7 +440,7 @@ export class Schedule implements OnInit {
     peticion.subscribe({
       next: () => {
         this.reservando.set(false);
-        alert(this.modoEdicion() ? 'Cita modificada con éxito' : 'Cita reservada con éxito');
+        this.notificaciones.exito(this.modoEdicion() ? 'Cita modificada con éxito' : 'Cita reservada con éxito');
         // Se refresca la lista y se vuelve al perfil, donde viven las citas.
         this.cargarMisCitas();
         this.router.navigate(['/profile']);
@@ -447,11 +450,11 @@ export class Schedule implements OnInit {
         this.reservando.set(false);
         // 409 = otra persona tomó esa franja entre la carga y el envío.
         if (err.status === 409) {
-          alert('Ese horario acaba de ser reservado para otro usuario. Elige otra hora.');
+          this.notificaciones.error('Ese horario acaba de ser reservado para otro usuario. Elige otra hora.');
         } else if (err.status === 401) {
-          alert('Tu sesión expiró. Cierra sesión y vuelve a entrar.');
+          this.notificaciones.error('Tu sesión expiró. Cierra sesión y vuelve a entrar.');
         } else {
-          alert('No se pudo guardar la cita. Intenta nuevamente.');
+          this.notificaciones.error('No se pudo guardar la cita. Intenta nuevamente.');
         }
       }
     });

@@ -1,26 +1,26 @@
 <!-- MAINBAR -->
-<nav class="sidebar" [class.collapsed]="collapsed">
-    <button class="toggle-btn" (click)="toggleNavbar()">
+<nav class="sidebar" [class.collapsed]="collapsed" aria-label="Navegación principal">
+    <button class="toggle-btn" (click)="toggleNavbar()" aria-label="Abrir o cerrar menú" [attr.aria-expanded]="!collapsed">
         ☰
     </button>
-    <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <p class="icon">🏠</p>
+    <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Inicio">
+        <p class="icon" aria-hidden="true">🏠</p>
         <p class="text">Inicio</p>
     </a>
-    <a routerLink="/gallery" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <p class="icon">🖼️</p>
+    <a routerLink="/gallery" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Galería">
+        <p class="icon" aria-hidden="true">🖼️</p>
         <p class="text">Galeria</p>
     </a>
-    <a routerLink="/schedule" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <p class="icon">📅</p>
+    <a routerLink="/schedule" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Citas">
+        <p class="icon" aria-hidden="true">📅</p>
         <p class="text">Citas</p>
     </a>
-    <a routerLink="/employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <p class="icon">💼</p>
+    <a routerLink="/employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Tatuadores">
+        <p class="icon" aria-hidden="true">💼</p>
         <p class="text">Tatuadores</p>
     </a>
-    <a routerLink="/information" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <p class="icon">⁉️</p>
+    <a routerLink="/information" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Información">
+        <p class="icon" aria-hidden="true">⁉️</p>
         <p class="text">Información</p>
     </a>
 </nav>

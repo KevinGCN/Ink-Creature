@@ -1,14 +1,23 @@
 <div class="gallery">
-  <h1 class="title">Galería</h1>
+  <header class="cabecera">
+    <div class="titulo-fila">
+      <h1 class="title">Galería</h1>
+      <span class="contador">{{ filtradas().length }} de {{ imagenes().length }} piezas</span>
 
-  <!-- Botón subir imagen — solo admin -->
-  @if (esAdmin()) {
-    <div class="admin-actions">
-      <!-- Input oculto disparado con `fileInput.click()`; al elegir archivo se abre el modal de confirmación -->
-      <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
-      <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
+      <!-- Botón subir imagen — solo admin -->
+      @if (esAdmin()) {
+        <!-- Input oculto disparado con `fileInput.click()`; al elegir archivo se abre el modal de confirmación -->
+        <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
+        <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
+      }
     </div>
-  }
+
+    <!-- Búsqueda por título o autor; la etiqueta nombra su alcance -->
+    <label class="busqueda">
+      <span>Buscar por título o tatuador</span>
+      <input type="search" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" placeholder="p. ej. dragón">
+    </label>
+  </header>
 
   <!-- Estados de carga / error -->
   @if (cargando()) {
@@ -17,34 +26,107 @@
     <p class="error-galeria">{{ error() }}</p>
   }
 
-  <div class="grid">
-    <!--
-      Cuadrícula de imágenes: cada tarjeta abre el visor ampliado al hacer clic.
-      El `src` pasa por `srcImagen()` → `urlImagen()` porque en la BD las rutas
-      se guardan relativas ("/imagenes/<id>") y hay que apuntarlas al backend.
-    -->
-    @for (imagen of imagenes(); track imagen.id) {
-      <div class="grid-item" (click)="openImage(srcImagen(imagen))">
+  <!-- Chips de filtro por estilo; 'todos' limpia el filtro -->
+  @if (estilosDisponibles().length > 0) {
+    <div class="filtros" role="group" aria-label="Filtrar por estilo">
+      <button type="button" class="chip" [attr.aria-pressed]="estiloFiltro() === 'todos'" (click)="estiloFiltro.set('todos')">Todos</button>
+      @for (estilo of estilosDisponibles(); track estilo) {
+        <button type="button" class="chip" [attr.aria-pressed]="estiloFiltro() === estilo" (click)="estiloFiltro.set(estilo)">{{ estilo }}</button>
+      }
+    </div>
+  }
 
-        <!-- Si la imagen falla (404, URL rota) `handleImageError()` la sustituye por el placeholder -->
-        <img [src]="srcImagen(imagen)" [alt]="imagen.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
+  <!-- Explorador: grilla densa + panel de detalle fijo -->
+  <div class="explorador">
+    <div class="grid">
+      <!--
+        Cuadrícula de imágenes: cada tarjeta selecciona la pieza en el panel
+        de detalle. El `src` pasa por `srcImagen()` → `urlImagen()` porque en
+        la BD las rutas se guardan relativas ("/imagenes/<id>") y hay que
+        apuntarlas al backend.
+      -->
+      @for (imagen of filtradas(); track imagen.id) {
+        <button type="button" class="grid-item" [class.seleccionada]="seleccionada()?.id === imagen.id"
+                [attr.aria-pressed]="seleccionada()?.id === imagen.id"
+                (click)="seleccionarPieza(imagen)">
 
-        <!-- Con tatuador vinculado se ofrece ir a su CV; si no, se muestra su nombre -->
-        @if (imagen.empleado_id) {
-          <button class="btn-tatuador" (click)="verTatuador(imagen.empleado_id, $event)">
-            Conoce al tatuador
-          </button>
-        } @else if (!esImagenDeBase(imagen)) {
-          <span class="etiqueta-tatuador">{{ nombreTatuador(imagen) }}</span>
+          <!-- Si la imagen falla (404, URL rota) `handleImageError()` la sustituye por el placeholder -->
+          <img [src]="srcImagen(imagen)" [alt]="imagen.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
+
+          <!-- Con tatuador vinculado se ofrece ir a su CV; si no, se muestra su nombre -->
+          @if (imagen.empleado_id) {
+            <span class="btn-tatuador" (click)="verTatuador(imagen.empleado_id, $event)">
+              Conoce al tatuador
+            </span>
+          } @else if (!esImagenDeBase(imagen)) {
+            <span class="etiqueta-tatuador">{{ nombreTatuador(imagen) }}</span>
+          }
+
+          <!-- Borrado reservado al admin y nunca sobre las imágenes base (id negativo) -->
+          @if (esAdmin() && !esImagenDeBase(imagen)) {
+            <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
+          }
+
+        </button>
+      } @empty {
+        @if (!cargando() && !error()) {
+          <p class="sin-resultados">No hay piezas que coincidan con el filtro o la búsqueda.</p>
+        }
+      }
+    </div>
+
+    <!-- Panel de detalle fijo: inspeccionar sin perder el contexto de la grilla -->
+    <aside class="detalle" aria-label="Detalle de la pieza seleccionada">
+      @if (seleccionada(); as pieza) {
+        <!-- Clic en la imagen abre el visor ampliado (el que antes se abría desde la tarjeta) -->
+        <div class="detalle-imagen" (click)="openImage(srcImagen(pieza))" role="button" tabindex="0"
+             (keydown.enter)="openImage(srcImagen(pieza))" aria-label="Ampliar imagen">
+          <img [src]="srcImagen(pieza)" [alt]="pieza.titulo || 'Imagen de galería'" (error)="handleImageError($event)">
+        </div>
+
+        <h2 class="detalle-titulo">{{ pieza.titulo || 'Sin título' }}</h2>
+
+        <!--
+          Ficha del trabajador: foto, especialidad y biografía (vienen en la
+          relación `empleados` del backend). El nombre lleva a su CV. Sin
+          tatuador vinculado se muestra solo el autor plano de siempre.
+        -->
+        @if (datosTatuador(pieza); as tatuador) {
+          <div class="detalle-tatuador">
+            <img class="tatuador-foto" [src]="tatuador.foto" [alt]="'Foto de ' + tatuador.nombre"
+                 (error)="handleImageError($event)">
+            <div class="tatuador-datos">
+              @if (tatuador.especialidad) {
+                <span class="tatuador-especialidad">{{ tatuador.especialidad }}</span>
+              }
+              <button type="button" class="detalle-autor" (click)="verTatuador(tatuador.empleadoId, $event)">
+                {{ tatuador.nombre }} · ver CV
+              </button>
+              @if (tatuador.biografia) {
+                <p class="tatuador-biografia">{{ tatuador.biografia }}</p>
+              }
+            </div>
+          </div>
+        } @else {
+          <p class="detalle-autor plano">{{ nombreTatuador(pieza) }}</p>
         }
 
-        <!-- Borrado reservado al admin y nunca sobre las imágenes base (id negativo) -->
-        @if (esAdmin() && !esImagenDeBase(imagen)) {
-          <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
+        @if (pieza.estilo) {
+          <span class="detalle-estilo">{{ pieza.estilo }}</span>
         }
 
-      </div>
-    }
+        @if (pieza.descripcion) {
+          <p class="detalle-descripcion">{{ pieza.descripcion }}</p>
+        }
+
+        <!-- Imágenes base no tienen fila en la BD: solo se ofrece la cita -->
+        <div class="detalle-acciones">
+          <button type="button" class="btn-cita" (click)="pedirCita()">Pedir cita</button>
+        </div>
+      } @else {
+        <p class="detalle-vacio">Seleccioná una pieza de la grilla para ver su detalle.</p>
+      }
+    </aside>
   </div>
 
   <!-- Visor de imagen ampliada -->

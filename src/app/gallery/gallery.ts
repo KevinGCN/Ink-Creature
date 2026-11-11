@@ -28,6 +28,8 @@ import { Empleado, EmpleadoService } from '../services/empleados';
 import { GaleriaService, ImagenGaleria } from '../services/galeria';
 import { FOTO_PLACEHOLDER } from '../utils/placeholder';
 import { urlImagen } from '../utils/imagen-url';
+import { NotificacionesService } from '../services/notificaciones';
+import { ConfirmacionService } from '../services/confirmacion';
 
 /** Imágenes base embebidas en el frontend (no pertenecen al backend) */
 /**
@@ -60,6 +62,9 @@ export class Gallery implements OnInit {
   private readonly galeriaService = inject(GaleriaService);
   /** Tatuadores para el <select> del modal de subida */
   private readonly empleadosService = inject(EmpleadoService);
+  // Avisos y confirmación con el proyecto propio (toasts + modal; sin nativos)
+  private readonly notificaciones = inject(NotificacionesService);
+  private readonly confirmacion = inject(ConfirmacionService);
 
   // ── Estado reactivo ───────────────────────────────────────
   /** Solo las imágenes que vienen del backend (privado: se une con las base) */
@@ -76,6 +81,37 @@ export class Gallery implements OnInit {
 
   /** Imagen seleccionada para visualización ampliada */
   readonly selectedImage = signal<string | null>(null);
+
+  // ── Explorador con detalle (artboard design/ink-galeria/03) ──
+  /** Pieza seleccionada que muestra el panel de detalle fijo */
+  readonly seleccionada = signal<ImagenGaleria | null>(null);
+  /** Filtro activo por estilo ('todos' = sin filtro) */
+  readonly estiloFiltro = signal('todos');
+  /** Búsqueda por título o autor (vacía = sin filtro) */
+  readonly busqueda = signal('');
+
+  /** Estilos distintos presentes en la galería, para los chips de filtro */
+  readonly estilosDisponibles = computed(() => {
+    const estilos = new Set<string>();
+    for (const img of this.imagenes()) {
+      const estilo = (img.estilo ?? '').trim();
+      if (estilo) estilos.add(estilo);
+    }
+    return [...estilos];
+  });
+
+  /** Grilla visible = imágenes filtradas por estilo activo y búsqueda */
+  readonly filtradas = computed(() => {
+    const estilo = this.estiloFiltro();
+    const texto = this.busqueda().trim().toLowerCase();
+    return this.imagenes().filter((img) => {
+      if (estilo !== 'todos' && (img.estilo ?? '').trim() !== estilo) return false;
+      if (!texto) return true;
+      const titulo = (img.titulo ?? '').toLowerCase();
+      const autor = this.nombreTatuador(img).toLowerCase();
+      return titulo.includes(texto) || autor.includes(texto);
+    });
+  });
 
   /** Tatuadores (empleados activos) para el selector de subida */
   readonly tatuadores = signal<Empleado[]>([]);
@@ -118,6 +154,11 @@ export class Gallery implements OnInit {
       next: (imagenes) => {
         this.imagenesDb.set(imagenes);
         this.cargando.set(false);
+        // Al cargar se preselecciona la primera pieza para que el panel de
+        // detalle nunca arranque vacío con galería poblada.
+        if (!this.seleccionada()) {
+          this.seleccionada.set(this.imagenes()[0] ?? null);
+        }
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error cargando galería:', err);
@@ -153,6 +194,32 @@ export class Gallery implements OnInit {
   }
 
   /**
+   * Ficha del tatuador autor para el panel de detalle: foto, especialidad y
+   * biografía (todo lo manda el backend en la relación `empleados`). Devuelve
+   * `null` cuando la pieza no tiene tatuador vinculado o su fila no trae
+   * usuario: en ese caso el panel muestra solo el autor plano.
+   */
+  datosTatuador(imagen: ImagenGaleria | null): {
+    nombre: string;
+    foto: string;
+    especialidad?: string;
+    biografia?: string;
+    empleadoId: number;
+  } | null {
+    const ficha = imagen?.empleados;
+    const u = ficha?.usuarios;
+    if (!imagen?.empleado_id || !u) return null;
+    return {
+      nombre: `${u.nombre} ${u.apellido}`.trim(),
+      // Sin foto de perfil se usa el placeholder, igual que en el resto de la app
+      foto: u.foto_perfil_url ? urlImagen(u.foto_perfil_url) : FOTO_PLACEHOLDER,
+      especialidad: ficha?.especialidad ?? undefined,
+      biografia: ficha?.biografia ?? undefined,
+      empleadoId: imagen.empleado_id
+    };
+  }
+
+  /**
    * Las imágenes base se identifican por su id negativo (no existen en la BD),
    * y esa marca es la que impide borrarlas desde la UI.
    */
@@ -177,6 +244,16 @@ export class Gallery implements OnInit {
   /** Cierra el visor ampliado (null = sin selección) */
   closeImage(): void {
     this.selectedImage.set(null);
+  }
+
+  /** Selecciona una pieza para el panel de detalle */
+  seleccionarPieza(imagen: ImagenGaleria): void {
+    this.seleccionada.set(imagen);
+  }
+
+  /** Navega a la agenda para pedir una cita (CTA del panel de detalle) */
+  pedirCita(): void {
+    this.router.navigate(['/schedule']);
   }
 
   /**
@@ -290,21 +367,33 @@ export class Gallery implements OnInit {
    * llegue a la tarjeta y abra el visor. Las imágenes base no se borran porque
    * no existen en la BD. El backend borra la fila Y el binario.
    */
-  eliminarImagen(imagen: ImagenGaleria, event: Event): void {
+  async eliminarImagen(imagen: ImagenGaleria, event: Event): Promise<void> {
     event.stopPropagation();
 
     // Las base son assets del frontend: no hay nada que borrar en el backend
     if (this.esImagenDeBase(imagen)) {
-      alert('No puedes eliminar imágenes base.');
+      this.notificaciones.aviso('No puedes eliminar imágenes base.');
       return;
     }
-    if (!confirm(`¿Eliminar "${imagen.titulo || 'esta imagen'}" de la galería?`)) return;
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar imagen',
+      mensaje: `¿Eliminar "${imagen.titulo || 'esta imagen'}" de la galería?`,
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) return;
 
     this.galeriaService.eliminarImagen(imagen.id).subscribe({
-      next: () => this.cargarImagenes(),
+      // Si se borró la pieza seleccionada, el panel pasa a la primera visible
+      next: () => {
+        if (this.seleccionada()?.id === imagen.id) {
+          this.seleccionada.set(null);
+        }
+        this.cargarImagenes();
+      },
       error: (err: HttpErrorResponse) => {
         console.error('Error eliminando imagen:', err);
-        alert(this.mensajeDeError(err, 'No se pudo eliminar la imagen.'));
+        this.notificaciones.error(this.mensajeDeError(err, 'No se pudo eliminar la imagen.'));
       }
     });
   }

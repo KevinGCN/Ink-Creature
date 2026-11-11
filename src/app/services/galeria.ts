@@ -32,7 +32,15 @@ export interface ImagenGaleria {
   estilo?: string | null;
   fecha_subida: string;
   usuarios?: Usuario;
-  empleados?: { usuarios?: Usuario } | null;
+  // El backend incluye la fila completa del tatuador (`include`), así que
+  // además del usuario trae su ficha del catálogo. Con ella se pinta la
+  // ficha del trabajador en el panel de detalle de la galería.
+  empleados?: {
+    especialidad?: string | null;
+    biografia?: string | null;
+    activo?: boolean;
+    usuarios?: Usuario;
+  } | null;
 }
 
 // Payload de `POST /galeria`: `imagen_url` ya viene resuelta por `/upload`.

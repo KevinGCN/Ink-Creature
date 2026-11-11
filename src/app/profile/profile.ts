@@ -19,6 +19,7 @@ import { UsuarioService } from '../services/usuarios';
 import { Usuario } from '../models/usuario';
 import { a12h, aFechaLegible } from '../utils/fechas';
 import { urlImagen } from '../utils/imagen-url';
+import { ConfirmacionService } from '../services/confirmacion';
 
 /** Tamaño máximo de la foto de perfil (2 MB). */
 const FOTO_MAX_BYTES = 2 * 1024 * 1024;
@@ -66,6 +67,8 @@ export class Profile implements OnInit {
   private readonly router = inject(Router);
   private readonly citaService = inject(CitaService);
   private readonly usuarioService = inject(UsuarioService);
+  // Confirmación con el modal propio del proyecto (sin confirm() nativo)
+  private readonly confirmacion = inject(ConfirmacionService);
 
   /**
    * Carga la sesión que el AuthService mantiene en memoria y dispara las
@@ -102,11 +105,18 @@ export class Profile implements OnInit {
   }
 
   /**
-   * Borra una cita (DELETE /citas/:id) previa confirmación y recarga la
-   * lista; el backend también libera la franja horaria al eliminarla.
+   * Borra una cita (DELETE /citas/:id) previa confirmación (modal propio del
+   * proyecto) y recarga la lista; el backend también libera la franja horaria
+   * al eliminarla.
    */
-  eliminar(id: number) {
-    if (!confirm('¿Eliminar esta cita?')) return;
+  async eliminar(id: number): Promise<void> {
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar cita',
+      mensaje: '¿Eliminar esta cita?',
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) return;
 
     this.citaService.eliminarCita(id).subscribe({
       next: () => this.cargarCitas(),

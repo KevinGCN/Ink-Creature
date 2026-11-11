@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CitaService } from '../services/citas';
 import { EmpleadoService } from '../services/empleados';
 import { AuthService } from '../services/auth';
+import { NotificacionesService } from '../services/notificaciones';
 import { Empleado } from '../models/empleado';
 import { Cita } from '../models/cita';
 import { CommonModule } from '@angular/common';
@@ -59,7 +60,9 @@ export class Schedule implements OnInit {
     private empleadoService: EmpleadoService,
     private auth: AuthService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    // Avisos del proyecto (toasts propios; no se usan alert() nativos del navegador)
+    private notificaciones: NotificacionesService
   ) {}
 
   ngOnInit(): void {
@@ -299,12 +302,12 @@ export class Schedule implements OnInit {
 
   seleccionarFecha(dia: number): void {
     if (this.esFechaPasada(dia)) {
-      alert('No puedes seleccionar fechas pasadas');
+      this.notificaciones.aviso('No puedes seleccionar fechas pasadas');
       return;
     }
 
     if (this.esDescansoEmpleado(dia)) {
-      alert('El tatuador seleccionado descansa ese día');
+      this.notificaciones.aviso(`${this.tatuadorSeleccionado || 'El tatuador'} descansa ese día`);
       return;
     }
 
@@ -376,7 +379,7 @@ export class Schedule implements OnInit {
 
   reservar() {
     if (!this.auth.estaLogueado() || !this.usuarioId) {
-      alert('Debes iniciar sesión antes de reservar');
+      this.notificaciones.aviso('Debes iniciar sesión antes de reservar');
       return;
     }
 
@@ -385,27 +388,26 @@ export class Schedule implements OnInit {
       !this.horaSeleccionada ||
       !this.tatuadorSeleccionado
     ) {
-      alert('Faltan datos');
+      this.notificaciones.aviso('Faltan datos: selecciona tatuador, fecha y hora');
       return;
     }
 
     const empleado = this.buscarEmpleadoSeleccionado();
     if (!empleado) {
-      alert('Selecciona un tatuador válido');
+      this.notificaciones.aviso('Selecciona un tatuador válido');
       return;
     }
 
     // Validar que la hora esté dentro del horario del empleado
     if (!this.estaEnHorarioEmpleado(this.horaSeleccionada)) {
-      alert(
-        'La hora seleccionada está fuera del horario de ' +
-        this.tatuadorSeleccionado
+      this.notificaciones.aviso(
+        `La hora seleccionada está fuera del horario de ${this.tatuadorSeleccionado}`
       );
       return;
     }
 
     if (this.esFechaPasada(this.fechaSeleccionada)) {
-      alert('No puedes reservar en fechas pasadas');
+      this.notificaciones.aviso('No puedes reservar en fechas pasadas');
       return;
     }
 
@@ -447,7 +449,7 @@ export class Schedule implements OnInit {
           parseInt(minuto) <= minutoActual
         )
       ) {
-        alert('No puedes seleccionar una hora pasada');
+        this.notificaciones.aviso('No puedes seleccionar una hora pasada');
         return;
       }
     }
@@ -475,12 +477,19 @@ export class Schedule implements OnInit {
     peticion.subscribe({
       next: () => {
         this.reservando = false;
-        alert(this.modoEdicion ? 'Cita modificada con éxito' : 'Cita reservada con éxito');
+        this.notificaciones.exito(this.modoEdicion ? 'Cita modificada con éxito' : 'Cita reservada con éxito');
         this.router.navigate(['/profile']);
       },
       error: (error: HttpErrorResponse) => {
         this.reservando = false;
-        alert(this.mensajeDeError(error));
+        // 409 = otra persona tomó esa franja entre la carga y el envío.
+        if (error.status === 409) {
+          this.notificaciones.error('Ese horario acaba de ser reservado para otro usuario. Elige otra hora.');
+        } else if (error.status === 401) {
+          this.notificaciones.error('Tu sesión expiró. Cierra sesión y vuelve a entrar.');
+        } else {
+          this.notificaciones.error(this.mensajeDeError(error));
+        }
       }
     });
   }
@@ -536,6 +545,6 @@ export class Schedule implements OnInit {
     const mensaje = error.error?.message;
     return Array.isArray(mensaje)
       ? mensaje.join(' ')
-      : mensaje || 'No se pudo guardar la cita.';
+      : mensaje || 'No se pudo guardar la cita. Intenta nuevamente.';
   }
 }

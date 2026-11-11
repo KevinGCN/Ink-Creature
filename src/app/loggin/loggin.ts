@@ -14,6 +14,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
+import { NotificacionesService } from '../services/notificaciones';
 
 @Component({
   selector: 'app-loggin',
@@ -46,7 +47,11 @@ export class Loggin {
   cargandoRegistro = false;
   cargandoGoogle = false;
 
-  constructor(private auth: AuthService) {}
+  constructor(
+    private auth: AuthService,
+    // Avisos del proyecto (toasts propios; no se usan alert() nativos ni aquí)
+    private notificaciones: NotificacionesService
+  ) {}
 
   /**
    * Cierra el modal emitiendo el evento `cerrar`
@@ -95,13 +100,16 @@ export class Loggin {
       const ok = await this.auth.login(this.correo, this.password);
 
       if (ok) {
+        this.notificaciones.exito('¡Bienvenido de nuevo! Iniciaste sesión correctamente.');
         this.cerrarModal();
         window.location.reload();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       this.mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+      this.notificaciones.error(this.mensajeError);
     } finally {
       this.cargandoLogin = false;
     }
@@ -139,18 +147,23 @@ export class Loggin {
         password: this.password,
       });
       if (ok) {
+        this.notificaciones.exito('¡Cuenta creada con éxito! Ya estás dentro.');
         this.cerrarModal();
         window.location.reload();
       } else {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       if (error?.status === 409) {
         this.mensajeError = 'Ya existe una cuenta con este correo. Inicia sesión.';
+        this.notificaciones.aviso(this.mensajeError);
       } else if (error?.status === 400) {
         this.mensajeError = 'Revisa los datos: la contraseña debe tener al menos 8 caracteres.';
+        this.notificaciones.error(this.mensajeError);
       } else {
         this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
         console.error('Registro error:', error);
       }
     } finally {
@@ -169,13 +182,16 @@ export class Loggin {
     try {
       const ok = await this.auth.loginConGoogle();
       if (ok) {
+        this.notificaciones.exito('¡Bienvenido de nuevo! Iniciaste sesión correctamente.');
         this.cerrarModal();
         window.location.reload();
       } else {
         this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       this.mensajeError = 'No se pudo iniciar sesión con Google. Por favor, intenta nuevamente o usa correo y contraseña.';
+      this.notificaciones.error(this.mensajeError);
     } finally {
       this.cargandoGoogle = false;
     }

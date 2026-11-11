@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../services/auth';
 import { GaleriaService } from '../services/galeria';
+import { ConfirmacionService } from '../services/confirmacion';
+import { NotificacionesService } from '../services/notificaciones';
 import { EmpleadoService } from '../services/empleados';
 import { Empleado } from '../models/empleado';
 import { urlDeImagen } from '../core/api.routes';
@@ -27,6 +29,9 @@ export class Gallery implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly galeriaApi = inject(GaleriaService);
   private readonly empleadoService = inject(EmpleadoService);
+  // Avisos y confirmación con el proyecto propio (toasts + modal; sin nativos)
+  private readonly notificaciones = inject(NotificacionesService);
+  private readonly confirmacion = inject(ConfirmacionService);
 
   // Imagen seleccionada para visualización ampliada
   readonly selectedImage = signal<string | null>(null);
@@ -120,7 +125,7 @@ export class Gallery implements OnInit {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen supera 5 MB.');
+      this.notificaciones.aviso('La imagen supera 5 MB.');
       input.value = '';
       return;
     }
@@ -168,7 +173,7 @@ export class Gallery implements OnInit {
         },
         error: (err) => {
           console.error('No se pudo subir la imagen:', err);
-          alert('No se pudo subir la imagen. Revisa tu sesión e intenta de nuevo.');
+          this.notificaciones.error('No se pudo subir la imagen. Revisa tu sesión e intenta de nuevo.');
         },
       });
   }
@@ -180,10 +185,21 @@ export class Gallery implements OnInit {
     this.nombreImagenTemp.set('');
   }
 
-  eliminarImagen(img: ImagenGaleria, event: Event) {
+  /**
+   * Elimina una imagen de la galería previa confirmación (modal propio del
+   * proyecto). `stopPropagation` evita que el clic llegue a la tarjeta y abra
+   * el visor. El backend borra la fila Y el binario.
+   */
+  async eliminarImagen(img: ImagenGaleria, event: Event): Promise<void> {
     event.stopPropagation();
     if (img.id == null) return;
-    if (!confirm('¿Eliminar esta imagen de la galería?')) return;
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar imagen',
+      mensaje: `¿Eliminar "${img.alt || 'esta imagen'}" de la galería?`,
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) return;
 
     this.galeriaApi.eliminar(img.id).subscribe({
       next: () => {
@@ -191,6 +207,7 @@ export class Gallery implements OnInit {
       },
       error: (err) => {
         console.error('No se pudo eliminar la imagen:', err);
+        this.notificaciones.error('No se pudo eliminar la imagen.');
       },
     });
   }

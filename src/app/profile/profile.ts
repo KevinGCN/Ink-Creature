@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, DatosPerfil } from '../services/auth';
 import { CitaService } from '../services/citas';
+import { ConfirmacionService } from '../services/confirmacion';
 import { Cita } from '../models/cita';
 import { FormsModule } from '@angular/forms';
 
@@ -38,7 +39,9 @@ export class Profile implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
-    private citaService: CitaService
+    private citaService: CitaService,
+    // Confirmación con el modal propio del proyecto (sin confirm() nativo)
+    private confirmacion: ConfirmacionService
   ) {}
 
   ngOnInit() {
@@ -72,10 +75,19 @@ export class Profile implements OnInit {
     });
   }
 
-  eliminar(id: number) {
-    if (!window.confirm('¿Seguro que quieres eliminar esta cita?')) {
-      return;
-    }
+  /**
+   * Borra una cita (DELETE /citas/:id) previa confirmación (modal propio del
+   * proyecto) y recarga la lista; el backend también libera la franja horaria
+   * al eliminarla.
+   */
+  async eliminar(id: number): Promise<void> {
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar cita',
+      mensaje: '¿Eliminar esta cita?',
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) return;
 
     this.citaService.eliminar(id).subscribe({
       next: () => {

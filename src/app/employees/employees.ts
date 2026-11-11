@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { EmpleadoService } from '../services/empleados';
+import { ConfirmacionService } from '../services/confirmacion';
+import { NotificacionesService } from '../services/notificaciones';
 import { Empleado } from '../models/empleado';
 
 /**
@@ -47,6 +49,9 @@ export class Employees implements OnInit {
   constructor(
     private auth: AuthService,
     private empleadoService: EmpleadoService,
+    // Avisos y confirmación con el proyecto propio (toasts + modal; sin nativos)
+    private notificaciones: NotificacionesService,
+    private confirmacion: ConfirmacionService,
   ) {}
 
   ngOnInit() {
@@ -199,12 +204,23 @@ export class Employees implements OnInit {
   }
 
   // Eliminar
-  eliminar(id: number) {
-    if (
-      !confirm(
-        '¿Estás seguro de que quieres eliminar este tatuador?'
-      )
-    ) {
+  /**
+   * Elimina al tatuador previa confirmación (modal propio del proyecto). Si el
+   * empleado tiene citas u horarios, la FK lo impide y el backend responde con
+   * error (se avisa con un toast del proyecto).
+   */
+  async eliminar(id: number): Promise<void> {
+    const tatuador = this.tatuadores.find((t) => t.id === id);
+    const nombre = tatuador
+      ? `${tatuador.name} ${tatuador.last_name}`.trim()
+      : 'este tatuador';
+    const aceptado = await this.confirmacion.confirmar({
+      titulo: 'Eliminar tatuador',
+      mensaje: `¿Estás seguro de que quieres eliminar a ${nombre}?`,
+      textoConfirmar: 'Eliminar',
+      peligro: true,
+    });
+    if (!aceptado) {
       return;
     }
 
@@ -212,9 +228,11 @@ export class Employees implements OnInit {
       next: () => this.cargarTatuadores(),
       error: (err) => {
         console.error('No se pudo eliminar el tatuador:', err);
-        this.mensaje =
+        const texto =
           err?.error?.message ||
           'No se pudo eliminar el tatuador. Intenta de nuevo.';
+        this.mensaje = texto;
+        this.notificaciones.error(texto);
       },
     });
   }

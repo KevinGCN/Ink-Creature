@@ -1,0 +1,23 @@
+<!-- Toasts fijos en la esquina superior derecha, encima de todo -->
+<div class="toasts" role="status" aria-live="polite">
+  @for (n of servicio.items(); track n.id) {
+    <div
+      class="toast"
+      role="alert"
+      [class.toast-exito]="n.tipo === 'exito'"
+      [class.toast-error]="n.tipo === 'error'"
+      [class.toast-info]="n.tipo === 'info'"
+      [class.toast-aviso]="n.tipo === 'aviso'"
+    >
+      <span class="toast-mensaje">{{ n.mensaje }}</span>
+      <button
+        type="button"
+        class="toast-cerrar"
+        (click)="servicio.cerrar(n.id)"
+        aria-label="Cerrar aviso"
+      >
+        &times;
+      </button>
+    </div>
+  }
+</div>

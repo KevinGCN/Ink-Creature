@@ -9,12 +9,14 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UserNavbar } from "./navbar/user-navbar/user-navbar";
 import { MainNavbar } from "./navbar/main-navbar/main-navbar";
+import { Toasts } from "./toasts/toasts";
+import { ConfirmacionModal } from "./confirmacion/confirmacion";
 
 // Se declara standalone para que el componente sea autocontenido y se pueda
 // importar directamente (este proyecto no usa NgModules en ningún punto).
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, UserNavbar, MainNavbar],
+  imports: [RouterOutlet, UserNavbar, MainNavbar, Toasts, ConfirmacionModal],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css'

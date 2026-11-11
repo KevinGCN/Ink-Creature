@@ -46,4 +46,16 @@ describe('App', () => {
     expect(compiled.querySelector('app-main-navbar')).toBeTruthy();
     expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
+
+  // Los avisos y confirmaciones del proyecto se emiten desde el shell raíz, así
+  // que el contenedor de toasts y el modal de confirmación deben estar montados
+  // en todas las rutas (no pueden faltar en ninguna vista del SPA).
+  it('should mount the project toasts and confirmation modal at the root', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-toasts')).toBeTruthy();
+    expect(compiled.querySelector('app-confirmacion-modal')).toBeTruthy();
+  });
 });

@@ -1,0 +1,28 @@
+<!-- Confirmación pendiente: overlay + ventana de diálogo centrada -->
+@if (servicio.estado(); as estado) {
+  <div class="confirmacion-overlay" (click)="cancelar()">
+    <div
+      class="confirmacion-ventana"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="estado.titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="confirmacion-titulo">{{ estado.titulo }}</h2>
+      <p class="confirmacion-mensaje">{{ estado.mensaje }}</p>
+      <div class="confirmacion-acciones">
+        <button type="button" class="confirmacion-boton confirmacion-cancelar" (click)="cancelar()">
+          {{ estado.textoCancelar }}
+        </button>
+        <button
+          type="button"
+          class="confirmacion-boton confirmacion-aceptar"
+          [class.confirmacion-boton-peligro]="estado.peligro"
+          (click)="aceptar()"
+        >
+          {{ estado.textoConfirmar }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

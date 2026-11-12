@@ -28,3 +28,16 @@
   overflow-y: auto;
   padding: 10px;
 }
+
+/* ===== MÓVIL =====
+   El lateral baja a 56 px para devolverle ancho al contenido. */
+@media (max-width: 600px) {
+  .layout {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: 56px 1fr;
+  }
+
+  .content {
+    padding: 8px;
+  }
+}

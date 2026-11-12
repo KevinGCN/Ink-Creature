@@ -12,7 +12,7 @@
 }
 
 .encabezado h1 {
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
   font-weight: 700;
   margin: 0 0 8px;
 }
@@ -388,4 +388,23 @@
 .btn-reintentar:focus-visible {
   outline: 2px solid #2F2F2F;
   outline-offset: 2px;
+}
+
+/* ===== MÓVIL ===== */
+@media (max-width: 600px) {
+  .employees-page {
+    padding: 18px 12px 40px;
+  }
+
+  .encabezado h1 {
+    font-size: 1.4rem;
+  }
+
+  .tarjeta-foto {
+    height: 200px;
+  }
+
+  .tarjeta-info {
+    padding: 14px;
+  }
 }

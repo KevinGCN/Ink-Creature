@@ -212,3 +212,19 @@
   color: #5E596B;
   font-size: var(--text-sm);
 }
+
+/* ===== MÓVIL ===== */
+@media (max-width: 600px) {
+  .review-form {
+    padding: 14px;
+    border-radius: var(--radius-lg);
+  }
+
+  .review-card {
+    padding: 14px;
+  }
+
+  .btn-publicar {
+    width: 100%;
+  }
+}

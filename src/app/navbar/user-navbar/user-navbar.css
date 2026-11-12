@@ -74,3 +74,28 @@
 .dropdown button:hover {
   background: #F4F1F7;
 }
+
+/* ===== MÓVIL ===== */
+@media (max-width: 600px) {
+  .userbar {
+    border-radius: 12px 12px 0 12px;
+  }
+
+  .userbar .usuario {
+    padding: 6px 8px;
+  }
+
+  .userbar button {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: var(--text-xs);
+  }
+
+  .dropdown {
+    top: 46px;
+  }
+
+  .dropdown button {
+    min-height: 40px;
+  }
+}

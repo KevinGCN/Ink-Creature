@@ -59,6 +59,35 @@ textarea {
   outline-offset: 2px;
 }
 
+/* ---------------------------------------------------------------------------
+   MÓVIL: la misma escala, un paso más compacta.
+   - El cuerpo baja a 15 px y los títulos a 24-26 px.
+   - Los controles bajan a 42 px de alto.
+   - Los inputs se quedan en 16 px para que iOS no haga zoom al enfocar.
+   --------------------------------------------------------------------------*/
+@media (max-width: 600px) {
+  :root {
+    --text-sm: 0.8125rem;   /* 13px */
+    --text-md: 0.9375rem;   /* 15px */
+    --text-lg: 1rem;        /* 16px */
+    --text-xl: 1.25rem;     /* 20px */
+    --text-2xl: 1.625rem;   /* 26px */
+    --text-hero: 1.625rem;  /* 26px */
+    --control-height: 42px;
+  }
+
+  body {
+    font-size: var(--text-md);
+    line-height: 1.55;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 1rem !important;
+  }
+}
+
 
 /* ---------------------------------------------------------------------------
    Etiqueta flotante que sigue al cursor (TooltipDirective)

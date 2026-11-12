@@ -346,3 +346,42 @@
     justify-content: center;
   }
 }
+
+/* ===== MÓVIL ===== */
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 14px;
+    border-radius: var(--radius-lg);
+  }
+
+  .profile-header h2 {
+    padding: 14px;
+    font-size: 1.4rem;
+  }
+
+  .profile-info {
+    gap: 14px;
+    margin-top: 16px;
+    padding: 14px;
+  }
+
+  .datos {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .datos p {
+    overflow-wrap: anywhere;
+  }
+
+  .foto {
+    width: 100%;
+  }
+
+  .foto img,
+  .placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: var(--radius-lg);
+  }
+}

@@ -35,6 +35,16 @@ export class Lobby implements OnInit {
     }
   }
 
+  /** Abre la cotización con IA o, si no hay sesión, manda al login.
+   *  Al volver, el modal de loggin respeta `volver=/gemini-ia`. */
+  abrirCotizacionIA(): void {
+    if (this.auth.estaLogueado()) {
+      this.router.navigate(['/gemini-ia']);
+      return;
+    }
+    this.router.navigate(['/loggin'], { queryParams: { volver: '/gemini-ia' } });
+  }
+
   /** Mensaje entendible según la sección que quiso abrir el visitante. */
   private mensajePara(destino: string): string {
     if (destino.startsWith('/schedule')) {

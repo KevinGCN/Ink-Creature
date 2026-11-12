@@ -10,7 +10,7 @@
   color: #2F2F2F;
   text-align: center;
   margin: 0 0 26px;
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -301,12 +301,21 @@
 
 @media (max-width: 500px) {
   .gallery {
-    padding: 24px 14px 40px;
+    padding: 18px 10px 32px;
+  }
+
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
   }
 
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .grid-item {
+    aspect-ratio: 1 / 1;
   }
 }
 

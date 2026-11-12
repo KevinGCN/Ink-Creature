@@ -28,7 +28,10 @@
   <!-- Botones de IA -->
   <div class="IA">
     <button routerLink="/tattoo-ia">Obten una Cotización Rapida</button>
-    <button routerLink="/gemini-ia" [disabled]="!auth.estaLogueado()">
+    <button
+      [class.secundario]="!auth.estaLogueado()"
+      (click)="abrirCotizacionIA()"
+    >
       {{ auth.estaLogueado() ?
          'Obten una Cotización con IA' : 'Inicia Sesión para Premium' }}
     </button>

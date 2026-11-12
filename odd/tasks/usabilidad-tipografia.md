@@ -13,6 +13,9 @@ Incluye:
 - Menú superior: **Ajustes** y **Cerrar sesión** (antes solo Perfil y Cerrar sesión).
 - Escala tipográfica y de controles común para todas las pantallas.
 - Corrección del modal de login: botón principal real y tamaños de 16 px en inputs.
+- Interfaz móvil más compacta (≤600 px): lateral de 56 px, textos 15 px, controles 42 px.
+- Los botones de cotización con IA quedan **detrás** del modal de login (z-index 900).
+- La cotización con IA sin sesión ahora lleva a `/loggin?volver=/gemini-ia`.
 
 No incluye:
 
@@ -54,6 +57,17 @@ No incluye:
 - [x] Corregir `button:nth-of-type` del login por clases reales.
 - [x] Corregir etiquetas de los selects del calendario y contraste de días deshabilitados.
 - [x] Compactar el calendario en móvil.
+- [x] En móvil el layout reserva 56 px para el lateral y 8 px de padding al contenido.
+- [x] Sidebar móvil de 56 px con iconos de 22 px y enlaces de 48 px.
+- [x] Barra superior y menú compactos en móvil (botones de 40 px).
+- [x] Banner de inicio de 180 px mínimo en móvil y botones de cotización de 40 px.
+- [x] Títulos de página un paso más chicos (24–32 px según pantalla).
+- [x] Galería móvil en 2 columnas con tarjetas cuadradas y gap de 10 px.
+- [x] Foto de tatuador a 200 px y foto de perfil a 150 px en móvil.
+- [x] El email largo del perfil ya no desborda la tarjeta.
+- [x] Los botones IA quedan detrás del overlay y del panel de login.
+- [x] "Inicia Sesión para Premium" abre el login y vuelve a `/gemini-ia` al entrar.
+- [x] Botón "Cómo encontrarnos" con borde visible (antes `border: none` lo anulaba).
 
 ## Estado
 
@@ -90,6 +104,12 @@ Implementado y verificado en local. Pendiente de commit y push (el push lo ejecu
 - axe: 0 violaciones en home, galería, tatuadores, ajustes, información y agenda (1280 y 360).
 - `scrollWidth === innerWidth` en todas las rutas a 360.
 - Calendario móvil: `.dates` 190 px de ancho visible = 190 px de contenido (antes 215).
+- Layout móvil: `grid-template-columns: 56px 304px` a 360 px (antes 70/290).
+- Galería móvil: 2 columnas cuadradas con 10 px de separación.
+- Modal de login abierto desde el inicio: `.IA` queda en z-index 900, debajo del
+  overlay (1999) y del panel (2000); los botones ya no tapan "Registrarse".
+- Cotización IA sin sesión: `/loggin?volver=%2Fgemini-ia`; al entrar vuelve a `/gemini-ia`.
+- axe: 0 violaciones en home, galería, tatuadores, ajustes, información, agenda y login (1280 y 360).
 
 ### Build
 

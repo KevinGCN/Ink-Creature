@@ -53,6 +53,11 @@
   z-index: 2000;
   width: 380px;
   max-width: 92%;
+  /* border-box: el padding no suma al ancho; sin esto, en un móvil de 360 px
+     el panel medía 383 px y se salía 23 px por la derecha. */
+  box-sizing: border-box;
+  max-height: 94vh;
+  overflow-y: auto;
   padding: 26px;
   background: rgba(255, 255, 255, 0.96);
   border-left: 1px solid #1b1c1d;
@@ -352,21 +357,16 @@ p.success-msg {
    - Esquinas redondeadas completas
    --------------------------------------------------------------------------*/
 @media (max-width: 768px) {
+  /* Centrado sin `transform`: la animación slideIn escribe la propiedad
+     `transform` completa y, al tener prioridad sobre esta regla, anulaba el
+     `translate(50%)`. Con `left/right: 0` + `margin-inline: auto` el centrado
+     no depende de transform y funciona igual en pantallas partidas. */
   .login-container {
-    right: 50%;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
     top: 50%;
-    transform: translate(50%, -50%);
+    transform: translateY(-50%);
     border-radius: 18px;
-  }
-
-  @keyframes slideIn {
-    from {
-      transform: translate(120%, -50%);
-      opacity: 0;
-    }
-    to {
-      transform: translate(50%, -50%);
-      opacity: 1;
-    }
   }
 }

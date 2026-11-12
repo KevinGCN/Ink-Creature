@@ -8,7 +8,7 @@
 # - Permissions-Policy: desactiva cámara, micrófono y geolocalización.
 # - Content-Security-Policy: limita orígenes de scripts, estilos, imágenes,
 #   conexiones y frames. Se permite https: porque la app usa Firebase/Google
-#   (login) y Tawk.to (chat), que cargan recursos desde varios subdominios.
+#   (login), que carga recursos desde varios subdominios.
 
 /*
   X-Frame-Options: DENY

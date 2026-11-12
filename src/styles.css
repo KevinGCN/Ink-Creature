@@ -6,3 +6,45 @@ body {
   background: #f9fafa;
   color: #f8fafc;
 }
+
+/* ---------------------------------------------------------------------------
+   Etiqueta flotante que sigue al cursor (TooltipDirective)
+   - Se crea una sola vez y se reutiliza: `position: fixed` la libera del
+     flujo y del recorte de contenedores con overflow.
+   - `pointer-events: none` para que nunca tape el elemento que la origina.
+   --------------------------------------------------------------------------*/
+.cursor-tooltip {
+  position: fixed;
+  z-index: 2147483000;
+  pointer-events: none;
+  max-width: 220px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  transform: translateY(4px) scale(0.96);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.cursor-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Sin animación si el sistema pide menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-tooltip,
+  .cursor-tooltip.visible {
+    transition: none;
+    transform: none;
+  }
+}

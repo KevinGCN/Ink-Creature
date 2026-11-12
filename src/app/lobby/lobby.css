@@ -83,39 +83,6 @@
   box-shadow: 0 6px 18px rgba(94, 89, 107, 0.10);
 }
 
-/* boton flotante de chat */
-.chat-float {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-
-  /* Píldora: el texto "Ayudante" ya no se sale del círculo */
-  width: auto;
-  height: 48px;
-  min-width: 48px;
-  padding: 0 16px;
-
-  border-radius: 24px;
-  border: none;
-
-  /* Verde oscuro: contraste AA con el texto blanco */
-  background-color: #0F7A40;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-
-  z-index: 9999;
-}
-
-.chat-float:hover {
-  transform: scale(1.1);
-  transition: 0.2s;
-}
-
 /* Contenedor flotante */
 .IA {
     position: fixed;
@@ -230,18 +197,7 @@
     width: 100%;
   }
 
-  .chat-float {
-    width: auto;
-    height: 48px;
-    min-width: 48px;
-    padding: 0 14px;
-    border-radius: 24px;
-    font-size: 13px;
-    bottom: 12px;
-    right: 12px;
-  }
-
   .main-content {
-    padding-bottom: 90px;
+    padding-bottom: 24px;
   }
 }

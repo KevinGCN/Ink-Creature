@@ -6,7 +6,6 @@ import { BehaviorSubject } from 'rxjs';
 import { expect, describe, it, beforeEach } from 'vitest';
 import { App } from './app';
 import { AuthService } from './services/auth';
-import { TawkService } from './services/tawk';
 
 // Doble del AuthService: evita depender del `Auth` de Firebase ni de peticiones
 // reales (mismo enfoque que loggin.spec.ts y employees.spec.ts).
@@ -25,9 +24,6 @@ describe('App', () => {
       imports: [App],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        // El widget de Tawk.to no se carga en tests: `loadChat` asume que hay
-        // etiquetas <script> en el DOM.
-        { provide: TawkService, useValue: { loadChat: () => undefined } },
         provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),

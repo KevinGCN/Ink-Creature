@@ -38,4 +38,12 @@ describe('Lobby', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // El botón flotante del "Ayudante" (widget de chat Tawk) se eliminó por
+  // inutilizable: este test impide que reaparezca por accidente.
+  it('no muestra el botón flotante del Ayudante', () => {
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.chat-float')).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Ayudante');
+  });
 });

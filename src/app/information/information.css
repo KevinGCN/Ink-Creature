@@ -1,8 +1,7 @@
 .info-content {
   max-width: 1100px;
   margin: auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 28px 20px 48px;
   color: #2F2F2F;
 }
 
@@ -17,10 +16,11 @@
 }
 
 .banner h1 {
-  margin: 0 0 15px 0;
-  font-size: 40px;
+  margin: 0 0 16px;
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
   color: #4B4453;
-  letter-spacing: 1px;
+  letter-spacing: 0;
 }
 
 
@@ -47,19 +47,21 @@
 
 .information h2 {
   margin-top: 0;
-  font-size: 30px;
+  font-size: var(--text-xl);
   color: #4B4453;
 }
 
 .information h3 {
   color: #6B6578;
-  margin-top: 18px;
+  margin-top: 20px;
+  font-size: var(--text-lg);
 }
 
 .information p,
 .information li {
-  color: #555;
-  line-height: 1.6;
+  color: #4A4A4A;
+  font-size: var(--text-md);
+  line-height: 1.7;
 }
 
 .information strong {
@@ -89,10 +91,11 @@
   justify-content: center;
   align-items: center;
 
+  min-height: 100px;
   background: #F4F1F7;
   border: 1px solid #E0DCE6;
-  border-radius: 15px;
-  padding: 15px;
+  border-radius: var(--radius-lg);
+  padding: 16px;
 
   transition: 0.3s;
 }
@@ -116,7 +119,7 @@
   }
 
   .banner h1 {
-    font-size: 30px;
+    font-size: 1.75rem;
   }
 
   .imgback {

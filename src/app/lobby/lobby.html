@@ -4,7 +4,7 @@
   @if (mensajeAcceso) {
     <div class="aviso-acceso" role="status">
       {{ mensajeAcceso }}
-      <a routerLink="/loggin">Iniciar sesión</a>
+      <a routerLink="/loggin" [queryParams]="{ volver: destinoAcceso }">Iniciar sesión</a>
     </div>
   }
 

@@ -11,7 +11,10 @@
   </div>
 
   <p *ngIf="cargando" class="cargando">Cargando tatuadores...</p>
-  <p *ngIf="mensaje" class="error-msg">{{ mensaje }}</p>
+  <div *ngIf="mensaje && !cargando" class="error-catalogo" role="alert">
+    <p>{{ mensaje }}</p>
+    <button class="btn-reintentar" (click)="cargarTatuadores()">Reintentar</button>
+  </div>
 
   <div class="catalogo">
     <div class="tarjeta" *ngFor="let t of tatuadores">

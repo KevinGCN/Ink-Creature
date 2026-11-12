@@ -6,10 +6,10 @@
 }
 
 .section-title {
-  font-size: 22px;
+  font-size: var(--text-xl);
   color: #4B4453;
-  margin: 0 0 8px;
-  letter-spacing: 0.5px;
+  margin: 0 0 10px;
+  letter-spacing: 0;
 }
 
 /* ── Formulario ── */
@@ -24,7 +24,7 @@
 
 .form-title {
   margin: 0 0 14px;
-  font-size: 17px;
+  font-size: var(--text-lg);
   color: #5E596B;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .form-group label {
-  font-size: 13px;
+  font-size: var(--text-xs);
   font-weight: 600;
   color: #6B6578;
   text-transform: uppercase;
@@ -44,10 +44,11 @@
 }
 
 .form-group textarea {
-  padding: 10px 14px;
+  min-height: 120px;
+  padding: 12px 14px;
   border: 1px solid #C9BEDD;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
   color: #2F2F2F;
   background: #FDFCFF;
   resize: vertical;
@@ -89,12 +90,13 @@
 
 /* Botón publicar */
 .btn-publicar {
-  padding: 11px 24px;
+  min-height: 44px;
+  padding: 12px 26px;
   background: #5E596B;
   color: white;
   border: none;
-  border-radius: 30px;
-  font-size: 14px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
@@ -117,9 +119,9 @@
   background: #EAF7ED;
   border: 1px solid #A8D5B0;
   color: #2E7D3A;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: var(--text-sm);
   margin-bottom: 14px;
 }
 
@@ -127,10 +129,10 @@
 .aviso-login {
   background: #F4F1F7;
   border: 1px dashed #C9BEDD;
-  border-radius: 12px;
-  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
   color: #6B6578;
-  font-size: 14px;
+  font-size: var(--text-sm);
   text-align: center;
 }
 
@@ -142,7 +144,7 @@
 .sin-resenas {
   text-align: center;
   color: #5E596B;
-  font-size: 14px;
+  font-size: var(--text-sm);
   padding: 20px;
 }
 
@@ -189,24 +191,24 @@
 
 .review-meta h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--text-md);
   color: #4B4453;
 }
 
 .date {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: #6B6578;
 }
 
 .stars {
   color: #5E596B;
-  font-size: 17px;
+  font-size: var(--text-lg);
   letter-spacing: 2px;
 }
 
 .review-text {
   margin: 0;
-  line-height: 1.6;
-  color: #6B6578;
-  font-size: 14px;
+  line-height: 1.65;
+  color: #5E596B;
+  font-size: var(--text-sm);
 }

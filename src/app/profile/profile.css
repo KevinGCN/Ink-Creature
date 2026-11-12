@@ -7,7 +7,6 @@
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #E0DCE6;
   box-shadow: 0 12px 28px rgba(94, 89, 107, 0.12);
-  font-family: Arial, sans-serif;
   color: #2F2F2F;
 }
 
@@ -15,10 +14,11 @@
 .profile-header h2 {
   margin: 0;
   text-align: center;
-  padding: 16px;
-  border-radius: 18px;
-  font-size: 30px;
-  letter-spacing: 0.5px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0;
   color: #2F2F2F;
   background: linear-gradient(135deg, #D7D1DB, #BDB6C4, #E9E3F0);
   box-shadow: 0 8px 18px rgba(94, 89, 107, 0.16);
@@ -66,12 +66,13 @@
 .btn-subir-foto {
   display: inline-block;
   margin-top: 12px;
-  padding: 10px 20px;
+  min-height: 44px;
+  padding: 11px 20px;
   background: linear-gradient(135deg, #7C6A9E, #5E4D85);
   color: white;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: bold;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(94, 89, 107, 0.2);
   transition: all 0.3s ease;
@@ -91,11 +92,11 @@
 
 .datos p {
   margin: 0 0 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
   background: #FFFFFF;
   border: 1px solid #E0DCE6;
-  font-size: 17px;
+  font-size: var(--text-md);
 }
 
 /* Botón principal */
@@ -107,10 +108,12 @@
 
 .acciones button {
   border: none;
-  padding: 12px 24px;
-  border-radius: 24px;
+  min-height: var(--control-height);
+  padding: 12px 26px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  font-weight: bold;
+  font-size: var(--text-sm);
+  font-weight: 600;
   color: white;
   background: linear-gradient(to right, #5E596B, #4B4453);
   box-shadow: 0 8px 16px rgba(94, 89, 107, 0.15);
@@ -139,13 +142,14 @@
 
 .citas-header h3 {
   margin: 0;
-  font-size: 24px;
+  font-size: var(--text-xl);
   color: #4B4453;
 }
 
 /* Botón ir a agenda */
 .btn-agenda {
-  padding: 10px 20px;
+  min-height: 44px;
+  padding: 11px 20px;
   background: linear-gradient(135deg, #7C6A9E, #5E4D85);
   color: white;
   border: none;
@@ -175,8 +179,8 @@
 /* Card cita */
 .cita-card {
   margin-top: 16px;
-  padding: 16px;
-  border-radius: 16px;
+  padding: 18px;
+  border-radius: var(--radius-lg);
   background: white;
   border: 1px solid #E0DCE6;
   box-shadow: 0 6px 14px rgba(94, 89, 107, 0.08);
@@ -185,6 +189,7 @@
 .cita-card p {
   margin: 8px 0;
   color: #2F2F2F;
+  font-size: var(--text-sm);
 }
 
 /* Botones de acción de cita */
@@ -196,8 +201,10 @@
 
 .editar {
   border: none;
+  min-height: 42px;
   padding: 10px 18px;
-  border-radius: 22px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   cursor: pointer;
   color: white;
   font-weight: bold;
@@ -212,8 +219,10 @@
 /* Botón eliminar */
 .eliminar {
   border: none;
+  min-height: 42px;
   padding: 10px 18px;
-  border-radius: 22px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   cursor: pointer;
   color: white;
   font-weight: bold;
@@ -248,8 +257,10 @@
 /* Edición de perfil */
 .btn-editar-perfil {
   border: none;
-  padding: 10px 20px;
-  border-radius: 24px;
+  min-height: 44px;
+  padding: 11px 22px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   cursor: pointer;
   color: white;
   font-weight: bold;
@@ -270,16 +281,18 @@
 .form-perfil label {
   display: grid;
   gap: 6px;
-  font-weight: bold;
+  font-size: var(--text-sm);
+  font-weight: 600;
   color: #4B4453;
 }
 
 .form-perfil input {
-  padding: 11px 13px;
-  border-radius: 12px;
+  min-height: var(--control-height);
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
   border: 1px solid #C9BEDD;
   background: #FFFFFF;
-  font-size: 16px;
+  font-size: var(--text-md);
   color: #2F2F2F;
 }
 
@@ -296,8 +309,10 @@
 
 .form-actions button {
   border: none;
-  padding: 10px 18px;
-  border-radius: 22px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
   cursor: pointer;
   color: white;
   font-weight: bold;

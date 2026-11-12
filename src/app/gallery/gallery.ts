@@ -44,6 +44,10 @@ export class Gallery implements OnInit {
   readonly tatuadores = signal<Empleado[]>([]);
   readonly imagenes = signal<ImagenGaleria[]>([]);
 
+  // Estados de la carga para que el visitante sepa qué está pasando
+  readonly cargando = signal(true);
+  readonly errorCarga = signal(false);
+
   readonly mostrarModalSubida = signal(false);
   readonly archivoTemporal = signal<File | null>(null);
   readonly previewTemporal = signal('');
@@ -70,6 +74,9 @@ export class Gallery implements OnInit {
   }
 
   cargarImagenes() {
+    this.cargando.set(true);
+    this.errorCarga.set(false);
+
     this.galeriaApi.obtenerTodos().subscribe({
       next: (datos) => {
         this.imagenes.set(
@@ -80,10 +87,13 @@ export class Gallery implements OnInit {
             empleadoId: d.empleado_id ?? 0
           }))
         );
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('No se pudo cargar la galería desde la API:', err);
         this.imagenes.set([]);
+        this.errorCarga.set(true);
+        this.cargando.set(false);
       }
     });
   }

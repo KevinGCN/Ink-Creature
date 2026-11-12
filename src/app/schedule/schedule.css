@@ -1,8 +1,8 @@
 /* Contenedor principal */
 .container {
   max-width: 1100px;
-  margin: auto;
-  padding: 25px;
+  margin: 24px auto;
+  padding: 24px;
   border-radius: 18px;
   min-height: calc(100vh - 40px);
 
@@ -12,19 +12,19 @@
   border: 1px solid #E0DCE6;
   box-shadow: 0 8px 20px rgba(94, 89, 107, 0.18);
   backdrop-filter: blur(4px);
-  font-family: Arial, sans-serif;
 }
 
 /* Título */
 h1 {
   text-align: center;
-  background: linear-gradient(to right, #5E596B, #C9BEDD);
+  background: linear-gradient(to right, #4B4453, #7C6A9E);
   color: white;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 30px;
-  margin-top: 0;
-  letter-spacing: 1px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: 0.5px;
 }
 
 /* Distribución */
@@ -39,8 +39,8 @@ h1 {
 .calendar,
 .artists {
   background: #FFFFFF;
-  padding: 18px;
-  border-radius: 15px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid #E0DCE6;
 }
 
@@ -57,11 +57,13 @@ h1 {
 }
 
 .calendar-header select {
-  padding: 8px;
-  border-radius: 8px;
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
   border: 1px solid #E0DCE6;
   background: #F4F1F7;
   color: #2F2F2F;
+  font-size: var(--text-md);
 }
 
 /* Días */
@@ -74,13 +76,19 @@ h1 {
 }
 
 .days span {
-  font-weight: bold;
+  font-weight: 600;
+  font-size: var(--text-sm);
   color: #5E596B;
 }
 
 .dates span {
-  padding: 8px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
   cursor: pointer;
   background: #F4F1F7;
 }
@@ -97,9 +105,8 @@ h1 {
 /* Día deshabilitado (pasado) */
 .dates span.disabled {
   background: #ECEAF1;
-  color: #B0AAB8;
+  color: #5E596B;
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
 .dates span.disabled:hover {
@@ -108,7 +115,7 @@ h1 {
 
 .dates span.disabled.active {
   background: #ECEAF1;
-  color: #B0AAB8;
+  color: #5E596B;
 }
 
 /* Horarios */
@@ -122,11 +129,13 @@ h1 {
 }
 
 .hours button {
+  min-height: 44px;
   padding: 10px;
   border: 1px solid #E0DCE6;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: #FFFFFF;
   color: #2F2F2F;
+  font-size: var(--text-sm);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -143,9 +152,8 @@ h1 {
 
 .hours button.disabled {
   background: #ECEAF1;
-  color: #B0AAB8;
+  color: #5E596B;
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
 .hours button.disabled:hover {
@@ -154,7 +162,7 @@ h1 {
 
 .hours button.disabled:active {
   background: #ECEAF1;
-  color: #B0AAB8;
+  color: #5E596B;
   cursor: not-allowed;
 }
 
@@ -184,8 +192,10 @@ h1 {
 }
 
 .artist {
-  padding: 12px;
+  padding: 14px 12px;
+  font-size: var(--text-sm);
   border-bottom: 1px solid #E0DCE6;
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
@@ -210,9 +220,12 @@ h1 {
 .cancelar,
 .reserve {
   border: none;
-  padding: 12px 22px;
-  border-radius: 22px;
+  min-height: var(--control-height);
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
   color: white;
+  font-size: var(--text-sm);
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -231,9 +244,76 @@ hr {
   border-top: 1px solid #E0DCE6;
 }
 
-p {
+/* Solo las citas listadas usan tarjeta; los mensajes conservan su estilo. */
+.container > div > p {
   background: #FFFFFF;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
   border: 1px solid #E0DCE6;
+  font-size: var(--text-sm);
+}
+
+/* ===== MÓVIL =====
+   En 360 px el sidebar deja ~288 px. El calendario tenía min-width: 320 px y
+   se cortaba la columna del sábado. Aquí se deja encoger y se compacta. */
+@media (max-width: 600px) {
+  .container {
+    margin: 12px 10px;
+    padding: 14px;
+  }
+
+  .content {
+    gap: 14px;
+  }
+
+  .calendar,
+  .artists {
+    min-width: 0;
+    padding: 14px;
+  }
+
+  .days,
+  .dates {
+    gap: 4px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .calendar-header select {
+    width: 100%;
+  }
+
+  .dates span {
+    min-height: 34px;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 4px 0;
+    font-size: var(--text-xs);
+  }
+
+  .hours {
+    flex: 1 1 100%;
+    max-height: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .hours button {
+    flex: 1 1 84px;
+  }
+
+  .artists {
+    flex: 1 1 100%;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions button {
+    flex: 1;
+  }
 }

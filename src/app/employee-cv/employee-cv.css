@@ -1,5 +1,5 @@
 .cv-page {
-  padding: 40px 30px;
+  padding: 40px 24px 56px;
   background: #F4F1F7; 
   min-height: 100vh;
   color: #2F2F2F;
@@ -10,11 +10,12 @@
   background: #5E596B; 
   color: white;
   text-decoration: none;
-  padding: 10px 18px;
-  border-radius: 25px;
+  min-height: 44px;
+  padding: 11px 20px;
+  border-radius: var(--radius-pill);
   margin-bottom: 28px;
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--text-sm);
+  font-weight: 600;
   box-shadow: 0 4px 10px rgba(94, 89, 107, 0.25);
   transition: 0.3s;
 }
@@ -54,21 +55,22 @@
 .badge {
   background: #C9BEDD; 
   color: #2F2F2F;
-  font-size: 11px;
-  padding: 3px 12px;
-  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
   display: inline-block;
   margin-bottom: 12px;
 }
 
 .perfil-info h1 {
-  font-size: 24px;
-  margin-bottom: 4px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 4px;
 }
 
 .cargo {
   color: #6B6578;
-  font-size: 14px;
+  font-size: var(--text-md);
   margin-bottom: 8px;
 }
 
@@ -92,19 +94,20 @@
 }
 
 .etiqueta {
-  font-size: 11px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
   color: #5E596B;
   text-transform: uppercase;
 }
 
 .valor {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--text-md);
+  font-weight: 600;
 }
 
 .descripcion {
-  color: #555;
-  font-size: 14px;
+  color: #4A4A4A;
+  font-size: var(--text-md);
   line-height: 1.7;
 }
 
@@ -122,7 +125,7 @@
 
 .cv-cargando h1 {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--text-xl);
   font-weight: 600;
 }
 

@@ -8,13 +8,13 @@
     <div class="calendar">
 
       <div class="calendar-header">
-        <select [(ngModel)]="mesActual" (change)="generarCalendario()">
+        <select aria-label="Mes" [(ngModel)]="mesActual" (change)="generarCalendario()">
           <option *ngFor="let mes of meses; let i = index" [value]="i">
             {{ mes }}
           </option>
         </select>
 
-        <select [(ngModel)]="anioActual" (change)="generarCalendario()">
+        <select aria-label="Año" [(ngModel)]="anioActual" (change)="generarCalendario()">
           <option *ngFor="let anio of anios" [value]="anio">
             {{ anio }}
           </option>

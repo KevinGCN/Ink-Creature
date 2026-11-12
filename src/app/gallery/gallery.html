@@ -10,6 +10,26 @@
   }
 
   <div class="grid">
+    <!-- Cargando -->
+    @if (cargando()) {
+      <p class="estado-msg cargando" role="status">Cargando trabajos…</p>
+    }
+
+    <!-- Error de conexión -->
+    @if (errorCarga() && !cargando()) {
+      <div class="estado-msg error" role="alert">
+        <p>No se pudieron cargar los trabajos. Revisa tu conexión e intenta de nuevo.</p>
+        <button class="btn-reintentar" (click)="cargarImagenes()">Reintentar</button>
+      </div>
+    }
+
+    <!-- Sin contenido -->
+    @if (!cargando() && !errorCarga() && imagenes().length === 0) {
+      <p class="estado-msg vacio" role="status">
+        Todavía no hay trabajos publicados en la galería.
+      </p>
+    }
+
     @for (imagen of imagenes(); track imagen.id ?? imagen.src) {
       <div class="grid-item" (click)="openImage(imagen.src)">
 

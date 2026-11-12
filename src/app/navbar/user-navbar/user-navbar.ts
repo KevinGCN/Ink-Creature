@@ -84,6 +84,14 @@ export class UserNavbar {
   }
 
   /**
+   * Navega a la página de ajustes (cuenta, sesión y baja) y cierra el dropdown
+   */
+  irAjustes() {
+    this.mostrarAjustes = false;
+    this.router.navigate(['/ajustes']);
+  }
+
+  /**
    * Cierra sesión y navega a la página principal
    * - Invoca auth.logout() (limpia estado y localStorage)
    * - Oculta menú desplegable

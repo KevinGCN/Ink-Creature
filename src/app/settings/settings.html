@@ -1,0 +1,118 @@
+<div class="settings-page">
+  <header class="encabezado">
+    <h1>Ajustes</h1>
+    <p>Administra tu cuenta y tu sesión en Ink Creature.</p>
+  </header>
+
+  <p *ngIf="mensajeExito" class="aviso exito" role="status">{{ mensajeExito }}</p>
+  <p *ngIf="mensajeError" class="aviso error" role="alert">{{ mensajeError }}</p>
+
+  <!-- DATOS DE LA CUENTA -->
+  <section class="tarjeta" aria-labelledby="titulo-cuenta">
+    <h2 id="titulo-cuenta">Tu cuenta</h2>
+
+    <dl class="datos">
+      <div>
+        <dt>Nombre</dt>
+        <dd>{{ nombreCompleto }}</dd>
+      </div>
+      <div>
+        <dt>Correo</dt>
+        <dd>{{ correo }}</dd>
+      </div>
+      <div>
+        <dt>Tipo de cuenta</dt>
+        <dd>{{ rolEtiqueta }}</dd>
+      </div>
+    </dl>
+
+    <a class="btn secundario" routerLink="/profile">Ver y editar mi perfil</a>
+  </section>
+
+  <!-- SESIÓN -->
+  <section class="tarjeta" aria-labelledby="titulo-sesion">
+    <h2 id="titulo-sesion">Sesión</h2>
+    <p class="ayuda">
+      Cierra sesión si estás usando un dispositivo compartido. Tendrás que
+      volver a ingresar tu correo y contraseña.
+    </p>
+    <button type="button" class="btn secundario" (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </section>
+
+  <!-- ELIMINAR CUENTA -->
+  <section class="tarjeta peligro" aria-labelledby="titulo-eliminar">
+    <h2 id="titulo-eliminar">Eliminar mi cuenta</h2>
+    <p class="ayuda">
+      Al eliminar tu cuenta se borran tus datos de perfil y no podrás volver a
+      iniciar sesión con ese correo. Esta acción no se puede deshacer.
+    </p>
+
+    <div class="acciones-peligro">
+      <button type="button" class="btn peligro-btn" (click)="abrirConfirmacion()">
+        Eliminar mi cuenta
+      </button>
+
+      <a
+        class="btn whatsapp"
+        [href]="enlaceBajaWhatsapp"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Pedir la baja por WhatsApp
+      </a>
+    </div>
+
+    <p class="nota">
+      Si tu cuenta es de cliente o tatuador, la eliminación se gestiona por
+      WhatsApp para evitar borrados accidentales.
+    </p>
+  </section>
+</div>
+
+<!-- CONFIRMACIÓN PARA ELIMINAR -->
+@if (confirmandoEliminar) {
+  <div class="modal-overlay" (click)="cancelarConfirmacion()"></div>
+
+  <div
+    class="modal-confirmacion"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-confirmar"
+  >
+    <h2 id="titulo-confirmar">¿Eliminar tu cuenta?</h2>
+    <p>
+      Esta acción borra tu perfil y no se puede deshacer. Para confirmar,
+      escribe <strong>ELIMINAR</strong> en el campo.
+    </p>
+
+    <label for="confirmar-eliminar">Escribe ELIMINAR</label>
+    <input
+      id="confirmar-eliminar"
+      type="text"
+      [(ngModel)]="textoConfirmacion"
+      autocomplete="off"
+      placeholder="ELIMINAR"
+    />
+
+    <div class="modal-botones">
+      <button
+        type="button"
+        class="btn secundario"
+        (click)="cancelarConfirmacion()"
+        [disabled]="eliminando"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn peligro-btn"
+        (click)="eliminarCuenta()"
+        [disabled]="eliminando"
+      >
+        {{ eliminando ? 'Eliminando…' : 'Eliminar definitivamente' }}
+      </button>
+    </div>
+  </div>
+}

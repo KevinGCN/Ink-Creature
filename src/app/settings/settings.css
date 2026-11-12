@@ -1,0 +1,241 @@
+.settings-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #2F2F2F;
+}
+
+.encabezado {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.encabezado h1 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  margin: 0 0 6px;
+}
+
+.encabezado p {
+  margin: 0;
+  color: #5E596B;
+  font-size: var(--text-md);
+}
+
+/* ── Tarjetas ─────────────────────────────────────────── */
+.tarjeta {
+  background: #fff;
+  border: 1px solid #E6E0EE;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.tarjeta h2 {
+  font-size: var(--text-xl);
+  margin: 0 0 16px;
+}
+
+.tarjeta.peligro {
+  border-color: #F3C6C1;
+  background: #FFF9F8;
+}
+
+/* ── Datos ────────────────────────────────────────────── */
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.datos dt {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #7A7286;
+  margin-bottom: 3px;
+}
+
+.datos dd {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* ── Textos de ayuda ──────────────────────────────────── */
+.ayuda {
+  color: #5E596B;
+  font-size: var(--text-md);
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.nota {
+  color: #7A7286;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+
+/* ── Botones ──────────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: 11px 20px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #2F2F2F;
+  outline-offset: 2px;
+}
+
+.btn.secundario {
+  background: #EDE7F6;
+  color: #4B3F63;
+}
+
+.btn.secundario:hover {
+  background: #DED3F0;
+}
+
+.btn.peligro-btn {
+  background: #B3261E;
+  color: #fff;
+}
+
+.btn.peligro-btn:hover {
+  background: #971D17;
+}
+
+.btn.whatsapp {
+  background: #1F8A4C;
+  color: #fff;
+}
+
+.btn.whatsapp:hover {
+  background: #197142;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.acciones-peligro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Avisos ───────────────────────────────────────────── */
+.aviso {
+  margin: 0;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.aviso.exito {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.aviso.error {
+  background: #FEF2F2;
+  color: #B3261E;
+  border: 1px solid #FECACA;
+}
+
+/* ── Modal de confirmación ────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 15, 30, 0.55);
+  z-index: 1000;
+}
+
+.modal-confirmacion {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  transform: translateY(-50%);
+  width: min(440px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  z-index: 1001;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-confirmacion h2 {
+  margin: 0 0 12px;
+  font-size: var(--text-xl);
+}
+
+.modal-confirmacion p {
+  margin: 0 0 16px;
+  color: #5E596B;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.modal-confirmacion label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.modal-confirmacion input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: 11px 14px;
+  border: 1px solid #D6CFE2;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-md);
+  margin-bottom: 18px;
+}
+
+.modal-confirmacion input:focus {
+  outline: 2px solid #7E57C2;
+  outline-offset: 1px;
+  border-color: #7E57C2;
+}
+
+.modal-botones {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .settings-page {
+    padding: 20px 14px 50px;
+  }
+
+  .tarjeta {
+    padding: 18px;
+  }
+
+  .acciones-peligro .btn,
+  .modal-botones .btn {
+    flex: 1 1 100%;
+  }
+}

@@ -63,7 +63,6 @@
   border-left: 1px solid #1b1c1d;
   border-radius: 18px 0 0 18px;
   box-shadow: -12px 0 30px rgba(59, 130, 246, 0.15);
-  font-family: Arial, sans-serif;
   animation: slideIn 0.35s ease forwards;
 }
 
@@ -94,7 +93,7 @@
 }
 
 .header span {
-  font-size: 20px;
+  font-size: var(--text-lg);
   font-weight: bold;
   color: #2563eb;
   letter-spacing: 0.5px;
@@ -126,9 +125,9 @@
    --------------------------------------------------------------------------*/
 .content h2 {
   text-align: center;
-  margin-bottom: 18px;
+  margin: 0 0 18px;
   color: #16324f;
-  font-size: 26px;
+  font-size: var(--text-xl);
 }
 
 /* ---------------------------------------------------------------------------
@@ -139,8 +138,8 @@ label {
   display: block;
   margin-top: 16px;
   margin-bottom: 4px;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: var(--text-sm);
   color: #16324f;
 }
 
@@ -164,9 +163,11 @@ label {
    --------------------------------------------------------------------------*/
 input {
   width: 100%;
+  min-height: var(--control-height);
   padding: 12px 14px;
   margin: 8px 0 0;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
   border: 1px solid #bfdbfe;
   background: #f8fbff;
   color: #16324f;
@@ -200,42 +201,54 @@ input:focus {
    --------------------------------------------------------------------------*/
 button {
   width: 100%;
+  min-height: var(--control-height);
   padding: 12px;
   margin-top: 8px;
   border: none;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: var(--text-md);
   transition: 0.3s;
 }
 
 /* ---------------------------------------------------------------------------
-   BOTÓN PRINCIPAL (1er botón del contenedor)
-   - Gradiente azul, texto blanco, sombra
+   BOTÓN PRINCIPAL (iniciar sesión / registrarse)
+   - Antes se usaba :nth-of-type, que pintaba el botón de Google como
+     principal y dejaba "Iniciar sesión" como secundario. Ahora va por clase.
    --------------------------------------------------------------------------*/
-button:nth-of-type(1) {
+.login-btn {
   background: linear-gradient(to right, #3b82f6, #60a5fa);
   color: white;
   box-shadow: 0 6px 14px rgba(59, 130, 246, 0.18);
 }
 
-button:nth-of-type(1):hover {
+.login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 
+.login-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 /* ---------------------------------------------------------------------------
-   BOTÓN SECUNDARIO (2er botón del contenedor)
+   BOTÓN SECUNDARIO (registrarse)
    - Fondo azul muy claro, borde, texto azul
    --------------------------------------------------------------------------*/
-button:nth-of-type(2) {
+.register-btn {
   background: #eef6ff;
   color: #2563eb;
   border: 1px solid #bfdbfe;
 }
 
-button:nth-of-type(2):hover {
+.register-btn:hover:not(:disabled) {
   background: #dbeafe;
+}
+
+.register-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 /* ---------------------------------------------------------------------------
@@ -243,7 +256,7 @@ button:nth-of-type(2):hover {
    --------------------------------------------------------------------------*/
 p.error-msg {
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-sm);
   margin: 12px 0 8px;
   padding: 10px;
   border-radius: 8px;
@@ -257,7 +270,7 @@ p.error-msg {
    --------------------------------------------------------------------------*/
 p.success-msg {
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-sm);
   margin: 12px 0 8px;
   padding: 10px;
   border-radius: 8px;
@@ -267,20 +280,35 @@ p.success-msg {
 }
 
 /* ---------------------------------------------------------------------------
+   AVISO DE DEMORA (servidor despertando)
+   - Informativo, no es un error: por eso azul en vez de rojo.
+   --------------------------------------------------------------------------*/
+p.info-msg {
+  text-align: center;
+  font-size: var(--text-sm);
+  margin: 12px 0 8px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+/* ---------------------------------------------------------------------------
    BOTÓN VOLVER (registro → login)
    - Sin estilo de botón principal, texto plano con hover
    --------------------------------------------------------------------------*/
 .back-btn {
-  width: 100%;
-  padding: 12px;
+  width: auto;
+  min-height: 40px;
+  padding: 10px 12px;
   margin-top: 8px;
   border: none;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: var(--text-sm);
   transition: 0.3s;
-  width: auto;
 }
 
 .back-btn:hover {
@@ -300,14 +328,16 @@ p.success-msg {
   justify-content: center;
   gap: 10px;
   width: 100%;
+  min-height: var(--control-height);
   padding: 10px;
   margin-bottom: 15px;
   background: #ffffff;
   color: #757575;
   border: 1px solid #dadce0;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: var(--text-sm);
   transition: all 0.2s;
 }
 
@@ -335,7 +365,7 @@ p.success-msg {
   text-align: center;
   margin: 12px 0;
   color: #6b7280;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .divider::before,

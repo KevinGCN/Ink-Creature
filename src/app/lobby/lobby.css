@@ -89,15 +89,20 @@
   bottom: 20px;
   right: 20px;
 
-  width: 55px;
-  height: 55px;
+  /* Píldora: el texto "Ayudante" ya no se sale del círculo */
+  width: auto;
+  height: 48px;
+  min-width: 48px;
+  padding: 0 16px;
 
-  border-radius: 50%;
+  border-radius: 24px;
   border: none;
 
-  background-color: #25D366;
+  /* Verde oscuro: contraste AA con el texto blanco */
+  background-color: #0F7A40;
   color: white;
-  font-size: 22px;
+  font-size: 14px;
+  font-weight: 600;
 
   cursor: pointer;
 

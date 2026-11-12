@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../services/gemini';
+import { NotificacionesService } from '../services/notificaciones';
 import { TattooAnalysis } from '../models/tattoo-analysis';
 import { CurrencyPipe, NgIf } from '@angular/common';
 
@@ -15,6 +17,7 @@ import { CurrencyPipe, NgIf } from '@angular/common';
 export class TattooAiQuoteComponent {
   
   private gemini = inject(GeminiService);
+  private notificaciones = inject(NotificacionesService);
   description = '';
   analysis: TattooAnalysis | null = null;
   loading = false;
@@ -27,18 +30,24 @@ export class TattooAiQuoteComponent {
     try {
       const result =
         await this.gemini.analyzeTattoo(this.description);
-        console.log('RESPUESTA GEMINI:', result);
       const cleanJson =
         result
           .replace(/```json/g, '')
           .replace(/```/g, '')
           .trim();
       this.analysis = JSON.parse(cleanJson);
-      console.log('ANALYSIS:', this.analysis);
     } catch (error: any) {
-      console.error('ERROR GEMINI:', error);
+      console.error('Error analizando tatuaje:', error);
       this.analysis = null;
-      console.error(error);
+      // El analisis de IA corre en el backend (la clave de Gemini nunca viaja
+      // al navegador): los fallos se avisan con toasts propios del proyecto.
+      if (error instanceof HttpErrorResponse && error.status === 503) {
+        this.notificaciones.error('El servicio de IA no está disponible en este momento. Intenta más tarde.');
+      } else if (error instanceof HttpErrorResponse && error.status === 401) {
+        this.notificaciones.error('Tu sesión expiró. Inicia sesión nuevamente para cotizar.');
+      } else {
+        this.notificaciones.error('No se pudo analizar el tatuaje. Intenta nuevamente.');
+      }
     }
     this.loading = false;
   }

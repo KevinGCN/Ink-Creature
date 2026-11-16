@@ -400,3 +400,69 @@ p.info-msg {
     border-radius: 18px;
   }
 }
+
+/* ===== MÓVIL =====
+   El panel baja un poco de tamaño: menos padding, título más corto y
+   controles de 42 px. Los inputs siguen en 16 px para que iOS no haga zoom. */
+@media (max-width: 600px) {
+  .login-container {
+    width: 340px;
+    max-width: 94%;
+    padding: 18px;
+    max-height: 92vh;
+    border-radius: 16px;
+  }
+
+  .header {
+    margin-bottom: 14px;
+  }
+
+  .header span {
+    font-size: 1rem;
+  }
+
+  .close-btn {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+
+  .content h2 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  label {
+    margin-top: 12px;
+    font-size: var(--text-xs);
+  }
+
+  input {
+    min-height: 42px;
+    padding: 10px 12px;
+    margin-top: 6px;
+  }
+
+  button {
+    min-height: 42px;
+    padding: 10px;
+    margin-top: 6px;
+    font-size: var(--text-sm);
+  }
+
+  .google-btn {
+    min-height: 42px;
+    padding: 8px;
+    font-size: var(--text-xs);
+    margin-bottom: 10px;
+  }
+
+  .divider {
+    margin: 8px 0;
+    font-size: var(--text-xs);
+  }
+
+  .back-btn {
+    min-height: 36px;
+    padding: 8px 10px;
+  }
+}

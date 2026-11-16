@@ -86,16 +86,62 @@
         <p><strong>Tatuador:</strong> {{ cita.tatuador }}</p>
         <p><strong>Estado:</strong> {{ cita.estado }}</p>
 
-        <div class="cita-actions">
+        <p *ngIf="cita.notas" class="cita-notas">
+          <strong>Motivo:</strong> {{ cita.notas }}
+        </p>
+
+        <p *ngIf="cancelacionConfirmada(cita)" class="cita-ok" role="status">
+          ✓ Cancelación confirmada por el tatuador
+        </p>
+
+        <div class="cita-actions" *ngIf="citaActiva(cita)">
           <button class="editar" (click)="editarCita(cita)">
             Editar
           </button>
-          <button class="eliminar" (click)="eliminar(cita.id)">
-            Eliminar
+          <button class="cancelar-cita" (click)="abrirCancelacion(cita)">
+            Cancelar cita
           </button>
         </div>
       </div>
 
     </div>
+
+  <!-- MODAL: motivo de cancelación -->
+  <div *ngIf="citaACancelar" class="modal-overlay" (click)="cerrarCancelacion()"></div>
+
+  <div
+    *ngIf="citaACancelar"
+    class="modal-cancelacion"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-cancelacion"
+  >
+    <h3 id="titulo-cancelacion">Cancelar cita</h3>
+    <p class="modal-ayuda">
+      Cuéntanos por qué cancelas. El tatuador verá el motivo y confirmará la cancelación.
+    </p>
+
+    <label for="motivo-cancelacion">Motivo de la cancelación</label>
+    <textarea
+      id="motivo-cancelacion"
+      rows="3"
+      maxlength="200"
+      [(ngModel)]="motivoCancelacion"
+      placeholder="Ej: me surgió un viaje"
+    ></textarea>
+
+    <p *ngIf="errorCancelacion" class="mensaje error" role="alert">
+      {{ errorCancelacion }}
+    </p>
+
+    <div class="modal-acciones">
+      <button type="button" class="volver" (click)="cerrarCancelacion()" [disabled]="cancelando">
+        Volver
+      </button>
+      <button type="button" class="confirmar" (click)="confirmarCancelacion()" [disabled]="cancelando">
+        {{ cancelando ? 'Cancelando…' : 'Confirmar cancelación' }}
+      </button>
+    </div>
+  </div>
 
  </div>

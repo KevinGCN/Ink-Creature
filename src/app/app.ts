@@ -5,10 +5,11 @@ import { MainNavbar } from "./navbar/main-navbar/main-navbar";
 import { HttpClientModule } from '@angular/common/http';
 import { SeoService } from './core/seo.service';
 import { TooltipDirective } from './core/tooltip.directive';
+import { LoadingBar } from './core/loading-bar/loading-bar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, UserNavbar, MainNavbar, HttpClientModule, TooltipDirective],
+  imports: [RouterOutlet, UserNavbar, MainNavbar, HttpClientModule, TooltipDirective, LoadingBar],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css'

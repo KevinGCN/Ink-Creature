@@ -17,7 +17,9 @@
 .main-navbar {
   grid-column: 1;
   grid-row: 1;
-  z-index: 1000;
+  /* Por debajo del overlay del login (1999) y del panel (2000).
+     Sigue por encima del contenido para el menú expandido. */
+  z-index: 900;
   height: 100vh;
 }
 

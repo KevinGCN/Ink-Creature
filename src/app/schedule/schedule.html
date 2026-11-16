@@ -39,6 +39,29 @@
 
     </div>
 
+    <!-- Tatuadores -->
+    <div class="artists">
+      <p class="artists-title">Elige tatuador</p>
+
+      <p *ngIf="cargandoEmpleados" class="artists-msg" role="status">
+        Cargando tatuadores…
+      </p>
+
+      <div *ngIf="errorEmpleados && !cargandoEmpleados" class="artists-msg error" role="alert">
+        <p>{{ errorEmpleados }}</p>
+        <button type="button" class="btn-reintentar" (click)="cargarEmpleados()">Reintentar</button>
+      </div>
+
+      <p *ngIf="!cargandoEmpleados && !errorEmpleados && empleados.length === 0" class="artists-msg">
+        No hay tatuadores disponibles.
+      </p>
+
+      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado)"
+        [class.selected]="empleadoSeleccionadoId === empleado.id">
+        {{ nombreEmpleado(empleado) }}
+      </div>
+    </div>
+
     <!-- Horarios -->
     <div class="hours">
       <ng-container *ngFor="let hora of horasFiltradas()">
@@ -49,14 +72,6 @@
           {{ hora }}
         </button>
       </ng-container>
-    </div>
-
-    <!-- Tatuadores -->
-    <div class="artists">
-      <div class="artist" *ngFor="let empleado of empleados" (click)="seleccionarTatuador(empleado)"
-        [class.selected]="empleadoSeleccionadoId === empleado.id">
-        {{ nombreEmpleado(empleado) }}
-      </div>
     </div>
 
   </div>
@@ -71,7 +86,55 @@
 
   <hr>
 
-  <div>
+  <!-- Agenda del tatuador: solo para rol empleado -->
+  <section *ngIf="esEmpleado" class="agenda-empleado" aria-labelledby="titulo-agenda">
+    <h2 id="titulo-agenda">Citas que atiendes</h2>
+
+    <p *ngIf="cargandoCitasEmpleado" class="artists-msg" role="status">
+      Cargando tus citas…
+    </p>
+
+    <p *ngIf="errorCitasEmpleado && !cargandoCitasEmpleado" class="artists-msg error" role="alert">
+      {{ errorCitasEmpleado }}
+    </p>
+
+    <p *ngIf="mensajeEmpleado" class="cita-ok" role="status">
+      {{ mensajeEmpleado }}
+    </p>
+
+    <p
+      *ngIf="!cargandoCitasEmpleado && !errorCitasEmpleado && citasEmpleado.length === 0"
+      class="artists-msg"
+    >
+      No tienes citas asignadas.
+    </p>
+
+    <div class="cita-empleado" *ngFor="let cita of citasEmpleado">
+      <p><strong>Cliente:</strong> {{ cita.cliente || 'Cliente' }}</p>
+      <p><strong>Fecha:</strong> {{ cita.fecha }} · {{ cita.hora }}</p>
+      <p><strong>Estado:</strong> {{ cita.estado }}</p>
+      <p *ngIf="cita.notas" class="cita-notas">
+        <strong>Motivo:</strong> {{ cita.notas }}
+      </p>
+
+      <button
+        *ngIf="cita.estado === 'cancelada' && !cancelacionConfirmada(cita)"
+        type="button"
+        class="btn-confirmar-cancelacion"
+        (click)="confirmarCancelacion(cita)"
+        [disabled]="confirmandoCitaId === cita.id"
+      >
+        {{ confirmandoCitaId === cita.id ? 'Confirmando…' : 'Confirmar cancelación' }}
+      </button>
+
+      <p *ngIf="cancelacionConfirmada(cita)" class="cita-ok" role="status">
+        ✓ Cancelación confirmada
+      </p>
+    </div>
+  </section>
+
+  <div *ngIf="citas.length > 0">
+    <h2 class="mis-reservas">Mis reservas</h2>
     <div *ngFor="let cita of citas">
       <p>{{ cita.fecha }} - {{ cita.hora }} - {{ cita.tatuador }}</p>
     </div>

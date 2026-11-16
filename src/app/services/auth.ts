@@ -290,6 +290,10 @@ export class AuthService {
     return this.usuarioActual;
   }
 
+  esEmpleado(): boolean {
+    return this.obtenerUsuario()?.rol === 'empleado';
+  }
+
   esAdmin(): boolean {
     const usuario = this.obtenerUsuario();
     return (

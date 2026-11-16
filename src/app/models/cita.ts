@@ -15,6 +15,7 @@ export interface Cita {
   fecha: string;
   hora: string;
   tatuador: string;
+  cliente?: string;
   correo?: string;
   fechaISO: string;
   horaInicio: string;

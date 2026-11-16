@@ -72,9 +72,25 @@ export class Loggin implements OnInit {
   }
 
   /**
-   * Cierra el modal emitiendo el evento `cerrar`
+   * Cierra el login.
+   *
+   * - Dentro de la barra (modal): avisa al padre para que lo oculte.
+   * - Como página (/loggin): no hay padre que escuche, así que navega
+   *   de vuelta a la página de origen (`?volver=`) o al inicio.
    */
   cerrarModal() {
+    if (!this.router) {
+      this.cerrar.emit();
+      return;
+    }
+
+    const ruta = this.router.url.split('?')[0].split('#')[0];
+
+    if (ruta === '/loggin') {
+      this.router.navigateByUrl(this.volverA || '/');
+      return;
+    }
+
     this.cerrar.emit();
   }
 

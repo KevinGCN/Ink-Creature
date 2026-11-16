@@ -35,6 +35,12 @@ export class Profile implements OnInit {
   mensajeError = '';
   mensajeExito = '';
 
+  // Cancelación con motivo
+  citaACancelar: Cita | null = null;
+  motivoCancelacion = '';
+  errorCancelacion = '';
+  cancelando = false;
+
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -91,6 +97,68 @@ export class Profile implements OnInit {
         );
       }
     });
+  }
+
+  // =========================
+  // CANCELAR CITA CON MOTIVO
+  // =========================
+  abrirCancelacion(cita: Cita) {
+    this.citaACancelar = cita;
+    this.motivoCancelacion = '';
+    this.errorCancelacion = '';
+  }
+
+  cerrarCancelacion() {
+    if (this.cancelando) return;
+    this.citaACancelar = null;
+    this.motivoCancelacion = '';
+    this.errorCancelacion = '';
+  }
+
+  confirmarCancelacion() {
+    const motivo = this.motivoCancelacion.trim();
+
+    if (!this.citaACancelar) return;
+
+    if (motivo.length < 5) {
+      this.errorCancelacion = 'Escribe el motivo de la cancelación (mínimo 5 caracteres).';
+      return;
+    }
+
+    this.cancelando = true;
+    this.errorCancelacion = '';
+
+    this.citaService
+      .actualizar(this.citaACancelar.id, {
+        estado: 'cancelada',
+        notas: `Cancelada por el cliente: ${motivo}`,
+      })
+      .subscribe({
+        next: () => {
+          this.cancelando = false;
+          this.citaACancelar = null;
+          this.motivoCancelacion = '';
+          this.mensajeExito =
+            'Cita cancelada. El tatuador verá el motivo y confirmará la cancelación.';
+          this.mensajeError = '';
+          this.cargarCitas();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.cancelando = false;
+          this.errorCancelacion = this.mensajeDeError(
+            error,
+            'No se pudo cancelar la cita.'
+          );
+        },
+      });
+  }
+
+  cancelacionConfirmada(cita: Cita): boolean {
+    return !!cita.notas?.includes('Cancelación confirmada por el tatuador');
+  }
+
+  citaActiva(cita: Cita): boolean {
+    return cita.estado !== 'cancelada' && cita.estado !== 'completada';
   }
 
   // =========================

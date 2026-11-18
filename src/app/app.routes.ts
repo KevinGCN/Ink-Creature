@@ -1,16 +1,15 @@
 import { Routes } from '@angular/router';
 import { Lobby } from './lobby/lobby';
-import { Loggin } from './loggin/loggin';
-import { Gallery } from './gallery/gallery';
-import { Employees } from './employees/employees';
-import { Schedule } from './schedule/schedule';
-import { Information } from './information/information';
-import { Profile } from './profile/profile';
-import { EmployeeCV } from './employee-cv/employee-cv';
 import { AuthGuard } from './guards/auth.guard';
-import { TattooQuote } from './tattoo-quote/tattoo-quote';
-import { TattooAiQuoteComponent } from './tattoo-ia-quote/tattoo-ia-quote';
 
+/**
+ * Rutas de la aplicación.
+ *
+ * `Lobby` se mantiene eager porque es la landing: se pinta sin descargar un
+ * chunk extra. El resto usa `loadComponent`, así cada vista viaja en su propio
+ * fragmento y el bundle inicial no carga la galería, el panel de empleados ni
+ * las herramientas de IA hasta que se navega a ellas.
+ */
 export const routes: Routes = [
   {
     path: '',
@@ -23,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'loggin',
-    component: Loggin,
+    loadComponent: () => import('./loggin/loggin').then((m) => m.Loggin),
     data: {
       titulo: 'Iniciar sesión | Ink Creature',
       descripcion:
@@ -32,7 +31,7 @@ export const routes: Routes = [
   },
   {
     path: 'gallery',
-    component: Gallery,
+    loadComponent: () => import('./gallery/gallery').then((m) => m.Gallery),
     data: {
       titulo: 'Galería | Ink Creature',
       descripcion:
@@ -41,7 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'employees',
-    component: Employees,
+    loadComponent: () => import('./employees/employees').then((m) => m.Employees),
     data: {
       titulo: 'Nuestros tatuadores | Ink Creature',
       descripcion:
@@ -50,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: 'schedule',
-    component: Schedule,
+    loadComponent: () => import('./schedule/schedule').then((m) => m.Schedule),
     canActivate: [AuthGuard],
     data: {
       titulo: 'Agendar cita | Ink Creature',
@@ -60,7 +59,7 @@ export const routes: Routes = [
   },
   {
     path: 'information',
-    component: Information,
+    loadComponent: () => import('./information/information').then((m) => m.Information),
     data: {
       titulo: 'Información | Ink Creature',
       descripcion:
@@ -69,7 +68,7 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    component: Profile,
+    loadComponent: () => import('./profile/profile').then((m) => m.Profile),
     canActivate: [AuthGuard],
     data: {
       titulo: 'Mi perfil | Ink Creature',
@@ -79,7 +78,7 @@ export const routes: Routes = [
   },
   {
     path: 'employeeCV/:id',
-    component: EmployeeCV,
+    loadComponent: () => import('./employee-cv/employee-cv').then((m) => m.EmployeeCV),
     data: {
       titulo: 'Perfil del tatuador | Ink Creature',
       descripcion:
@@ -88,7 +87,7 @@ export const routes: Routes = [
   },
   {
     path: 'tattoo-ia',
-    component: TattooQuote,
+    loadComponent: () => import('./tattoo-quote/tattoo-quote').then((m) => m.TattooQuote),
     data: {
       titulo: 'Cotización rápida | Ink Creature',
       descripcion:
@@ -97,7 +96,8 @@ export const routes: Routes = [
   },
   {
     path: 'gemini-ia',
-    component: TattooAiQuoteComponent,
+    loadComponent: () =>
+      import('./tattoo-ia-quote/tattoo-ia-quote').then((m) => m.TattooAiQuoteComponent),
     canActivate: [AuthGuard],
     data: {
       titulo: 'Cotización con IA | Ink Creature',

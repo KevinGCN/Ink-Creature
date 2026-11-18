@@ -25,20 +25,16 @@ export class TattooAiQuoteComponent {
     }
     this.loading = true;
     try {
-      const result =
-        await this.gemini.analyzeTattoo(this.description);
-        console.log('RESPUESTA GEMINI:', result);
+      const result = await this.gemini.analyzeTattoo(this.description);
       const cleanJson =
         result
           .replace(/```json/g, '')
           .replace(/```/g, '')
           .trim();
       this.analysis = JSON.parse(cleanJson);
-      console.log('ANALYSIS:', this.analysis);
     } catch (error: any) {
       console.error('ERROR GEMINI:', error);
       this.analysis = null;
-      console.error(error);
     }
     this.loading = false;
   }

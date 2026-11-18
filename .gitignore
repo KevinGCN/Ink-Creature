@@ -11,6 +11,9 @@
 npm-debug.log
 yarn-error.log
 
+# Logs sueltos de depuración (p. ej. debug.log del actualizador de Chrome)
+*.log
+
 # IDEs and editors
 .idea/
 .project

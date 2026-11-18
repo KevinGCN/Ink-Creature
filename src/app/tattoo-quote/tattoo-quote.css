@@ -61,7 +61,7 @@
   background-color: #111111;
   color: white;
   border: none;
-  min-height: 50px;
+  min-height: var(--control-height-lg);
   padding: 14px;
   border-radius: var(--radius-md);
   cursor: pointer;

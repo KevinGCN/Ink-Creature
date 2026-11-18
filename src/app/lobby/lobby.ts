@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Comments } from "../comments/comments";
 import { AuthService } from '../services/auth';
@@ -6,7 +7,7 @@ import { AuthService } from '../services/auth';
 @Component({
   selector: 'app-lobby',
   standalone: true,
-  imports: [RouterLink, Comments],
+  imports: [RouterLink, Comments, AsyncPipe],
   templateUrl: './lobby.html',
   styleUrls: ['./lobby.css']
 })

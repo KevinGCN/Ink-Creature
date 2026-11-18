@@ -28,8 +28,16 @@ import { SeoService } from './core/seo.service';
 export class App implements OnInit {
   protected readonly title = signal('Ink-Creature');
 
+  /** Estado compartido con el menú lateral para reacomodar el contenido. */
+  sidebarExpanded = false;
+
   // Servicios de arranque: SEO global del sitio.
   constructor(private seoService: SeoService) {}
+
+  /** Abre o cierra el menú lateral y deja que la grilla se reacomode. */
+  toggleSidebar() {
+    this.sidebarExpanded = !this.sidebarExpanded;
+  }
 
   // Carga los meta tags SEO cuando inicia la app
   ngOnInit() {

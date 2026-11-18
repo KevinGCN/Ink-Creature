@@ -90,7 +90,7 @@
 
 /* Botón publicar */
 .btn-publicar {
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 12px 26px;
   background: #5E596B;
   color: white;

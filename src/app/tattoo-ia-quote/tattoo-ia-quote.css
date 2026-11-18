@@ -71,7 +71,7 @@ textarea:focus {
     margin-top: 25px;
     width: 100%;
     min-height: var(--control-height-lg);
-    padding: 16px;
+    padding: 12px 16px;
     border: none;
     border-radius: var(--radius-lg);
     background: linear-gradient(

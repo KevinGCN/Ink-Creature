@@ -1,32 +1,133 @@
 <div class="gallery">
-  <h1 class="title">Galería</h1>
+  <header class="cabecera">
+    <div class="titulo-fila">
+      <h1 class="title">Galería</h1>
+      <span class="contador">{{ filtradas().length }} de {{ imagenes().length }} piezas</span>
 
-  <!-- Botón subir imagen — solo admin/CEO -->
-  @if (esAdmin()) {
-    <div class="admin-actions">
-      <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
-      <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
+      <!-- Botón subir imagen — solo admin/CEO -->
+      @if (esAdmin()) {
+        <!-- Input oculto disparado con `fileInput.click()`; al elegir archivo se abre el modal de confirmación -->
+        <input type="file" accept="image/*" (change)="seleccionarArchivo($event)" hidden #fileInput>
+        <button class="btn-subir" (click)="fileInput.click()">Subir imagen</button>
+      }
+    </div>
+
+    <!-- Búsqueda por título o autor; la etiqueta nombra su alcance -->
+    <label class="busqueda">
+      <span>Buscar por título o tatuador</span>
+      <input type="search" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" placeholder="p. ej. dragón">
+    </label>
+  </header>
+
+  <!-- Estados de carga / error -->
+  @if (cargando()) {
+    <p>Cargando galería…</p>
+  } @else if (error()) {
+    <p class="error-galeria">{{ error() }}</p>
+  }
+
+  <!-- Chips de filtro por estilo; 'todos' limpia el filtro.
+       Solo se muestran si hay estilos reales en la galería. -->
+  @if (estilosDisponibles().length > 0) {
+    <div class="filtros" role="group" aria-label="Filtrar por estilo">
+      <button type="button" class="chip" [attr.aria-pressed]="estiloFiltro() === 'todos'" (click)="estiloFiltro.set('todos')">Todos</button>
+      @for (estilo of estilosDisponibles(); track estilo) {
+        <button type="button" class="chip" [attr.aria-pressed]="estiloFiltro() === estilo" (click)="estiloFiltro.set(estilo)">{{ estilo }}</button>
+      }
     </div>
   }
 
-  <div class="grid">
-    @for (imagen of imagenes(); track imagen.id ?? imagen.src) {
-      <div class="grid-item" (click)="openImage(imagen.src)">
+  <!-- Explorador: grilla densa + panel de detalle fijo -->
+  <div class="explorador">
+    <div class="grid">
+      <!--
+        Cuadrícula de imágenes: cada tarjeta selecciona la pieza en el panel
+        de detalle. El `src` ya viene resuelto con `urlDeImagen()` porque en
+        la BD las rutas se guardan relativas ("/imagenes/<id>").
+      -->
+      @for (imagen of filtradas(); track imagen.id ?? imagen.src) {
+        <div class="grid-item" [class.seleccionada]="seleccionada()?.id === imagen.id"
+             [attr.aria-pressed]="seleccionada()?.id === imagen.id"
+             role="button" tabindex="0"
+             (click)="seleccionarPieza(imagen)"
+             (keydown.enter)="seleccionarPieza(imagen)">
 
-        <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
+          <!-- Si la imagen falla (404, URL rota) `handleImageError()` la sustituye por el placeholder -->
+          <img [src]="imagen.src" [alt]="imagen.alt" (error)="handleImageError($event)">
 
-	@if (imagen.empleadoId > 0) {
-	<button class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
-          Conoce al tatuador
-        </button>
-	}
+          <!-- Con tatuador vinculado se ofrece ir a su CV; si no, se muestra su nombre -->
+          @if (imagen.empleadoId > 0) {
+            <span class="btn-tatuador" (click)="verTatuador(imagen.empleadoId, $event)">
+              Conoce al tatuador
+            </span>
+          } @else {
+            <span class="etiqueta-tatuador">{{ nombreTatuador(imagen) }}</span>
+          }
 
-        @if (esAdmin()) {
-          <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
+          <!-- Borrado reservado al admin y solo sobre filas del backend -->
+          @if (esAdmin() && imagen.id != null) {
+            <button class="btn-eliminar" (click)="eliminarImagen(imagen, $event)">✕</button>
+          }
+
+        </div>
+      } @empty {
+        @if (!cargando() && !error()) {
+          <p class="sin-resultados">No hay piezas que coincidan con el filtro o la búsqueda.</p>
+        }
+      }
+    </div>
+
+    <!-- Panel de detalle fijo: inspeccionar sin perder el contexto de la grilla -->
+    <aside class="detalle" aria-label="Detalle de la pieza seleccionada">
+      @if (seleccionada(); as pieza) {
+        <!-- Clic en la imagen abre el visor ampliado -->
+        <div class="detalle-imagen" (click)="openImage(pieza.src)" role="button" tabindex="0"
+             (keydown.enter)="openImage(pieza.src)" aria-label="Ampliar imagen">
+          <img [src]="pieza.src" [alt]="pieza.alt" (error)="handleImageError($event)">
+        </div>
+
+        <h2 class="detalle-titulo">{{ pieza.titulo || pieza.alt || 'Sin título' }}</h2>
+
+        <!--
+          Ficha del trabajador: foto, especialidad y biografía (vienen en la
+          relación `empleados` del backend). El nombre lleva a su CV. Sin
+          tatuador vinculado se muestra solo el autor plano de siempre.
+        -->
+        @if (datosTatuador(pieza); as tatuador) {
+          <div class="detalle-tatuador">
+            <img class="tatuador-foto" [src]="tatuador.foto" [alt]="'Foto de ' + tatuador.nombre"
+                 (error)="handleImageError($event)">
+            <div class="tatuador-datos">
+              @if (tatuador.especialidad) {
+                <span class="tatuador-especialidad">{{ tatuador.especialidad }}</span>
+              }
+              <button type="button" class="detalle-autor" (click)="verTatuador(tatuador.empleadoId, $event)">
+                {{ tatuador.nombre }} · ver CV
+              </button>
+              @if (tatuador.biografia) {
+                <p class="tatuador-biografia">{{ tatuador.biografia }}</p>
+              }
+            </div>
+          </div>
+        } @else {
+          <p class="detalle-autor plano">{{ nombreTatuador(pieza) }}</p>
         }
 
-      </div>
-    }
+        @if (pieza.estilo) {
+          <span class="detalle-estilo">{{ pieza.estilo }}</span>
+        }
+
+        @if (pieza.descripcion) {
+          <p class="detalle-descripcion">{{ pieza.descripcion }}</p>
+        }
+
+        <div class="detalle-acciones">
+          <button type="button" class="btn-cita" (click)="pedirCita()">Pedir cita</button>
+        </div>
+      } @else {
+        <p class="detalle-vacio">Seleccioná una pieza de la grilla para ver su detalle.</p>
+      }
+    </aside>
   </div>
 
   <!-- Visor de imagen ampliada -->
@@ -57,20 +158,32 @@
       }
 
       <label>Nombre de la imagen</label>
-      <input type="text" [(ngModel)]="nombreImagenTemp" placeholder="Ej: Dragón rojo">
+      <input type="text" [ngModel]="nombreImagenTemp()"
+             (ngModelChange)="nombreImagenTemp.set($event)" placeholder="Ej: Dragón rojo">
 
       <label>Vincular a tatuador</label>
-      <select [(ngModel)]="tatuadorSeleccionado">
+      <!-- Opciones cargadas desde `tatuadores()`; el valor es el id del empleado, no el nombre -->
+      <select [ngModel]="tatuadorSeleccionado()"
+              (ngModelChange)="tatuadorSeleccionado.set($event)">
         @for (t of tatuadores(); track t.id) {
-          <option [ngValue]="t.id">{{ t.name }} {{ t.last_name }} — {{ t.especialidad }}</option>
+          <option [ngValue]="t.id">
+            {{ t.name }} {{ t.last_name }} — {{ t.especialidad }}
+          </option>
         }
       </select>
+
+      @if (errorSubida()) {
+        <p class="error-msg">{{ errorSubida() }}</p>
+      }
 
     </div>
 
     <div class="modal-footer">
-      <button class="btn-cancelar" (click)="cerrarModalSubida()">Cancelar</button>
-      <button class="btn-confirmar" (click)="confirmarSubida()">Subir imagen</button>
+      <!-- Mientras `subiendo()` está activo se bloquean ambos botones para evitar dobles envíos -->
+      <button class="btn-cancelar" (click)="cerrarModalSubida()" [disabled]="subiendo()">Cancelar</button>
+      <button class="btn-confirmar" (click)="confirmarSubida()" [disabled]="subiendo()">
+        {{ subiendo() ? 'Subiendo…' : 'Subir imagen' }}
+      </button>
     </div>
 
   </div>

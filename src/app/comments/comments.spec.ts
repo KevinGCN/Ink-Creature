@@ -1,6 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BehaviorSubject } from 'rxjs';
 
 import { Comments } from './comments';
+import { AuthService } from '../services/auth';
+
+// Doble del AuthService: evita depender del `Auth` de Firebase ni de peticiones
+// reales (mismo enfoque que loggin.spec.ts y employees.spec.ts).
+const mockAuthService = {
+  isLoggedIn$: new BehaviorSubject<boolean>(false),
+  usuario$: new BehaviorSubject<any>(null),
+  estaLogueado: () => false,
+  esAdmin: () => false,
+  obtenerUsuario: () => ({}),
+  logout: () => undefined,
+};
 
 describe('Comments', () => {
   let component: Comments;
@@ -8,7 +21,8 @@ describe('Comments', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Comments]
+      imports: [Comments],
+      providers: [{ provide: AuthService, useValue: mockAuthService }]
     })
     .compileComponents();
 

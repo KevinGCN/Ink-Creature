@@ -5,28 +5,118 @@
   min-height: 100vh;
 }
 
-/* ===== TÍTULO ===== */
+/* ===== CABECERA: título + contador + búsqueda ===== */
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.titulo-fila {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 .title {
   color: #2F2F2F;
-  text-align: center;
-  margin-bottom: 25px;
+  margin: 0;
   font-size: 32px;
+}
+.contador {
+  color: #6E6478;
+  font-size: 14px;
+}
+.titulo-fila .btn-subir {
+  margin: 0 0 0 auto;
+}
+.busqueda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #6E6478;
+}
+.busqueda input {
+  border: 1px solid #D6D0E0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 240px;
+  background: #FFFFFF;
+  color: #2F2F2F;
+}
+.busqueda input:focus {
+  outline: 2px solid #7C6A9E;
+  outline-offset: 1px;
+}
+
+/* ===== FILTROS POR ESTILO ===== */
+.filtros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.chip {
+  border: 1px solid #C9BEDD;
+  background: #FFFFFF;
+  color: #5E596B;
+  border-radius: 999px;
+  padding: 6px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.chip:hover {
+  border-color: #7C6A9E;
+  color: #4B4453;
+}
+.chip[aria-pressed="true"] {
+  background: #4B4453;
+  border-color: #4B4453;
+  color: #FFFFFF;
+}
+.chip:focus-visible {
+  outline: 2px solid #7C6A9E;
+  outline-offset: 2px;
+}
+
+/* ===== EXPLORADOR: grilla + panel de detalle ===== */
+.explorador {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
 }
 
 /* ===== GRID REAL (MEJOR QUE COLUMN) ===== */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
 }
 
-/* ===== ITEM ===== */
+/* ===== ITEM (ahora botón, para selección accesible por teclado) ===== */
 .grid-item {
   position: relative;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  border: 2px solid transparent;
+  background: none;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.grid-item:focus-visible {
+  outline: 2px solid #7C6A9E;
+  outline-offset: 2px;
+}
+/* Pieza seleccionada: marcada por borde, no solo por color de fondo */
+.grid-item.seleccionada {
+  border-color: #4B4453;
 }
 
 /* ===== IMAGEN ===== */
@@ -35,7 +125,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: 0.3s ease;
+  transition: 0.2s ease;
 }
 
 /* ===== HOVER ===== */
@@ -43,7 +133,7 @@
   transform: scale(1.02);
 }
 .grid-item:hover img {
-  filter: brightness(0.75);
+  filter: brightness(0.8);
 }
 .grid-item:hover .btn-tatuador {
   opacity: 1;
@@ -63,7 +153,12 @@
 .modal-close:hover { color: #4B4453; }
 .btn-confirmar:hover { background: #5E4D85; }
 
-
+.sin-resultados {
+  grid-column: 1 / -1;
+  color: #6E6478;
+  font-size: 14px;
+  padding: 20px 4px;
+}
 
 /* ===== BOTÓN TATUADOR ===== */
 .btn-tatuador {
@@ -80,64 +175,19 @@
   border-radius: 16px;
   font-size: 12px;
   cursor: pointer;
+  white-space: nowrap;
 
   transition: all 0.3s ease;
 }
 
-
-/*========= ADMIN ACTIONS ===========*/
-.admin-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.admin-actions button {
-  background-color: #4B4453;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-/* Estado deshabilitado */
-.admin-actions button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-/* Click */
-.admin-actions button:active {
-  transform: scale(0.97);
-}
-
-
-/* ===== VISOR ===== */
-.image-viewer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(47, 47, 47, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.image-viewer img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 12px;
-}
-
-/* ===== ADMIN ACTIONS (CORREGIDO) ===== */
-.admin-actions {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+.etiqueta-tatuador {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-size: 11px;
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
 }
 
 /* ============== BOTONES ================= */
@@ -188,6 +238,162 @@
   transition: 0.3s;
 }
 
+/* ===== PANEL DE DETALLE FIJO ===== */
+.detalle {
+  position: sticky;
+  top: 20px;
+  background: #FFFFFF;
+  border: 1px solid #E0D9EA;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.detalle-imagen {
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: zoom-in;
+  aspect-ratio: 4 / 3;
+  background: #EDE9F3;
+}
+.detalle-imagen:focus-visible {
+  outline: 2px solid #7C6A9E;
+  outline-offset: 2px;
+}
+.detalle-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.detalle-titulo {
+  margin: 0;
+  font-size: 19px;
+  color: #2F2F2F;
+}
+.detalle-autor {
+  margin: 0;
+  font-size: 14px;
+  color: #7C6A9E;
+  font-weight: 600;
+}
+.detalle-autor.plano {
+  color: #6E6478;
+  font-weight: 500;
+}
+button.detalle-autor {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+button.detalle-autor:hover {
+  color: #5E4D85;
+}
+.detalle-estilo {
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 700;
+  background: #F0EBF8;
+  color: #5E4D85;
+  padding: 3px 11px;
+  border-radius: 999px;
+}
+
+/* Ficha del trabajador en el panel de detalle */
+.detalle-tatuador {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  border: 1px solid #E4DDEF;
+  border-radius: 10px;
+  background: #FAF8FD;
+}
+.tatuador-foto {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #F0EBF8;
+}
+.tatuador-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.tatuador-especialidad {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #5E4D85;
+}
+.tatuador-biografia {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #6E6478;
+  /* Hasta 3 líneas con elipsis: evita que la ficha desborde el panel */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.detalle-descripcion {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4B4453;
+}
+.detalle-acciones {
+  margin-top: 6px;
+}
+.btn-cita {
+  width: 100%;
+  background: #7C6A9E;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 11px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cita:hover {
+  background: #5E4D85;
+}
+.detalle-vacio {
+  color: #6E6478;
+  font-size: 14px;
+  margin: 8px 4px;
+}
+
+/* ===== VISOR ===== */
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(47, 47, 47, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.image-viewer img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+}
 
 /* ── Modal overlay ─────────────────────────────────────── */
 .modal-overlay {
@@ -278,16 +484,40 @@
   border-top: 1px solid #EDE9F3;
 }
 
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
+  .explorador {
+    grid-template-columns: 1fr;
+  }
+  /* En pantallas angostas el panel va primero: se ve el detalle de lo
+     seleccionado sin hacer scroll por toda la grilla */
+  .detalle {
+    order: -1;
+    position: static;
+  }
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
 }
 
 @media (max-width: 500px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-item,
+  .grid-item img,
+  .btn-tatuador,
+  .btn-eliminar,
+  .chip,
+  .btn-cita,
+  .btn-subir,
+  .btn-confirmar {
+    transition: none;
+  }
+  .grid-item:hover {
+    transform: none;
   }
 }

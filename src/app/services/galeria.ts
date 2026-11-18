@@ -3,6 +3,24 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_ROUTES } from '../core/api.routes';
 
+/**
+ * Ficha del tatuador que el backend incluye en cada fila
+ * (`empleados: { include: { usuarios: usuarioSeguro } }`). Opcional: filas
+ * sin tatuador vinculado (o respuestas antiguas) no la traen.
+ */
+export interface FichaEmpleadoGaleria {
+  id?: number;
+  especialidad?: string | null;
+  biografia?: string | null;
+  activo?: boolean;
+  usuarios?: {
+    id?: number;
+    nombre?: string | null;
+    apellido?: string | null;
+    foto_perfil_url?: string | null;
+  } | null;
+}
+
 export interface GaleriaApi {
   id: number;
   subido_por: number;
@@ -12,6 +30,9 @@ export interface GaleriaApi {
   descripcion: string | null;
   estilo: string | null;
   fecha_subida: string;
+  // Relación con el tatuador autor; solo se pinta la ficha cuando el
+  // backend la incluye realmente.
+  empleados?: FichaEmpleadoGaleria | null;
 }
 
 export interface CrearGaleriaDto {

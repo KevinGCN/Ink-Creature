@@ -1,0 +1,64 @@
+/* Overlay a pantalla completa, por encima de cualquier otro contenido */
+.confirmacion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(2px);
+}
+
+.confirmacion-ventana {
+  background: #fff;
+  color: #1f2937;
+  border-radius: 14px;
+  padding: 22px 24px;
+  max-width: 26rem;
+  width: calc(100% - 48px);
+  box-shadow: 0 20px 45px rgb(0 0 0 / 30%);
+}
+
+.confirmacion-titulo {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.confirmacion-mensaje {
+  margin: 0 0 20px;
+  line-height: 1.45;
+}
+
+.confirmacion-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirmacion-boton {
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e5e7eb;
+  color: #1f2937;
+  transition: filter 0.15s ease;
+}
+
+.confirmacion-boton:hover {
+  filter: brightness(0.94);
+}
+
+.confirmacion-aceptar {
+  background: #111827;
+  color: #fff;
+}
+
+.confirmacion-boton-peligro {
+  background: #dc2626;
+  color: #fff;
+}

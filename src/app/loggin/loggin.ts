@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { NotificacionesService } from '../services/notificaciones';
 
 @Component({
   selector: 'app-loggin',
@@ -52,6 +53,8 @@ export class Loggin {
 
   constructor(
     private auth: AuthService,
+    // Avisos del proyecto (toasts propios; no se usan alert() nativos ni aquí)
+    private notificaciones: NotificacionesService,
     @Optional() private router: Router
   ) {}
 
@@ -121,13 +124,16 @@ export class Loggin {
 
       if (ok) {
         this.mensajeExito = 'Sesión iniciada correctamente.';
+        this.notificaciones.exito('¡Bienvenido de nuevo! Iniciaste sesión correctamente.');
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       this.mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+      this.notificaciones.error(this.mensajeError);
     } finally {
       this.cargandoLogin = false;
     }
@@ -167,18 +173,23 @@ export class Loggin {
       });
       if (ok) {
         this.mensajeExito = 'Cuenta creada correctamente.';
+        this.notificaciones.exito('¡Cuenta creada con éxito! Ya estás dentro.');
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Error al registrar. Intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       if (error?.status === 409) {
         this.mensajeError = 'Ya existe una cuenta con este correo. Inicia sesión.';
+        this.notificaciones.aviso(this.mensajeError);
       } else if (error?.status === 400) {
         this.mensajeError = 'Revisa los datos: la contraseña debe tener al menos 8 caracteres.';
+        this.notificaciones.error(this.mensajeError);
       } else {
         this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
         console.error('Registro error:', error);
       }
     } finally {
@@ -199,13 +210,16 @@ export class Loggin {
       const ok = await this.auth.loginConGoogle();
       if (ok) {
         this.mensajeExito = 'Sesión iniciada correctamente.';
+        this.notificaciones.exito('¡Bienvenido de nuevo! Iniciaste sesión correctamente.');
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
         this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
+        this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
       this.mensajeError = 'No se pudo iniciar sesión con Google. Por favor, intenta nuevamente o usa correo y contraseña.';
+      this.notificaciones.error(this.mensajeError);
     } finally {
       this.cargandoGoogle = false;
     }

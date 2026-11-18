@@ -12,6 +12,9 @@
   border-radius: 15px;
   position: relative;
   overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease;
 }
 
 /* ===== LINKS ===== */
@@ -21,7 +24,7 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-height: 58px;
+  min-height: 52px;
   padding: 8px 6px;
   text-align: center;
   color: #2F2F2F;
@@ -65,6 +68,9 @@
 
 .sidebar.collapsed {
   width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* ocultar SOLO texto */
@@ -75,7 +81,7 @@
 /* mantener iconos centrados */
 .sidebar.collapsed a {
   flex-direction: column;
-  min-height: 56px;
+  min-height: 48px;
   padding: 12px 0;
 }
 

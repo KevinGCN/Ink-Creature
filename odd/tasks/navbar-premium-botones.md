@@ -6,9 +6,11 @@ Incluye:
 
 - Ocultar el botón "Inicia Sesión para Premium" cuando no hay sesión.
 - Mostrar "Obten una Cotización con IA" solo con sesión iniciada.
-- Menú lateral: abrir/cerrar con icono ☰/✕ y que el contenido se reacomode
-  (sin que el panel se monte encima del contenido).
-- Revisión de tamaños de botones y tipografía en las pantallas existentes.
+- Menú lateral completamente oculto al cerrarse (sin franja de iconos): solo
+  queda el botón ☰ en la barra superior y el contenido ocupa todo el ancho.
+- Al abrir, el menú empuja el contenido para que no lo tape.
+- Reducción de tamaños de botones, incluidos los de cotización.
+- Ajuste de tipografía de botones y títulos a la escala del sitio.
 
 No incluye:
 
@@ -18,25 +20,27 @@ No incluye:
 
 ## Requisitos
 
-- [x] Sin sesión, en el inicio solo aparece "Obten una Cotización Rapida".
+- [x] Sin sesión, en el inicio solo aparece "Obten una Cotización Rápida".
 - [x] Con sesión, aparece también "Obten una Cotización con IA".
-- [x] El botón de menú muestra ☰ cerrado y ✕ abierto.
-- [x] Al abrir el menú, el contenido se desplaza y conserva su ancho útil.
+- [x] Cerrado, el menú no muestra iconos ni ocupa ancho; solo queda ☰.
+- [x] Abierto, el botón cambia a ✕ y el contenido se reacomoda.
 - [x] En móvil no hay desbordes horizontales con el menú abierto o cerrado.
-- [x] Los botones de acción usan la escala común de alturas.
-- [x] Los textos de botones no bajan de 12 px y usan los tokens del sitio.
+- [x] Los botones de acción usan alturas más compactas.
+- [x] Los botones de cotización son más chicos.
 
 ## Tareas
 
 - [x] Condicionar el botón Premium al estado de sesión.
-- [x] Compartir el estado del menú entre `MainNavbar` y `App`.
+- [x] Ocultar por completo el sidebar cerrado y liberar su columna.
+- [x] Mover el botón ☰/✕ a la barra superior.
 - [x] Reacomodar la grilla del layout al abrir/cerrar.
-- [x] Normalizar alturas y tamaños de letra de botones.
+- [x] Reducir alturas y tamaños de letra de botones.
+- [x] Resolver el merge de `origin/dev-emerson` en `dev-emerson`.
 - [x] Compilar y revisar el resultado.
 
 ## Estado
 
-Terminado en local. Pendiente de commit/push por el usuario.
+Terminado en local. Pendiente de commit/push en `integracion-frontend`.
 
 ## Evidencias
 
@@ -45,25 +49,22 @@ Terminado en local. Pendiente de commit/push por el usuario.
 - `npx ng build --configuration production` → OK.
   - Solo avisos de presupuesto de CSS/bundle (preexistentes).
 
-### Pruebas automáticas
+### Capturas (Firefox headless)
 
-- `npx ng test --watch=false` → 18 pasan, 20 fallan.
-  - Los fallos son los mismos del setup previo: faltan providers de `Auth`
-    (Firebase) y `HttpClient` en varios specs. No hay fallos nuevos ligados a
-    este cambio.
+- Escritorio cerrado: sin franja lateral; contenido a todo el ancho; ☰ arriba.
+- Escritorio abierto: ✕, lateral de 148 px y contenido reacomodado.
+- Móvil cerrado: contenido completo y botones del banner a una línea.
+- Móvil abierto: lateral de 140 px sin desbordes.
+- Inicio sin sesión: un solo botón de cotización, más compacto.
 
-### Capturas (Firefox headless, 1280×900 y 360×740)
+### Merge
 
-- Escritorio cerrado: ☰ visible arriba a la izquierda y un solo botón de IA
-  ("Obten una Cotización Rápida").
-- Escritorio abierto: ✕ en lugar de ☰, lateral de 148 px y contenido
-  reacomodado.
-- Móvil cerrado (360 px): layout de 56 px, sin desborde.
-- Móvil abierto: lateral de 140 px, contenido reacomodado, título del banner
-  sin recortes y botones a una línea.
+- Merge de `origin/dev-emerson` resuelto y comprometido en `dev-emerson`
+  (`03df34d`), conservando el rediseño de galería y los toasts/modal entrantes,
+  y los mensajes detallados de login del lado local.
 
 ## Pendiente
 
 - Verificación visual del botón "Obten una Cotización con IA" con una sesión
-  real (se validó la condición `isLoggedIn$`, no un login real).
-- Commit y push en `integracion-frontend` (lo ejecuta el usuario).
+  real.
+- Commit y push de este cambio en `integracion-frontend` (lo ejecuta el usuario).

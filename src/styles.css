@@ -22,9 +22,9 @@
   --radius-pill: 999px;
 
   /* Alturas de controles: compactos, estándar y llamada a la acción. */
-  --control-height-sm: 40px;
-  --control-height: 46px;
-  --control-height-lg: 52px;
+  --control-height-sm: 36px;
+  --control-height: 40px;
+  --control-height-lg: 46px;
 
   --text-btn: var(--text-sm);
 
@@ -86,7 +86,9 @@ button {
     --text-xl: 1.25rem;     /* 20px */
     --text-2xl: 1.625rem;   /* 26px */
     --text-hero: 1.625rem;  /* 26px */
-    --control-height: 42px;
+    --control-height-sm: 36px;
+    --control-height: 40px;
+    --control-height-lg: 44px;
   }
 
   body {

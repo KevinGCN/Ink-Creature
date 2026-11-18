@@ -1,5 +1,5 @@
 <!-- MAINBAR -->
-<nav class="sidebar" [class.collapsed]="collapsed" aria-label="Navegación principal">
+<nav class="sidebar" [class.collapsed]="collapsed" [attr.aria-hidden]="collapsed" aria-label="Navegación principal">
     <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Inicio">
         <p class="icon" aria-hidden="true">🏠</p>
         <p class="text">Inicio</p>

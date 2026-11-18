@@ -1,5 +1,14 @@
-<div class="layout" appTooltip>
+<div class="layout" [class.sidebar-open]="sidebarExpanded" appTooltip>
   <app-loading-bar></app-loading-bar>
+  <button
+    type="button"
+    class="menu-toggle"
+    (click)="toggleSidebar()"
+    [attr.aria-label]="sidebarExpanded ? 'Cerrar menú' : 'Abrir menú'"
+    [attr.aria-expanded]="sidebarExpanded"
+  >
+    {{ sidebarExpanded ? '✕' : '☰' }}
+  </button>
   <section class="user-navbar">
     <app-user-navbar></app-user-navbar>
   </section>
@@ -7,7 +16,7 @@
     <router-outlet></router-outlet>
   </main>
   <section class="main-navbar">
-    <app-main-navbar></app-main-navbar>
+    <app-main-navbar [collapsed]="!sidebarExpanded"></app-main-navbar>
   </section>
 
 </div>

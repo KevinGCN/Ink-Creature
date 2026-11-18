@@ -17,7 +17,15 @@ import { LoadingBar } from './core/loading-bar/loading-bar';
 export class App implements OnInit {
   protected readonly title = signal('Ink-Creature');
 
+  /** Estado compartido con el menú lateral para reacomodar el contenido. */
+  sidebarExpanded = false;
+
   constructor(private seoService: SeoService) {}
+
+  /** Abre o cierra el menú lateral y deja que la grilla se reacomode. */
+  toggleSidebar() {
+    this.sidebarExpanded = !this.sidebarExpanded;
+  }
 
   ngOnInit() {
     this.seoService.init();

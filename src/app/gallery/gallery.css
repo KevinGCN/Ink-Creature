@@ -83,7 +83,7 @@
   background: #5E596B;
   color: white;
   border: none;
-  min-height: 36px;
+  min-height: var(--control-height-sm);
   padding: 7px 14px;
   border-radius: var(--radius-pill);
   font-size: var(--text-sm);
@@ -104,7 +104,7 @@
   background-color: #4B4453;
   color: #fff;
   border: none;
-  min-height: 42px;
+  min-height: var(--control-height);
   padding: 9px 18px;
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
@@ -155,7 +155,7 @@
   background: #7C6A9E;
   color: white;
   border: none;
-  min-height: 42px;
+  min-height: var(--control-height);
   padding: 10px 22px;
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
@@ -164,7 +164,7 @@
   transition: background 0.25s;
 }
 .btn-cancelar {
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 10px 20px;
   border: 1px solid #C9BEDD;
   background: white;
@@ -174,7 +174,7 @@
   cursor: pointer;
 }
 .btn-confirmar {
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 10px 20px;
   background: #7C6A9E;
   color: white;
@@ -305,7 +305,7 @@
   }
 
   .title {
-    font-size: 1.4rem;
+    font-size: var(--text-2xl);
     margin-bottom: 16px;
   }
 
@@ -364,8 +364,9 @@
   color: #fff;
   border: none;
   border-radius: 8px;
+  min-height: var(--control-height);
   padding: 10px 22px;
-  font-size: 14px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;

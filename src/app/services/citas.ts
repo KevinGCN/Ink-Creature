@@ -21,6 +21,11 @@ interface CitaApi {
       apellido: string;
     } | null;
   } | null;
+  usuarios: {
+    id: number;
+    nombre: string;
+    apellido: string;
+  } | null;
 }
 
 export interface CrearCitaDto {
@@ -60,10 +65,13 @@ function a12h(hhmm: string): string {
 export class CitaService {
   private readonly http = inject(HttpClient);
 
-  obtenerCitas(usuarioId?: number): Observable<Cita[]> {
+  obtenerCitas(usuarioId?: number, empleadoId?: number): Observable<Cita[]> {
     let params = new HttpParams();
     if (usuarioId) {
       params = params.set('usuario_id', String(usuarioId));
+    }
+    if (empleadoId) {
+      params = params.set('empleado_id', String(empleadoId));
     }
 
     return this.http
@@ -94,12 +102,17 @@ export class CitaService {
     const horaFin = aHHMM(c.hora_fin);
     const nombre = c.empleados?.usuarios?.nombre ?? '';
     const apellido = c.empleados?.usuarios?.apellido ?? '';
+    const cliente = [c.usuarios?.nombre, c.usuarios?.apellido]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
 
     return {
       id: c.id,
       fecha: `${dia}/${mes}/${anio}`,
       hora: a12h(horaInicio),
       tatuador: `${nombre} ${apellido}`.trim() || 'Tatuador',
+      cliente: cliente || undefined,
       fechaISO,
       horaInicio,
       horaFin,

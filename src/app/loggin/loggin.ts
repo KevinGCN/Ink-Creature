@@ -10,7 +10,7 @@
  * - Login: previene doble clic con estado de carga
  * - Mensajes de error específicos por tipo de cuenta existente
  */
-import { Component, Output, EventEmitter, Optional } from '@angular/core';
+import { Component, Output, EventEmitter, Optional, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -24,7 +24,7 @@ import { NotificacionesService } from '../services/notificaciones';
   templateUrl: './loggin.html',
   styleUrls: ['./loggin.css']
 })
-export class Loggin {
+export class Loggin implements OnInit {
   /** Indica si el formulario activo es el de registro (true) o login (false) */
   modoRegistro = false;
 
@@ -46,6 +46,14 @@ export class Loggin {
   /** Mensaje de éxito mostrado bajo los botones */
   mensajeExito = '';
 
+  /** Aviso cuando la petición tarda demasiado (servidor despertando). */
+  avisoDemora = '';
+
+  /** Ruta a la que volver después de iniciar sesión (viene de ?volver=). */
+  private volverA = '';
+
+  private temporizadorDemora: ReturnType<typeof setTimeout> | null = null;
+
   /** Estado de carga de los botones */
   cargandoLogin = false;
   cargandoRegistro = false;
@@ -58,10 +66,34 @@ export class Loggin {
     @Optional() private router: Router
   ) {}
 
+  ngOnInit(): void {
+    // El guard de rutas protegidas redirige a /loggin?volver=/schedule, así
+    // que tras autenticarse se vuelve a la página que el usuario buscaba.
+    if (!this.router) return;
+    const params = this.router.parseUrl(this.router.url).queryParams;
+    this.volverA = typeof params['volver'] === 'string' ? params['volver'] : '';
+  }
+
   /**
-   * Cierra el modal emitiendo el evento `cerrar`
+   * Cierra el login.
+   *
+   * - Dentro de la barra (modal): avisa al padre para que lo oculte.
+   * - Como página (/loggin): no hay padre que escuche, así que navega
+   *   de vuelta a la página de origen (`?volver=`) o al inicio.
    */
   cerrarModal() {
+    if (!this.router) {
+      this.cerrar.emit();
+      return;
+    }
+
+    const ruta = this.router.url.split('?')[0].split('#')[0];
+
+    if (ruta === '/loggin') {
+      this.router.navigateByUrl(this.volverA || '/');
+      return;
+    }
+
     this.cerrar.emit();
   }
 
@@ -89,6 +121,14 @@ export class Loggin {
    */
   private irAlInicioSiEsRutaLoggin() {
     if (!this.router) return;
+
+    // Si venimos de una ruta protegida (?volver=...), regresamos ahí.
+    if (this.volverA) {
+      const destino = this.volverA;
+      setTimeout(() => this.router.navigateByUrl(destino), 900);
+      return;
+    }
+
     const ruta = this.router.url.split('?')[0].split('#')[0];
     if (ruta === '/loggin') {
       // Deja ver el mensaje de éxito antes de salir del formulario.
@@ -103,9 +143,10 @@ export class Loggin {
    */
   async iniciarSesion() {
     if (this.cargandoLogin) return;
-    
+
     this.mensajeError = '';
     this.mensajeExito = '';
+    this.avisoDemora = '';
 
     if (!this.correo || !this.password) {
       this.mensajeError = 'Por favor, ingresa tu correo y contraseña';
@@ -118,6 +159,12 @@ export class Loggin {
     }
 
     this.cargandoLogin = true;
+    // En el plan gratuito de Render el servicio se duerme y la primera
+    // petición puede tardar. Avisamos en vez de dejar el botón mudo.
+    this.temporizadorDemora = setTimeout(() => {
+      this.avisoDemora =
+        'El servidor está tardando más de lo normal (puede estar despertando). Espera unos segundos…';
+    }, 6000);
 
     try {
       const ok = await this.auth.login(this.correo, this.password);
@@ -128,13 +175,34 @@ export class Loggin {
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
-        this.mensajeError = 'Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.';
+        this.mensajeError =
+          'Correo o contraseña incorrectos. Revisa los datos e intenta de nuevo.';
         this.notificaciones.error(this.mensajeError);
       }
     } catch (error: any) {
-      this.mensajeError = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
+      const status = error?.status;
+
+      if (status === 401) {
+        this.mensajeError =
+          'Correo o contraseña incorrectos. Revisa los datos e intenta de nuevo.';
+      } else if (status === 0) {
+        this.mensajeError =
+          'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.';
+      } else if (status >= 500) {
+        this.mensajeError =
+          'El servidor no respondió bien. Espera unos segundos e intenta de nuevo.';
+      } else {
+        this.mensajeError = 'No se pudo iniciar sesión. Intenta nuevamente.';
+        console.error('Error de login:', error);
+      }
+
       this.notificaciones.error(this.mensajeError);
     } finally {
+      if (this.temporizadorDemora) {
+        clearTimeout(this.temporizadorDemora);
+        this.temporizadorDemora = null;
+      }
+      this.avisoDemora = '';
       this.cargandoLogin = false;
     }
   }

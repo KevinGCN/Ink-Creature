@@ -24,11 +24,22 @@ export class Schedule implements OnInit {
   empleadoSeleccionadoId: number | null = null;
 
   empleados: Empleado[] = [];
+  cargandoEmpleados = false;
+  errorEmpleados = '';
   citas: Cita[] = [];
   private usuarioId: number = 0;
   modoEdicion: boolean = false;
   citaEditar: Cita | null = null;
   reservando: boolean = false;
+
+  // Agenda del tatuador (rol empleado)
+  esEmpleado = false;
+  miEmpleadoId: number | null = null;
+  citasEmpleado: Cita[] = [];
+  cargandoCitasEmpleado = false;
+  errorCitasEmpleado = '';
+  confirmandoCitaId: number | null = null;
+  mensajeEmpleado = '';
 
   // =========================
   // CALENDARIO DINÁMICO
@@ -68,10 +79,15 @@ export class Schedule implements OnInit {
   ngOnInit(): void {
     const usuario = this.auth.obtenerUsuario();
     this.usuarioId = usuario?.id ?? usuario?.uid ?? 0;
+    this.esEmpleado = this.auth.esEmpleado();
 
     this.cargarEmpleados();
     this.generarCalendario();
     this.cargarCitas();
+
+    if (this.esEmpleado) {
+      this.cargarAgendaEmpleado();
+    }
 
     // Verificar si viene una cita para editar
     const state = this.router.getCurrentNavigation()?.extras?.state || history.state;
@@ -116,9 +132,13 @@ export class Schedule implements OnInit {
   }
 
   cargarEmpleados(): void {
+    this.cargandoEmpleados = true;
+    this.errorEmpleados = '';
+
     this.empleadoService.getEmpleados().subscribe({
       next: data => {
         this.empleados = data;
+        this.cargandoEmpleados = false;
 
         // Al editar, el nombre guardado en la cita puede no coincidir con el
         // nombre actual del empleado; el id sí es estable.
@@ -134,9 +154,94 @@ export class Schedule implements OnInit {
         this.cdr.detectChanges();
       },
       error: err => {
-        console.error(err);
+        console.error('No se pudieron cargar los tatuadores:', err);
+        this.errorEmpleados = 'No se pudieron cargar los tatuadores.';
+        this.cargandoEmpleados = false;
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  /**
+   * Agenda del tatuador: busca su ficha de empleado y lista las citas
+   * asignadas a él (no las que reservó como cliente).
+   */
+  cargarAgendaEmpleado(): void {
+    if (!this.esEmpleado || !this.usuarioId) return;
+
+    this.cargandoCitasEmpleado = true;
+    this.errorCitasEmpleado = '';
+    this.mensajeEmpleado = '';
+
+    this.empleadoService.getEmpleados().subscribe({
+      next: (empleados) => {
+        const propio = empleados.find((e) => e.usuarioId === this.usuarioId);
+
+        if (!propio) {
+          this.cargandoCitasEmpleado = false;
+          this.errorCitasEmpleado =
+            'Tu cuenta no tiene una ficha de tatuador activa.';
+          this.cdr.detectChanges();
+          return;
+        }
+
+        this.miEmpleadoId = propio.id;
+
+        this.citaService.obtenerCitas(undefined, propio.id).subscribe({
+          next: (citas) => {
+            this.citasEmpleado = citas;
+            this.cargandoCitasEmpleado = false;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('No se pudieron cargar las citas del tatuador:', err);
+            this.errorCitasEmpleado = 'No se pudieron cargar tus citas.';
+            this.cargandoCitasEmpleado = false;
+            this.cdr.detectChanges();
+          },
+        });
+      },
+      error: (err) => {
+        console.error('No se pudo cargar la ficha del tatuador:', err);
+        this.errorCitasEmpleado = 'No se pudo cargar tu ficha de tatuador.';
+        this.cargandoCitasEmpleado = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  cancelacionConfirmada(cita: Cita): boolean {
+    return !!cita.notas?.includes('Cancelación confirmada por el tatuador');
+  }
+
+  confirmarCancelacion(cita: Cita): void {
+    if (
+      !window.confirm(
+        '¿Confirmas la cancelación de esta cita? El cliente verá que ya la confirmaste.',
+      )
+    ) {
+      return;
+    }
+
+    this.confirmandoCitaId = cita.id;
+    this.mensajeEmpleado = '';
+    const notas = `${
+      cita.notas ? cita.notas + ' | ' : ''
+    }Cancelación confirmada por el tatuador`;
+
+    this.citaService
+      .actualizar(cita.id, { estado: 'cancelada', notas })
+      .subscribe({
+        next: () => {
+          this.confirmandoCitaId = null;
+          this.mensajeEmpleado = 'Cancelación confirmada.';
+          this.cargarAgendaEmpleado();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.confirmandoCitaId = null;
+          this.errorCitasEmpleado = this.mensajeDeError(error);
+        },
+      });
   }
 
   cargarCitas(): void {

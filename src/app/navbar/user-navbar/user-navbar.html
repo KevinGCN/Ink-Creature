@@ -7,17 +7,21 @@
 
      <div *ngIf="auth.isLoggedIn$ | async" class="menu-ajustes">
 
-      <button (click)="toggleAjustes()">
+      <button
+        (click)="toggleAjustes()"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="mostrarAjustes"
+      >
         ⚙️ Ajustes
       </button>
 
-      <div class="dropdown" *ngIf="mostrarAjustes">
+      <div class="dropdown" *ngIf="mostrarAjustes" role="menu">
 
-        <button (click)="irPerfil()">
-          Perfil
+        <button role="menuitem" (click)="irAjustes()">
+          Ajustes
         </button>
 
-        <button (click)="logout()">
+        <button role="menuitem" (click)="logout()">
           Cerrar sesión
         </button>
 

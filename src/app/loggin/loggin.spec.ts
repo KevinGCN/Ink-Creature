@@ -54,7 +54,7 @@ describe('Loggin', () => {
       component.correo = 'no-existe@test.com';
       component.password = 'incorrecta123';
       await component.iniciarSesion();
-      expect(errorDe).toHaveBeenCalledWith('Correo o contraseña incorrectos. Por favor, verifica e intenta nuevamente.');
+      expect(errorDe).toHaveBeenCalledWith('Correo o contraseña incorrectos. Revisa los datos e intenta de nuevo.');
       expect(window.alert).not.toHaveBeenCalled();
     });
 
@@ -74,8 +74,20 @@ describe('Loggin', () => {
       component.correo = 'cr7@gmail.com';
       component.password = '12345678';
       await component.iniciarSesion();
-      expect(errorDe).toHaveBeenCalledWith('Error al iniciar sesión. Por favor, intenta nuevamente.');
+      expect(errorDe).toHaveBeenCalledWith('No se pudo iniciar sesión. Intenta nuevamente.');
       expect(window.alert).not.toHaveBeenCalled();
+    });
+
+    // Error del servidor: el mensaje distingue una caída del backend de unas
+    // credenciales incorrectas, para que el visitante sepa si reintentar.
+    it('distingue un error 500 del servidor de unas credenciales inválidas', async () => {
+      vi.mocked(auth.login).mockRejectedValue({ status: 500 });
+      component.correo = 'cr7@gmail.com';
+      component.password = '12345678';
+      await component.iniciarSesion();
+      expect(errorDe).toHaveBeenCalledWith(
+        'El servidor no respondió bien. Espera unos segundos e intenta de nuevo.',
+      );
     });
 
     // Registro correcto: cuenta creada con toast del proyecto.

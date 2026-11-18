@@ -23,7 +23,12 @@
   @if (cargando()) {
     <p>Cargando galería…</p>
   } @else if (error()) {
-    <p class="error-galeria">{{ error() }}</p>
+    <div class="error-galeria" role="alert">
+      <p>{{ error() }}</p>
+      <button type="button" class="btn-reintentar" (click)="cargarImagenes()">
+        Reintentar
+      </button>
+    </div>
   }
 
   <!-- Chips de filtro por estilo; 'todos' limpia el filtro.

@@ -1,7 +1,7 @@
 .main-content {
   max-width: 1100px;
   margin: auto;
-  padding: 30px 20px;
+  padding: 32px 20px;
 }
 
 .banner {
@@ -24,9 +24,10 @@
 
 .actions h1 {
   margin: 0;
-  font-size: 42px;
+  font-size: var(--text-hero);
+  font-weight: 800;
   color: #2F2F2F;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
@@ -39,10 +40,11 @@
 }
 
 .buttons button {
-  padding: 14px 26px;
+  min-height: var(--control-height);
+  padding: 12px 26px;
   border: none;
-  border-radius: 30px;
-  font-size: 15px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-md);
   font-weight: 700;
   cursor: pointer;
   transition: 0.3s;
@@ -62,13 +64,14 @@
 }
 
 
-.btn-secondary {
-  background: transparent;
-  color: #5E596B;
-  border: 1px solid #C9BEDD;
+/* El selector necesita más peso que `.buttons button`, que pone border: none. */
+.buttons .btn-secondary {
+  background: rgba(255, 255, 255, 0.55);
+  color: #4B4453;
+  border: 1px solid #8E7FA6;
 }
 
-.btn-secondary:hover {
+.buttons .btn-secondary:hover {
   background: #F4F1F7;
   transform: translateY(-3px);
 }
@@ -83,7 +86,6 @@
   box-shadow: 0 6px 18px rgba(94, 89, 107, 0.10);
 }
 
-
 /* Contenedor flotante */
 .IA {
     position: fixed;
@@ -92,19 +94,22 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    z-index: 1000;
+    /* Debajo de la barra de usuario: el modal de login (z-index 2000)
+       queda siempre por encima de estos botones. */
+    z-index: 900;
 }
 
 /* Botón base */
 .IA button {
     min-width: 240px;
-    padding: 14px 18px;
-    border-radius: 16px;
+    min-height: var(--control-height);
+    padding: 12px 18px;
+    border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(17, 17, 17, 0.9);
     color: #ffffff;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: var(--text-sm);
     cursor: pointer;
     transition: all 0.25s ease;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
@@ -160,13 +165,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
-  padding: 12px 16px;
-  border-radius: 12px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
   background: #fff4e5;
   color: #7a3e00;
   border: 1px solid #f5c26b;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .aviso-acceso a {
@@ -175,30 +180,72 @@
   text-decoration: underline;
 }
 
+/* Botón de cotización con IA cuando el visitante no inició sesión:
+   se ve secundario y lleva al login conservando el destino. */
+.IA button.secundario {
+  background: rgba(94, 89, 107, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.IA button.secundario:hover {
+  background: #5E596B;
+}
+
 /* Ajustes para móvil (360px) */
 @media (max-width: 600px) {
-  .actions h1 {
-    font-size: clamp(24px, 7.5vw, 42px);
-    letter-spacing: 1px;
+  .main-content {
+    padding: 16px 12px 24px;
   }
 
   .banner {
     height: auto;
-    min-height: 220px;
+    min-height: 180px;
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
+
+  .actions h1 {
+    font-size: var(--text-hero);
+    letter-spacing: 0.5px;
+  }
+
+  .buttons {
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .buttons button {
+    padding: 10px 18px;
+    font-size: var(--text-sm);
+  }
+
+  .comments {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
   }
 
   .IA {
     position: static;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 16px;
+    gap: 10px;
   }
 
   .IA button {
     min-width: 0;
     width: 100%;
+    min-height: 40px;
+    padding: 10px 14px;
+    font-size: var(--text-xs);
+    border-radius: var(--radius-md);
   }
 
   .main-content {
     padding-bottom: 90px;
+  }
+
+  .aviso-acceso {
+    padding: 12px 14px;
   }
 }

@@ -521,3 +521,38 @@ button.detalle-autor:hover {
     transform: none;
   }
 }
+
+/* ===== ESTADO DE ERROR DE CARGA ===== */
+/* El backend puede estar dormido (plan gratuito de Render): se avisa y se
+   ofrece reintentar sin recargar la página. */
+.error-galeria {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  background: #FBEEEE;
+  border: 1px solid #E2C4C4;
+  border-radius: 10px;
+  color: #8A3B3B;
+  font-size: 14px;
+}
+.error-galeria p {
+  margin: 0;
+}
+.btn-reintentar {
+  margin-left: auto;
+  padding: 8px 16px;
+  border: 1px solid #8A3B3B;
+  border-radius: 999px;
+  background: transparent;
+  color: #8A3B3B;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-reintentar:hover {
+  background: #8A3B3B;
+  color: #FFFFFF;
+}

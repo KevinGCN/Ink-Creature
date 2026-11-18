@@ -19,6 +19,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { firebaseConfig } from './config/firebase.config';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/auth.interceptor';
+import { loadingInterceptor } from './core/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +31,8 @@ export const appConfig: ApplicationConfig = {
 
     provideAuth(() => getAuth()),
 
-    // HttpClient + JWT del backend en cada petición a la API
-    provideHttpClient(withInterceptors([authInterceptor]))
+    // HttpClient + JWT del backend en cada petición a la API.
+    // El interceptor de carga va al final para medir también los errores.
+    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor]))
   ]
 };

@@ -4,7 +4,7 @@
 
   <div class="header">
     <span>Ink-Creature</span>
-    <button class="close-btn" (click)="cerrarModal()">✕</button>
+    <button class="close-btn" (click)="cerrarModal()" aria-label="Cerrar">✕</button>
   </div>
 
   <div class="content">
@@ -71,6 +71,7 @@
 
     <p class="success-msg" *ngIf="mensajeExito" role="status">{{ mensajeExito }}</p>
     <p class="error-msg" *ngIf="mensajeError" role="alert">{{ mensajeError }}</p>
+    <p class="info-msg" *ngIf="avisoDemora" role="status">{{ avisoDemora }}</p>
 
   </div>
 </div>

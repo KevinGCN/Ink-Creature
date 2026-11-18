@@ -17,7 +17,9 @@
 .main-navbar {
   grid-column: 1;
   grid-row: 1;
-  z-index: 1000;
+  /* Por debajo del overlay del login (1999) y del panel (2000).
+     Sigue por encima del contenido para el menú expandido. */
+  z-index: 900;
   height: 100vh;
 }
 
@@ -27,4 +29,17 @@
   grid-row: 2;
   overflow-y: auto;
   padding: 10px;
+}
+
+/* ===== MÓVIL =====
+   El lateral baja a 56 px para devolverle ancho al contenido. */
+@media (max-width: 600px) {
+  .layout {
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: 56px 1fr;
+  }
+
+  .content {
+    padding: 8px;
+  }
 }

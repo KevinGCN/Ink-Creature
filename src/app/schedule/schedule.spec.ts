@@ -22,6 +22,7 @@ describe('Schedule', () => {
           useValue: {
             obtenerUsuario: () => ({ id: 7, email: 'cliente@test.com' }),
             estaLogueado: () => true,
+            esEmpleado: () => false,
           },
         },
         {
@@ -94,6 +95,7 @@ describe('Schedule — notificaciones del proyecto (sin alert nativo)', () => {
           useValue: {
             obtenerUsuario: () => (sesionActiva ? { id: 7, email: 'cliente@test.com' } : null),
             estaLogueado: () => sesionActiva,
+            esEmpleado: () => false,
           },
         },
         {

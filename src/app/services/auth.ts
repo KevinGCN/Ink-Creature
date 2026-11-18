@@ -129,7 +129,10 @@ export class AuthService {
 
   /**
    * Login por correo y contraseña contra `POST /auth/login`.
-   * Devuelve `false` con credenciales incorrectas (igual que antes).
+   *
+   * Deja propagar el error HTTP a propósito: la pantalla de login necesita
+   * distinguir "credenciales inválidas" (401) de "no hay conexión" (status 0)
+   * para mostrar un mensaje útil en vez de culpar siempre a la contraseña.
    */
   login(correo: string, password: string): Promise<boolean> {
     return firstValueFrom(
@@ -139,8 +142,7 @@ export class AuthService {
       }),
     )
       .then((sesion) => this.iniciarSesionConToken(sesion))
-      .then(() => true)
-      .catch(() => false);
+      .then(() => true);
   }
 
   /**
@@ -286,6 +288,10 @@ export class AuthService {
 
   getAuthUser(): User | null {
     return this.usuarioActual;
+  }
+
+  esEmpleado(): boolean {
+    return this.obtenerUsuario()?.rol === 'empleado';
   }
 
   esAdmin(): boolean {

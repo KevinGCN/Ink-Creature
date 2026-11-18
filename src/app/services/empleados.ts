@@ -1,6 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  forkJoin,
+  map,
+  of,
+  shareReplay,
+  switchMap,
+  throwError,
+  timeout,
+} from 'rxjs';
 import { Empleado } from '../models/empleado';
 import { API_ROUTES, urlDeImagen } from '../core/api.routes';
 
@@ -66,21 +76,41 @@ function aHHMM(valor: string): string {
   providedIn: 'root',
 })
 export class EmpleadoService {
+  /**
+   * Catálogo compartido: evita repetir `/empleados` + `/horarios-trabajador`
+   * cada vez que se entra a Citas, Galería o al perfil de un tatuador.
+   * Se invalida al crear, editar o borrar.
+   */
+  private cache$?: Observable<Empleado[]>;
+
   constructor(private http: HttpClient) {}
 
   getEmpleados(): Observable<Empleado[]> {
-    return forkJoin({
-      empleados: this.http.get<EmpleadoApi[]>(API_ROUTES.empleados),
-      horarios: this.http
-        .get<HorarioApi[]>(API_ROUTES.horarios)
-        .pipe(catchError(() => of([] as HorarioApi[]))),
-    }).pipe(
-      map(({ empleados, horarios }) =>
-        empleados
-          .filter((e) => e.activo)
-          .map((e) => this.mapear(e, horarios)),
-      ),
-    );
+    if (!this.cache$) {
+      this.cache$ = forkJoin({
+        empleados: this.http.get<EmpleadoApi[]>(API_ROUTES.empleados),
+        // Si los horarios tardan o fallan, el catálogo no debe quedarse
+        // esperando: los tatuadores se muestran igual, sin franja horaria.
+        horarios: this.http.get<HorarioApi[]>(API_ROUTES.horarios).pipe(
+          timeout(2500),
+          catchError(() => of([] as HorarioApi[])),
+        ),
+      }).pipe(
+        map(({ empleados, horarios }) =>
+          empleados
+            .filter((e) => e.activo)
+            .map((e) => this.mapear(e, horarios)),
+        ),
+        // Si falla el catálogo, no se guarda el error en caché.
+        catchError((error) => {
+          this.cache$ = undefined;
+          return throwError(() => error);
+        }),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
+    }
+
+    return this.cache$;
   }
 
   getEmpleado(id: number): Observable<Empleado | undefined> {
@@ -115,7 +145,10 @@ export class EmpleadoService {
               ),
             ),
         ),
-        switchMap((empleado) => this.getEmpleado(empleado.id)),
+        switchMap((empleado) => {
+          this.cache$ = undefined;
+          return this.getEmpleado(empleado.id);
+        }),
       );
   }
 
@@ -138,12 +171,20 @@ export class EmpleadoService {
             biografia: datos.biografia,
           }),
         ),
-        switchMap(() => this.getEmpleado(empleado.id)),
+        switchMap(() => {
+          this.cache$ = undefined;
+          return this.getEmpleado(empleado.id);
+        }),
       );
   }
 
   eliminar(id: number): Observable<unknown> {
-    return this.http.delete(`${API_ROUTES.empleados}/${id}`);
+    return this.http
+      .delete(`${API_ROUTES.empleados}/${id}`)
+      .pipe(map((respuesta) => {
+        this.cache$ = undefined;
+        return respuesta;
+      }));
   }
 
   private subirFotoSiHay(usuarioId: number, foto?: File): Observable<unknown> {

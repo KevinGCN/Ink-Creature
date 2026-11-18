@@ -6,6 +6,7 @@ import { Employees } from './employees/employees';
 import { Schedule } from './schedule/schedule';
 import { Information } from './information/information';
 import { Profile } from './profile/profile';
+import { Settings } from './settings/settings';
 import { EmployeeCV } from './employee-cv/employee-cv';
 import { AuthGuard } from './guards/auth.guard';
 import { TattooQuote } from './tattoo-quote/tattoo-quote';
@@ -75,6 +76,16 @@ export const routes: Routes = [
       titulo: 'Mi perfil | Ink Creature',
       descripcion:
         'Consulta y actualiza los datos de tu perfil en Ink Creature, revisa tus citas y mantén tus preferencias al día.'
+    }
+  },
+  {
+    path: 'ajustes',
+    component: Settings,
+    canActivate: [AuthGuard],
+    data: {
+      titulo: 'Ajustes | Ink Creature',
+      descripcion:
+        'Gestiona tu cuenta de Ink Creature: datos de perfil, cierre de sesión y eliminación de cuenta.'
     }
   },
   {

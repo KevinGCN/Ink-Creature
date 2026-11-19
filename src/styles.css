@@ -21,7 +21,13 @@
   --radius-lg: 16px;
   --radius-pill: 999px;
 
-  --control-height: 46px;
+  /* Alturas de controles: compactos, estándar y llamada a la acción. */
+  --control-height-sm: 36px;
+  --control-height: 40px;
+  --control-height-lg: 46px;
+
+  --text-btn: var(--text-sm);
+
   --line-base: 1.6;
 }
 
@@ -53,6 +59,13 @@ textarea {
   font-family: inherit;
 }
 
+/* Tamaño base de los botones: cada componente puede subir o bajar la
+   jerarquía, pero ninguno queda con la letra por defecto del navegador. */
+button {
+  font-size: var(--text-btn);
+  line-height: 1.2;
+}
+
 /* Foco visible y consistente para navegación con teclado. */
 :focus-visible {
   outline: 2px solid #7e57c2;
@@ -73,7 +86,9 @@ textarea {
     --text-xl: 1.25rem;     /* 20px */
     --text-2xl: 1.625rem;   /* 26px */
     --text-hero: 1.625rem;  /* 26px */
-    --control-height: 42px;
+    --control-height-sm: 36px;
+    --control-height: 40px;
+    --control-height-lg: 44px;
   }
 
   body {

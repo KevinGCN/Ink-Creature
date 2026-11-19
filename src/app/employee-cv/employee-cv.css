@@ -10,7 +10,7 @@
   background: #5E596B; 
   color: white;
   text-decoration: none;
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 11px 20px;
   border-radius: var(--radius-pill);
   margin-bottom: 28px;

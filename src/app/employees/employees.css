@@ -30,7 +30,7 @@
   background: #7C6A9E;
   color: white;
   border: none;
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 11px 22px;
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
@@ -135,7 +135,7 @@
   background: #5E596B;
   color: white;
   text-decoration: none;
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 11px;
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
@@ -156,7 +156,7 @@
 .btn-editar,
 .btn-eliminar {
   flex: 1;
-  min-height: 38px;
+  min-height: var(--control-height-sm);
   padding: 8px;
   border: none;
   border-radius: var(--radius-sm);
@@ -304,7 +304,7 @@
 }
 
 .btn-cancelar {
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 10px 20px;
   border: 1px solid #C9BEDD;
   background: white;
@@ -320,7 +320,7 @@
 }
 
 .btn-guardar {
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 10px 20px;
   background: #7C6A9E;
   color: white;
@@ -373,7 +373,7 @@
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
-  min-height: 44px;
+  min-height: var(--control-height);
   padding: 10px 20px;
   font-size: var(--text-sm);
   font-weight: 600;
@@ -397,7 +397,7 @@
   }
 
   .encabezado h1 {
-    font-size: 1.4rem;
+    font-size: var(--text-2xl);
   }
 
   .tarjeta-foto {

@@ -61,8 +61,8 @@
   background-color: #111111;
   color: white;
   border: none;
-  min-height: 50px;
-  padding: 14px;
+  min-height: var(--control-height-lg);
+  padding: 12px 14px;
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--text-md);

@@ -1,9 +1,15 @@
 .layout {
   display: grid;
-  grid-template-columns: 70px 1fr;   /* lateral | contenido */
+  grid-template-columns: 0 1fr;      /* lateral oculto | contenido */
   grid-template-rows: 70px 1fr;      /* superior | contenido */
   height: 100vh;
   overflow: hidden;
+  transition: grid-template-columns 0.28s ease;
+}
+
+/* Menú abierto: el contenido se reacomoda en vez de quedar tapado. */
+.layout.sidebar-open {
+  grid-template-columns: 148px 1fr;
 }
 
 /* Barra superior */
@@ -11,6 +17,32 @@
   grid-column: 1 / span 2;
   grid-row: 1;
   z-index: 1000;
+}
+
+/* Botón de menú: fijo en la esquina superior izquierda, por encima de la
+   barra de usuario. Cambia ☰ por ✕ al abrir. */
+.menu-toggle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 70px;
+  padding: 0;
+  border: none;
+  border-radius: 15px 0 0 0;
+  background: transparent;
+  color: #4B4453;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.menu-toggle:hover {
+  background: #D7D1DB;
 }
 
 /* Barra lateral */
@@ -28,6 +60,8 @@
   grid-column: 2;
   grid-row: 2;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
   padding: 10px;
 }
 
@@ -35,11 +69,35 @@
    El lateral baja a 56 px para devolverle ancho al contenido. */
 @media (max-width: 600px) {
   .layout {
-    grid-template-columns: 56px 1fr;
+    grid-template-columns: 0 1fr;
     grid-template-rows: 56px 1fr;
+  }
+
+  .layout.sidebar-open {
+    grid-template-columns: 140px 1fr;
+  }
+
+  /* Con el menú abierto el contenido queda angosto: el título baja un paso
+     para no recortarse. */
+  .layout.sidebar-open .content {
+    --text-hero: 1.25rem;
   }
 
   .content {
     padding: 8px;
+  }
+
+  .menu-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px 0 0 0;
+    font-size: var(--text-md);
+  }
+}
+
+/* Sin animación si el sistema pide menos movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  .layout {
+    transition: none;
   }
 }

@@ -8,7 +8,7 @@
  * Validaciones:
  * - Registro: verifica correo duplicado en empleados.json
  * - Login: previene doble clic con estado de carga
- * - Mensajes de error específicos por tipo de cuenta existente
+ * - Mensajes de error claros sin revelar si un correo está registrado
  */
 import { Component, Output, EventEmitter, Optional, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -146,12 +146,13 @@ export class Loggin implements OnInit {
     this.avisoDemora = '';
 
     if (!this.correo || !this.password) {
-      this.mensajeError = 'Por favor, ingresa tu correo y contraseña';
+      this.mensajeError = 'Ingresa tu correo y contraseña para continuar.';
       return;
     }
 
     if (!this.correo.includes('@')) {
-      this.mensajeError = 'Por favor, ingresa un correo electrónico válido';
+      this.mensajeError =
+        'Escribe un correo válido, por ejemplo nombre@dominio.com.';
       return;
     }
 
@@ -171,22 +172,27 @@ export class Loggin implements OnInit {
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
-        this.mensajeError = 'No se pudo iniciar sesión. Intenta nuevamente.';
+        this.mensajeError =
+          'No pudimos iniciar sesión. Inténtalo de nuevo.';
       }
     } catch (error: any) {
       const status = error?.status;
 
       if (status === 401) {
+        // El backend no distingue entre correo inexistente y contraseña
+        // incorrecta (evita revelar qué cuentas existen), así que el mensaje
+        // cubre los dos casos y también el de una cuenta desactivada.
         this.mensajeError =
-          'Correo o contraseña incorrectos. Revisa los datos e intenta de nuevo.';
+          'El correo o la contraseña no son correctos. Verifica que estén bien escritos. Si aún no tienes cuenta, usa «Registrarse»; si el problema continúa, tu cuenta podría estar desactivada.';
       } else if (status === 0 || status === undefined) {
         this.mensajeError =
-          'No pudimos conectar con el servidor. Revisa tu conexión e intenta de nuevo.';
+          'No pudimos conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.';
       } else if (status >= 500) {
         this.mensajeError =
-          'El servidor no respondió bien. Espera unos segundos e intenta de nuevo.';
+          'El servidor está teniendo problemas. Espera unos segundos y vuelve a intentarlo.';
       } else {
-        this.mensajeError = 'No se pudo iniciar sesión. Intenta nuevamente.';
+        this.mensajeError =
+          'Ocurrió un error inesperado al iniciar sesión. Inténtalo de nuevo.';
         console.error('Error de login:', error);
       }
     } finally {
@@ -211,15 +217,17 @@ export class Loggin implements OnInit {
     this.mensajeError = '';
     this.mensajeExito = '';
     if (!this.nombre || !this.correo || !this.password) {
-      this.mensajeError = 'Por favor, completa todos los campos para registrarte';
+      this.mensajeError =
+        'Completa nombre, correo y contraseña para crear tu cuenta.';
       return;
     }
     if (!this.correo.includes('@')) {
-      this.mensajeError = 'Por favor, ingresa un correo electrónico válido';
+      this.mensajeError =
+        'Escribe un correo válido, por ejemplo nombre@dominio.com.';
       return;
     }
     if (this.password.length < 8) {
-      this.mensajeError = 'La contraseña debe tener al menos 8 caracteres para mayor seguridad';
+      this.mensajeError = 'La contraseña debe tener al menos 8 caracteres.';
       return;
     }
 
@@ -236,15 +244,19 @@ export class Loggin implements OnInit {
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
-        this.mensajeError = 'Error al registrar. Intenta nuevamente.';
+        this.mensajeError =
+          'No pudimos crear tu cuenta. Inténtalo de nuevo.';
       }
     } catch (error: any) {
       if (error?.status === 409) {
-        this.mensajeError = 'Ya existe una cuenta con este correo. Inicia sesión.';
+        this.mensajeError =
+          'Ya existe una cuenta con ese correo. Inicia sesión o usa otro correo.';
       } else if (error?.status === 400) {
-        this.mensajeError = 'Revisa los datos: la contraseña debe tener al menos 8 caracteres.';
+        this.mensajeError =
+          'Revisa los datos: el correo debe ser válido y la contraseña tener al menos 8 caracteres.';
       } else {
-        this.mensajeError = 'Error al registrar. Por favor, intenta nuevamente.';
+        this.mensajeError =
+          'No pudimos crear tu cuenta. Revisa los datos e inténtalo de nuevo.';
         console.error('Registro error:', error);
       }
     } finally {
@@ -268,10 +280,12 @@ export class Loggin implements OnInit {
         this.cerrarModal();
         this.irAlInicioSiEsRutaLoggin();
       } else {
-        this.mensajeError = 'Error al iniciar con Google. Por favor, intenta nuevamente.';
+        this.mensajeError =
+          'No se completó el inicio de sesión con Google. Inténtalo de nuevo.';
       }
     } catch (error: any) {
-      this.mensajeError = 'No se pudo iniciar sesión con Google. Por favor, intenta nuevamente o usa correo y contraseña.';
+      this.mensajeError =
+        'No pudimos iniciar sesión con Google. Si se abrió una ventana, ciérrala e inténtalo otra vez, o usa correo y contraseña.';
     } finally {
       this.cargandoGoogle = false;
     }
